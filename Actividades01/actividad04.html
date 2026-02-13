@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 04</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act04</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li><a href="../final.html" class="nav-link">/Final</a></li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">
+                            < Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+            <!-- Spacer to clear fixed header -->
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 04: Mecanismos de defensa en red</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Febrero 2026</span>
+                    <span><i class="far fa-user"></i> Alan Gilberto Sánchez Zavala (177263)</span>
+                </div>
+
+                <hr class="neon-divider">
+
+                <div class="article-body">
+
+                    <section>
+                        <h2>Introducción contextual al tema</h2>
+                        <p class="intro-text">
+                            En la administración de redes seguras, es imperativo establecer políticas de control de
+                            tráfico que minimicen la superficie de ataque. Esta actividad se centra en la implementación
+                            práctica de políticas para un servidor multifuncional (Web, Correo y DNS), aplicando el
+                            principio de "concesión mínima de privilegios" mediante el uso de <code>iptables</code>. Se
+                            analizarán reglas para permitir conectividad selectiva tanto para tráfico entrante como
+                            saliente.
+                        </p>
+                        <a href="../PDFs/177263-act04.pdf" class="btn btn-download" target="_blank">
+                            <i class="fas fa-file-pdf"></i> Exportar a PDF
+                        </a>
+                    </section>
+
+                    <section>
+                        <h2>Desarrollo técnico de la actividad</h2>
+
+                        <p>A continuación se detallan las reglas de firewall implementadas para cumplir con los
+                            requerimientos específicos de seguridad de la red:</p>
+
+                        <!-- Regla 1 -->
+                        <section>
+                            <h3>1. Establecer una política restrictiva</h3>
+                            <p>Se configura una regla base para aceptar tráfico TCP únicamente en los puertos web
+                                estándar (HTTP/HTTPS).</p>
+                            <div class="code-block">
+                                <code>iptables -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT</code>
+                            </div>
+                        </section>
+
+                        <!-- Regla 2 -->
+                        <section>
+                            <h3>2. Permitir el tráfico de conexiones ya establecidas</h3>
+                            <p>Es vital permitir el tráfico de retorno para conexiones que ya han sido aprobadas
+                                (Stateful Firewalling).</p>
+                            <div class="code-block">
+                                <code>iptables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT</code>
+                            </div>
+                        </section>
+
+                        <!-- Regla 3 -->
+                        <section>
+                            <h3>3. Aceptar tráfico DNS (TCP) saliente de la red local</h3>
+                            <p>Permite que el servidor realice consultas DNS hacia el exterior.</p>
+                            <div class="code-block">
+                                <code>iptables -A OUTPUT -p tcp -j ACCEPT</code>
+                            </div>
+                            <p class="text-muted small">Nota: Generalmente DNS usa UDP (puerto 53), pero TCP se usa para
+                                transferencias de zona o respuestas grandes.</p>
+                        </section>
+
+                        <!-- Regla 4 -->
+                        <section>
+                            <h3>4. Aceptar correo entrante proveniente de Internet</h3>
+                            <p>Se permite tráfico dirigido específicamente al servidor de correo (IP interna
+                                192.1.2.10).</p>
+                            <div class="code-block">
+                                <code>iptables -A INPUT -p tcp -d 192.1.2.10 -j ACCEPT</code>
+                            </div>
+                        </section>
+
+                        <!-- Regla 5 -->
+                        <section>
+                            <h3>5. Permitir correo saliente a Internet</h3>
+                            <p>Se habilita al servidor de correo (192.1.2.10) para enviar mensajes hacia el exterior.
+                            </p>
+                            <div class="code-block">
+                                <code>iptables -A OUTPUT -p tcp -s 192.1.2.10 -j ACCEPT</code>
+                            </div>
+                        </section>
+
+                        <!-- Regla 6 -->
+                        <section>
+                            <h3>6. Aceptar conexiones HTTP desde Internet al servidor web</h3>
+                            <p>Regla específica para permitir tráfico web entrante destinado a la IP del servidor web
+                                (192.1.2.11).</p>
+                            <div class="code-block">
+                                <code>iptables -A INPUT -p tcp -s 192.1.2.11 --dport 80 -j ACCEPT</code>
+                            </div>
+                            <p class="text-alert warning">Correction Note: El flag <code>-s</code> indica origen
+                                (source). Para destino debería ser <code>-d</code>, o si la regla está en el servidor
+                                web mismo, solo <code>--dport</code>.</p>
+                        </section>
+
+                        <!-- Regla 7 -->
+                        <section>
+                            <h3>7. Permitir tráfico HTTP desde la red local a Internet</h3>
+                            <p>Permite que los usuarios internos naveguen por la web.</p>
+                            <div class="code-block">
+                                <code>iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT</code>
+                            </div>
+                        </section>
+
+                    </section> <!-- End Development -->
+
+                    <section>
+                        <h2>Material multimedia</h2>
+                        <p class="text-muted">No aplica para esta actividad.</p>
+                    </section>
+
+                    <section>
+                        <h2>Opinión o reflexión técnica del estudiante</h2>
+                        <p>
+                            La implementación de políticas en <code>iptables</code> requiere una precisión absoluta. Un
+                            error tipográfico en una dirección IP o un puerto (como confundir source <code>-s</code> con
+                            destination <code>-d</code>) puede dejar un servicio inoperativo o, peor aún, expuesto. Esta
+                            práctica refuerza la importancia de entender el flujo del tráfico: saber qué entra (INPUT),
+                            qué sale (OUTPUT) y cómo el estado de las conexiones (stateful vs stateless) afecta la
+                            seguridad operativa de servicios críticos como correo y web.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h2>Referencias técnicas</h2>
+                        <ul class="tech-list">
+                            <li>Netfilter.org - Documentation main page.</li>
+                            <li>RFC 5321 - Simple Mail Transfer Protocol.</li>
+                            <li>Iptables Tutorial 1.2.2 by Oskar Andreasson.</li>
+                        </ul>
+                    </section>
+
+                </div>
+
+            </header>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>

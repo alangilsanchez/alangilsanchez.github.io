@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 03</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividad03</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li><a href="../final.html" class="nav-link">/Final</a></li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">
+                            < Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+            <!-- Spacer to clear fixed header -->
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 03: Elementos de Seguridad en Linux (iptables)</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Febrero 2026</span>
+                    <span><i class="far fa-user"></i> Alan Gilberto Sánchez Zavala (177263)</span>
+                </div>
+
+                <hr class="neon-divider">
+
+                <div class="article-body">
+
+                    <section>
+                        <h2>Introducción contextual al tema</h2>
+                        <p class="intro-text">
+                            En el ecosistema Linux, <strong>iptables</strong> es la herramienta de espacio de usuario
+                            por excelencia para controlar el sistema de filtrado de paquetes del kernel (Netfilter).
+                            Comprender su funcionamiento, basado en tablas, cadenas y reglas, es fundamental para
+                            cualquier administrador de sistemas o profesional de ciberseguridad, ya que permite definir
+                            políticas de tráfico granulares, realizar traducción de direcciones de red (NAT) y modificar
+                            paquetes al vuelo. Esta actividad explora la sintaxis, estructura y aplicación práctica de
+                            reglas de filtrado.
+                        </p>
+                        <a href="../PDFs/177263-act03.pdf" class="btn btn-download" target="_blank">
+                            <i class="fas fa-file-pdf"></i> Exportar a PDF
+                        </a>
+                    </section>
+
+                    <section>
+                        <h2>Desarrollo técnico de la actividad</h2>
+
+                        <!-- Pregunta 1 -->
+                        <section>
+                            <h3>1. Flujo del paquete en el sistema</h3>
+                            <p>Complete los espacios conforme se explica el flujo:</p>
+                            <div class="quotation-box">
+                                "Cuando un paquete llega al sistema, primero pasa por una <strong>(tabla)</strong>,
+                                después por una <strong>(cadena)</strong> y finalmente se ejecuta una
+                                <strong>(regla)</strong>."
+                            </div>
+                        </section>
+
+                        <!-- Pregunta 2 -->
+                        <section>
+                            <h3>2. Relación de Tablas y Propósitos</h3>
+                            <div class="table-container">
+                                <table class="cyber-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tabla</th>
+                                            <th>Propósito principal</th>
+                                            <th>Ejemplo de uso</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><strong>FILTER</strong></td>
+                                            <td>Es la tabla por defecto. Su función principal es permitir o denegar el
+                                                paso de paquetes.</td>
+                                            <td class="text-accent">DROP / ACCEPT</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>NAT</strong></td>
+                                            <td>Se utiliza para la Traducción de Direcciones de Red (Network Address
+                                                Translation). Modifica IPs de origen o destino.</td>
+                                            <td class="text-accent">Port Forwarding</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>MANGLE</strong></td>
+                                            <td>Permite la alteración especializada de paquetes, como cambiar el TOS
+                                                (Type of Service) o el TTL.</td>
+                                            <td class="text-accent">QoS / TTL</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>RAW</strong></td>
+                                            <td>Se utiliza para configurar excepciones al seguimiento de conexiones
+                                                (Connection Tracking), procesando paquetes antes de que ese subsistema
+                                                los vea.</td>
+                                            <td class="text-accent">NOTRACK</td>
+                                        </tr>
+                                        <tr>
+                                            <td><strong>SECURITY</strong></td>
+                                            <td>Utilizada para establecer marcas de seguridad en los paquetes para
+                                                contextos de Control de Acceso Obligatorio (MAC), como SELinux.</td>
+                                            <td class="text-accent">SELinux</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <!-- Pregunta 3 -->
+                        <section>
+                            <h3>3. Anatomía de un comando iptables</h3>
+                            <div class="code-block">
+                                <code>iptables -A (CADENA) -p tcp -m (MATCH MODULE) --dports 80,443 -j (ACCION)</code>
+                            </div>
+                            <p><strong>Explicación:</strong></p>
+                            <ul class="tech-list">
+                                <li><code>-A</code>: Append (Agregar al final de la cadena).</li>
+                                <li><code>-p</code>: Protocolo (tcp).</li>
+                                <li><code>-m</code>: Match Module (módulo de coincidencia extendida).</li>
+                                <li><code>-j</code>: Jump (Acción a realizar, ej. ACCEPT, DROP).</li>
+                            </ul>
+                        </section>
+
+                        <!-- Pregunta 4 -->
+                        <section>
+                            <h3>4. Análisis de comando</h3>
+                            <p>El comando mostrado anteriormente permite:</p>
+                            <p class="text-accent"><strong>Tráfico de los puertos HTTP (80) y HTTPS (443).</strong></p>
+                        </section>
+
+                        <!-- Pregunta 5 -->
+                        <section>
+                            <h3>5. Variables y opciones comunes</h3>
+                            <div class="table-container">
+                                <table class="cyber-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Acción deseada</th>
+                                            <th>Opción / Comando</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>a) Limitar intentos por minuto</td>
+                                            <td class="text-accent"><code>--limit 5/minute</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>b) Filtrar por IP de origen</td>
+                                            <td class="text-accent"><code>--src 192.168.25.0/24</code> (o
+                                                <code>-s</code>)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>c) Ver solo números, sin resolución DNS</td>
+                                            <td class="text-accent"><code>-L -n</code></td>
+                                        </tr>
+                                        <tr>
+                                            <td>d) Ver reglas con contadores (paquetes/bytes)</td>
+                                            <td class="text-accent"><code>-L -v</code></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                        <!-- Pregunta 6 -->
+                        <section>
+                            <h3>6. Análisis de regla específica</h3>
+                            <div class="code-block">
+                                <code>iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m state --state NEW,ESTABLISHED -j ACCEPT</code>
+                            </div>
+                            <p><strong>Explicación:</strong> Permite tráfico TCP entrante por la interfaz
+                                <code>eth0</code> a los puertos 22 (SSH), 80 (HTTP) y 443 (HTTPS), siempre que sea parte
+                                de una conexión <strong>nueva</strong> o <strong>establecida</strong>.</p>
+                        </section>
+
+                        <!-- Preguntas 7-11 -->
+                        <section>
+                            <h3>Ejercicios Prácticos de Configuración</h3>
+
+                            <h4>7. Permitir tráfico HTTP entrante</h4>
+                            <div class="code-block">
+                                <code>iptables -A INPUT -p tcp --dport 80 -j ACCEPT</code>
+                            </div>
+
+                            <h4>8. Permitir todo el tráfico saliente</h4>
+                            <div class="code-block">
+                                <code>iptables -A OUTPUT -j ACCEPT</code>
+                            </div>
+
+                            <h4>9. Permitir SSH solo desde la IP 192.168.1.50</h4>
+                            <div class="code-block">
+                                <code>iptables -A INPUT -p tcp -s 192.168.1.50 --dport 22 -j ACCEPT</code>
+                            </div>
+
+                            <h4>10. Permitir tráfico TCP entrante a puertos 80 y 443 (Establecida/Relacionada)</h4>
+                            <div class="code-block">
+                                <code>iptables -A INPUT -p tcp -m multiport --dports 80,443 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT</code>
+                            </div>
+
+                            <h4>11. Registrar y permitir tráfico entrante (Log & Accept)</h4>
+                            <p>Para registrar intentos de conexión nueva y luego aceptarlos:</p>
+                            <div class="code-block">
+                                <code># 1. Registrar (Log)
+iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m conntrack --ctstate NEW -j LOG --log-prefix "NEW-CONN: "
+
+# 2. Aceptar (Accept)
+iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT</code>
+                            </div>
+                        </section>
+
+                    </section> <!-- End Development -->
+
+                    <section>
+                        <h2>Material multimedia</h2>
+                        <p class="text-muted">No aplica para esta actividad.</p>
+                    </section>
+
+                    <section>
+                        <h2>Opinión o reflexión técnica del estudiante</h2>
+                        <p>
+                            iptables representa la primera línea de defensa a nivel de host en servidores Linux. A
+                            diferencia de un firewall perimetral que protege toda una red, iptables permite definir
+                            reglas específicas para el comportamiento de un servidor individual. Esta granularidad es
+                            vital en arquitecturas de defensa en profundidad.
+                            <br><br>
+                            Aunque herramientas más modernas como <code>nftables</code> o interfaces simplificadas como
+                            <code>ufw</code> están ganando terreno, la sintaxis y lógica de iptables siguen siendo el
+                            estándar industrial para entender cómo el kernel manipula los paquetes. La capacidad de
+                            controlar el estado de las conexiones (stateful inspection) demostrada en esta actividad es
+                            crucial para prevenir ataques como el spoofing o el secuestro de sesiones.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h2>Referencias técnicas</h2>
+                        <ul class="tech-list">
+                            <li>Manual de usuario de iptables (<code>man iptables</code>).</li>
+                            <li>Netfilter Project Documentation (netfilter.org).</li>
+                            <li>Red Hat Enterprise Linux Security Guide: Packet Filtering.</li>
+                        </ul>
+                    </section>
+
+                </div>
+
+            </header>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>

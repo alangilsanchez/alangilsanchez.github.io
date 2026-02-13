@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 05</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act05</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li><a href="../final.html" class="nav-link">/Final</a></li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">
+                            < Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 05: Cartografiando el pentesting - Análisis comparativo de metodologías de seguridad
+                    informática</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Febrero 2026</span>
+                    <span><i class="far fa-user"></i> Alan Gilberto Sánchez Zavala (177263)</span>
+                </div>
+
+                <hr class="neon-divider">
+
+                <div class="article-body">
+
+                    <section>
+                        <h2>Introducción contextual al tema</h2>
+                        <p class="intro-text">
+                            Las pruebas de penetración requieren un enfoque estructurado y metodológico para ser
+                            efectivas. En este análisis se presenta una comparación exhaustiva de las principales
+                            metodologías y frameworks utilizados en la industria de la ciberseguridad, evaluando sus
+                            características distintivas, aplicaciones prácticas y nivel de adopción en entornos
+                            profesionales.
+                        </p>
+                        <a href="../PDFs/177263-act05.pdf" class="btn btn-download" target="_blank">
+                            <i class="fas fa-file-pdf"></i> Exportar a PDF
+                        </a>
+                    </section>
+
+                    <section>
+                        <h2>Desarrollo técnico de la actividad</h2>
+
+                        <h3>Tabla comparativa de metodologías de pruebas de penetración y evaluación de la seguridad
+                            informática</h3>
+
+                        <div class="table-container" style="overflow-x: auto; margin-top: 2rem;">
+                            <table class="cyber-table">
+                                <thead>
+                                    <tr>
+                                        <th>Metodología</th>
+                                        <th>Descripción</th>
+                                        <th>Fases</th>
+                                        <th>Objetivo</th>
+                                        <th>Escenarios</th>
+                                        <th>Orientación</th>
+                                        <th>Autores</th>
+                                        <th>URL oficial</th>
+                                        <th>Certificados</th>
+                                        <th>Versiones/Actualizaciones vigentes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- MITRE ATT&CK -->
+                                    <tr>
+                                        <td><strong>MITRE ATT&CK</strong></td>
+                                        <td>Base de conocimientos de tácticas y técnicas de adversarios basada en
+                                            observaciones del mundo real.</td>
+                                        <td>
+                                            <ol style="margin: 0; padding-left: 1.2rem;">
+                                                <li>Reconnaissance</li>
+                                                <li>Resource Development</li>
+                                                <li>Initial Access</li>
+                                                <li>Execution</li>
+                                                <li>Persistence</li>
+                                                <li>Privilege Escalation</li>
+                                                <li>Defense Evasion</li>
+                                                <li>Credential Access</li>
+                                                <li>Discovery</li>
+                                                <li>Lateral Movement</li>
+                                                <li>Collection</li>
+                                                <li>Command and Control</li>
+                                                <li>Exfiltration</li>
+                                                <li>Impact</li>
+                                            </ol>
+                                        </td>
+                                        <td>Detección y descripción de comportamientos de ataque.</td>
+                                        <td>Red Teaming, Threat Hunting, SOC y emulación de adversarios.</td>
+                                        <td>Defensa/Ataque (Híbrida)</td>
+                                        <td>MITRE Corporation</td>
+                                        <td><a href="https://attack.mitre.org/" target="_blank"
+                                                class="text-accent">https://attack.mitre.org/</a></td>
+                                        <td>MITRE ATT&CK Defender (MAD)</td>
+                                        <td>v16 (2024-2025)</td>
+                                    </tr>
+
+                                    <!-- OWASP WSTG -->
+                                    <tr>
+                                        <td><strong>OWASP WSTG</strong></td>
+                                        <td>Guía exhaustiva para probar la seguridad de aplicaciones web y servicios
+                                            web.</td>
+                                        <td>
+                                            <ol style="margin: 0; padding-left: 1.2rem;">
+                                                <li>Information Gathering</li>
+                                                <li>Config. & Deployment Management Testing</li>
+                                                <li>Identity Management Testing</li>
+                                                <li>Authentication Testing</li>
+                                                <li>Authorization Testing</li>
+                                                <li>Session Management Testing</li>
+                                                <li>Input Validation Testing</li>
+                                                <li>Error Handling</li>
+                                                <li>Cryptography</li>
+                                                <li>Business Logic Testing</li>
+                                                <li>Client-side Testing</li>
+                                                <li>API Testing</li>
+                                            </ol>
+                                        </td>
+                                        <td>Evaluación técnica de vulnerabilidades en aplicaciones web.</td>
+                                        <td>Auditorías de aplicaciones web, APIs y servicios en la nube.</td>
+                                        <td>Evaluación (Técnica)</td>
+                                        <td>OWASP Foundation</td>
+                                        <td><a href="https://owasp.org/www-project-web-security-testing-guide/"
+                                                target="_blank"
+                                                class="text-accent">https://owasp.org/www-project-web-security-testing-guide/</a>
+                                        </td>
+                                        <td>Referenciada en OSCP, EWPT, CASE</td>
+                                        <td>v4.2 (v5 en desarrollo)</td>
+                                    </tr>
+
+                                    <!-- NIST SP 800-115 -->
+                                    <tr>
+                                        <td><strong>NIST SP 800-115</strong></td>
+                                        <td>Guía técnica para realizar pruebas y evaluaciones de seguridad en sistemas
+                                            federales.</td>
+                                        <td>
+                                            <ol style="margin: 0; padding-left: 1.2rem;">
+                                                <li>Planning</li>
+                                                <li>Discovery</li>
+                                                <li>Attack</li>
+                                                <li>Reporting</li>
+                                            </ol>
+                                        </td>
+                                        <td>Proporcionar una guía metodológica para pruebas técnicas de seguridad.</td>
+                                        <td>Entornos gubernamentales y corporativos que requieren cumplimiento
+                                            normativo.
+                                        </td>
+                                        <td>Evaluación/Proceso</td>
+                                        <td>NIST (Gobierno EE.UU.)</td>
+                                        <td><a href="https://csrc.nist.gov/publications/detail/sp/800-115/final"
+                                                target="_blank"
+                                                class="text-accent">https://csrc.nist.gov/publications/detail/sp/800-115/final</a>
+                                        </td>
+                                        <td>Ninguna directa (base para CISA/CISSP)</td>
+                                        <td>Final (2008) - Sigue siendo estándar base</td>
+                                    </tr>
+
+                                    <!-- OSSTMM -->
+                                    <tr>
+                                        <td><strong>OSSTMM</strong></td>
+                                        <td>Metodología científica para la auditoría de seguridad y la medición de la
+                                            operatividad.</td>
+                                        <td>
+                                            <ol style="margin: 0; padding-left: 1.2rem;">
+                                                <li>Induction Phase</li>
+                                                <li>Interaction Phase</li>
+                                                <li>Investigation Phase</li>
+                                                <li>Intervention Phase</li>
+                                            </ol>
+                                        </td>
+                                        <td>Medición de la seguridad operativa (análisis de canales).</td>
+                                        <td>Auditorías integrales de infraestructura, redes y seguridad física.</td>
+                                        <td>Evaluación (Métrica)</td>
+                                        <td>Pete Herzog / ISECOM</td>
+                                        <td><a href="https://www.isecom.org/OSSTMM.html" target="_blank"
+                                                class="text-accent">https://www.isecom.org/OSSTMM.html</a></td>
+                                        <td>OPST, OPSA, OPSE</td>
+                                        <td>v3.0 (v4 en draft)</td>
+                                    </tr>
+
+                                    <!-- PTES -->
+                                    <tr>
+                                        <td><strong>PTES</strong></td>
+                                        <td>Estándar que define los pasos mínimos necesarios para una prueba de
+                                            penetración de calidad.</td>
+                                        <td>
+                                            <ol style="margin: 0; padding-left: 1.2rem;">
+                                                <li>Pre-engagement Interactions</li>
+                                                <li>Intelligence Gathering</li>
+                                                <li>Threat Modeling</li>
+                                                <li>Vulnerability Analysis</li>
+                                                <li>Exploitation</li>
+                                                <li>Post Exploitation</li>
+                                                <li>Reporting</li>
+                                            </ol>
+                                        </td>
+                                        <td>Estandarizar el lenguaje y las expectativas de un Pentest profesional.</td>
+                                        <td>Pruebas de penetración comerciales y de alta complejidad técnica.</td>
+                                        <td>Ataque/Ejecución</td>
+                                        <td>Comunidad de expertos (Liderado por Dave Kennedy et al.)</td>
+                                        <td><a href="http://www.pentest-standard.org/" target="_blank"
+                                                class="text-accent">http://www.pentest-standard.org/</a></td>
+                                        <td>Muy valorada en el sector (referencia para OSCP/LPT)</td>
+                                        <td>v1.1</td>
+                                    </tr>
+
+                                    <!-- ISSAF -->
+                                    <tr>
+                                        <td><strong>ISSAF</strong></td>
+                                        <td>Marco detallado que vincula la evaluación técnica con la gobernanza y los
+                                            procesos.</td>
+                                        <td>
+                                            <ol style="margin: 0; padding-left: 1.2rem;">
+                                                <li>Planning and Preparation</li>
+                                                <li>Assessment (Steps: Info Gathering, Network Mapping, Vuln ID,
+                                                    Penetration, Gaining Access, Priv Esc)</li>
+                                            </ol>
+                                        </td>
+                                        <td>Evaluación técnica profunda alineada con el cumplimiento y políticas.</td>
+                                        <td>Organizaciones grandes que buscan auditorías técnicas muy granulares.</td>
+                                        <td>Evaluación/Auditoría</td>
+                                        <td>OISSG (Open Information Systems Security Group)</td>
+                                        <td>N/A</td>
+                                        <td>Ninguna activa de forma masiva hoy día</td>
+                                        <td>v0.2.1</td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </section>
+
+                    <section>
+                        <h2>Material multimedia</h2>
+                        <p class="text-muted">No aplica para esta actividad.</p>
+                    </section>
+
+                    <section>
+                        <h2>Opinión o reflexión técnica del estudiante</h2>
+                        <p>
+                            Cada metodología presenta un enfoque único que responde a necesidades específicas del
+                            contexto operativo. MITRE ATT&CK destaca por su orientación hacia la comprensión del
+                            comportamiento adversario, siendo fundamental para equipos defensivos (Blue Team) y Red
+                            Team. OWASP WSTG se ha consolidado como el estándar de facto para auditorías de aplicaciones
+                            web, mientras que PTES ofrece una estructura completa y pragmática para pruebas de
+                            penetración comerciales.
+                        </p>
+                        <p>
+                            NIST SP 800-115, a pesar de su antigüedad (2008), continúa siendo relevante en entornos
+                            gubernamentales y corporativos que requieren cumplimiento normativo estricto. OSSTMM aporta
+                            un enfoque científico orientado a métricas cuantificables, útil para organizaciones que
+                            necesitan justificar inversiones en seguridad con datos objetivos.
+                        </p>
+                        <p>
+                            La selección de una metodología no debe ser rígida; en la práctica profesional, los
+                            auditores experimentados combinan elementos de múltiples frameworks para adaptarse a las
+                            características específicas de cada proyecto, el alcance definido y las expectativas del
+                            cliente.
+                        </p>
+                    </section>
+
+                    <section>
+                        <h2>Referencias técnicas</h2>
+                        <ul class="tech-list">
+                            <li>MITRE Corporation. (2024). MITRE ATT&CK Framework. https://attack.mitre.org/</li>
+                            <li>OWASP Foundation. (2024). Web Security Testing Guide v4.2.
+                                https://owasp.org/www-project-web-security-testing-guide/</li>
+                            <li>NIST. (2008). SP 800-115: Technical Guide to Information Security Testing and
+                                Assessment. https://csrc.nist.gov/publications/detail/sp/800-115/final</li>
+                            <li>Herzog, P. / ISECOM. (2024). Open Source Security Testing Methodology Manual (OSSTMM).
+                                https://www.isecom.org/OSSTMM.html</li>
+                            <li>Kennedy, D. et al. (2024). Penetration Testing Execution Standard (PTES).
+                                http://www.pentest-standard.org/</li>
+                            <li>OISSG. (2006). Information Systems Security Assessment Framework (ISSAF) v0.2.1.</li>
+                        </ul>
+                    </section>
+
+                </div>
+
+            </header>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>

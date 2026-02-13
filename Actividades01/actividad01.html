@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 01</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act01</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li><a href="../final.html" class="nav-link">/Final</a></li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">
+                            < Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+            <!-- Spacer to clear fixed header -->
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 01: Análisis en grupo de
+                    un ciberataque real y su impacto empresarial</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Febrero 2026</span>
+                    <span><i class="far fa-user"></i> Equipo 4</span>
+                </div>
+                <!-- Integrantes Section -->
+                <div class="team-members"
+                    style="margin-top: 2rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem;">
+                    <p>Integrantes:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>Alonso Castillo Omar Karim (179033)</li>
+                        <li>Cruz Juárez Francisco Javier (177622)</li>
+                        <li>Espinoza Aguilar Brian Salvador (175031)</li>
+                        <li>Martinez Lara Santiago de la Cruz (177685)</li>
+                        <li>Sánchez Ramirez Mayeli (173030)</li>
+                        <li>Sánchez Zavala Alan Gilberto (177263)</li>
+                    </ul>
+                </div>
+            </header>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+
+                <section>
+                    <h2>Introducción</h2>
+                    <p>
+                        El 10 de noviembre de 2019, Petróleos Mexicanos (Pemex) fue víctima de un ataque de ransomware
+                        de escala nacional. El incidente, protagonizado por el grupo criminal Indrik Spider mediante la
+                        variante DoppelPaymer, paralizó sistemas administrativos, financieros y de logística. Este
+                        informe analiza de manera técnica, económica y estratégica el evento, subrayando que la falta de
+                        gestión de vulnerabilidades y el uso de sistemas legados fueron los catalizadores de una crisis
+                        que afectó la distribución de combustibles y la integridad de datos estratégicos de la nación.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Desarrollo técnico de la actividad</h2>
+                    <h3>Informe técnico: el Ciberataque a PEMEX (DOPPELPAYMER)</h3>
+
+                    <h3>Fase 1: Investigación y documentación</h3>
+
+                    <h4>Análisis de Actores y Herramientas (Fuentes: CrowdStrike, Kaspersky, MITRE)</h4>
+                    <p>
+                        El ataque no fue una infección aleatoria, sino una operación de "Big Game Hunting" ejecutada por
+                        el grupo criminal Indrik Spider.
+                        <br>
+                        • <strong>El Malware:</strong> Se utilizó DoppelPaymer, una evolución del ransomware BitPaymer.
+                        Según Kaspersky, este código es único porque utiliza una ejecución de hilos en paralelo para
+                        cifrar archivos a una velocidad mucho mayor que otros ransomware, minimizando el tiempo de
+                        reacción de los administradores.
+                    </p>
+                    <p>
+                        • <strong>Técnicas MITRE ATT&CK Identificadas:</strong>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>T1566 (Phishing):</strong> Vector inicial para depositar el troyano Dridex.</li>
+                        <li><strong>T1021 (Remote Services):</strong> Uso de RDP y SMB para movimiento lateral.</li>
+                        <li><strong>T1490 (Inhibit System Recovery):</strong> Eliminación de Shadow Copies para evitar
+                            la restauración rápida de Windows.</li>
+                    </ul>
+                    </p>
+
+                    <h4>Vulnerabilidades Iniciales (Fuentes: CISA, ASF, IBM X-Force)</h4>
+                    <p>
+                        La investigación en informes oficiales y técnicos revela que Pemex presentaba una superficie de
+                        ataque altamente vulnerable debido a tres factores clave:
+                    </p>
+                    <ol class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Vulnerabilidad Crítica de Red (CVE-2017-0144):</strong> A pesar de que el parche
+                            existía desde 2017 (EternalBlue), Pemex mantenía equipos con el protocolo SMBv1 activo. Esto
+                            permitió que el ransomware se propagara de forma autónoma por toda la red interna una vez
+                            que el primer equipo fue comprometido.</li>
+                        <li><strong>Exposición de Perímetro (CVE-2019-19781):</strong> Reportes de IBM X-Force sugieren
+                            que la entrada pudo facilitarse por gateways de Citrix desactualizados, permitiendo una
+                            ejecución de código remota (RCE) que dio acceso a la intranet institucional.</li>
+                        <li><strong>Obsolescencia Tecnológica:</strong> El informe de la Auditoría Superior de la
+                            Federación (ASF) confirmó que Pemex operaba servidores con Windows Server 2003, los cuales
+                            ya no recibían actualizaciones de seguridad, convirtiéndolos en objetivos fáciles para la
+                            escalada de privilegios.</li>
+                    </ol>
+                </section>
+
+                <section>
+                    <h3>Línea del Tiempo del Ataque</h3>
+                    <p class="text-muted">Cronología construida a partir de hechos verificables y reportes técnicos.</p>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha / Fase</th>
+                                    <th>Hito Clave del Ataque</th>
+                                    <th>Descripción Técnica del Hecho</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Septiembre - octubre 2019</td>
+                                    <td>Infiltración Silenciosa</td>
+                                    <td>Los atacantes logran el acceso inicial. Durante semanas, realizan reconocimiento
+                                        pasivo para identificar servidores de facturación y sistemas SAP críticos.</td>
+                                </tr>
+                                <tr>
+                                    <td>01 - 08 noviembre 2019</td>
+                                    <td>Movimiento Lateral</td>
+                                    <td>El grupo Indrik Spider utiliza herramientas como Mimikatz para extraer
+                                        credenciales de memoria. Logran comprometer cuentas con privilegios de
+                                        Administrador de Dominio.</td>
+                                </tr>
+                                <tr>
+                                    <td>09 noviembre 2019</td>
+                                    <td>Exfiltración de Datos</td>
+                                    <td>Antes del cifrado, roban 6.4 GB de información (contratos, correos de
+                                        directivos). Esta es la fase de "Doble Extorsión" reportada por The Hacker News.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>10 noviembre 2019 (08:00 AM)</td>
+                                    <td>Detonación del Cifrado</td>
+                                    <td>El ransomware se ejecuta masivamente. Se reportan bloqueos en centros de cómputo
+                                        de CDMX, Tabasco y el Estado de México. Aparece la demanda de 565 BTC.</td>
+                                </tr>
+                                <tr>
+                                    <td>11 - 12 noviembre 2019</td>
+                                    <td>Respuesta de Emergencia</td>
+                                    <td>Pemex apaga su red nacional. Los empleados reciben instrucciones de no encender
+                                        computadoras. El gobierno mexicano declara oficialmente que no pagará el
+                                        rescate.</td>
+                                </tr>
+                                <tr>
+                                    <td>13 - 15 noviembre 2019</td>
+                                    <td>Impacto Operativo</td>
+                                    <td>Parálisis en las Terminales de Almacenamiento (TAD). La facturación de pipas de
+                                        combustible se realiza manualmente (papel y pluma), retrasando el suministro
+                                        nacional.</td>
+                                </tr>
+                                <tr>
+                                    <td>30 noviembre 2019</td>
+                                    <td>Filtración en la Dark Web</td>
+                                    <td>Al vencer el plazo y no recibir el pago, los atacantes publican los datos
+                                        robados en su portal "Dopple Leaks", vulnerando la confidencialidad de Pemex.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p><strong>Fuentes Verificables para el Informe:</strong></p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Informes Oficiales: Reporte de la Cuenta Pública 2019 de la Auditoría Superior de la
+                            Federación (ASF).</li>
+                        <li>Bases de Datos de Amenazas: Framework MITRE ATT&CK y repositorio de vulnerabilidades CVE.
+                        </li>
+                        <li>Reportes de Ciberseguridad: Análisis de incidentes de CrowdStrike, Kaspersky Lab y CISA.
+                        </li>
+                        <li>Medios Especializados: Artículos de investigación de CSO Online y The Hacker News.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Fase 2: Análisis técnico, impacto económico y estratégico</h3>
+                    <h4>Contexto General del Ataque</h4>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Año:</strong> 2019 (Iniciado el 10 de noviembre).</li>
+                        <li><strong>País:</strong> México.</li>
+                        <li><strong>Entidad:</strong> Petróleos Mexicanos (Pemex).</li>
+                    </ul>
+                    <p>Al ser la empresa estatal encargada de la exploración, producción y comercialización de
+                        hidrocarburos, el ataque fue clasificado inmediatamente como una amenaza a la Seguridad Nacional
+                        y a la estabilidad económica del país.</p>
+
+                    <h4>Condiciones de Ciberseguridad Previas</h4>
+                    <p>Antes de la detonación del ransomware DoppelPaymer, la infraestructura de Pemex presentaba un
+                        estado de vulnerabilidad crítica derivado de años de desinversión técnica:</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Obsolescencia de Sistemas:</strong> Según el informe de la ASF, Pemex operaba con
+                            servidores Windows Server 2003 y 2008, los cuales ya habían alcanzado su fin de vida
+                            (End-of-Life), careciendo de soporte y parches de seguridad por parte de Microsoft.</li>
+                        <li><strong>Falta de Higiene Digital:</strong> Existía una proliferación de software sin
+                            licencias vigentes y una ausencia de herramientas de detección y respuesta en los puntos
+                            finales (EDR), lo que impedía visualizar movimientos anómalos en la red.</li>
+                        <li><strong>Deficiencia en Backups:</strong> Los esquemas de respaldo no estaban aislados de la
+                            red principal (respaldos online), lo que permitió que el ransomware también cifrara las
+                            copias de seguridad locales.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Factores que facilitaron el ataque</h3>
+                    <p class="text-muted">El éxito de la intrusión se debió a una convergencia de fallas en tres
+                        dimensiones:</p>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Factor</th>
+                                    <th>Descripción de la Falla</th>
+                                    <th>Evidencia en el Caso</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Falla Técnica</td>
+                                    <td><strong>Gestión de Vulnerabilidades:</strong> No se aplicó el parche para la
+                                        vulnerabilidad EternalBlue (CVE-2017-0144) ni se actualizaron los servicios de
+                                        Citrix (CVE-2019-19781).</td>
+                                    <td>El malware se propagó lateralmente en minutos gracias al protocolo SMBv1 activo.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Falla Humana</td>
+                                    <td><strong>Ingeniería Social:</strong> Empleados administrativos abrieron correos
+                                        electrónicos de phishing que contenían cargadores de malware (loaders) como
+                                        Dridex.</td>
+                                    <td>El acceso inicial se logró mediante la ejecución de un archivo malicioso por un
+                                        usuario con privilegios.</td>
+                                </tr>
+                                <tr>
+                                    <td>Falla Política</td>
+                                    <td><strong>Presupuesto y Estrategia:</strong> Durante 2019, hubo una reducción
+                                        significativa en el presupuesto destinado a servicios de TI y mantenimiento de
+                                        licencias.</td>
+                                    <td>La ASF señaló que la falta de inversión en mantenimiento preventivo fue la causa
+                                        raíz del incidente.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Tabla técnica del ataque (Análisis Forense)</h3>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Elemento</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Tipo de ataque</td>
+                                    <td>Ransomware (variante DoppelPaymer).</td>
+                                </tr>
+                                <tr>
+                                    <td>Actor o grupo atacante</td>
+                                    <td>Indrik Spider (también vinculados a Dridex y BitPaymer).</td>
+                                </tr>
+                                <tr>
+                                    <td>Vector de entrada</td>
+                                    <td>Phishing dirigido con cargadores de malware y explotación de servicios RDP
+                                        expuestos.</td>
+                                </tr>
+                                <tr>
+                                    <td>Vulnerabilidad explotada</td>
+                                    <td>CVE-2017-0144 (EternalBlue) y CVE-2019-19781 (Citrix).</td>
+                                </tr>
+                                <tr>
+                                    <td>Etapas del ataque (MITRE ATT&CK)</td>
+                                    <td>Infiltración (T1566), Escalada de Privilegios (T1484), Exfiltración (T1041) e
+                                        Impacto por cifrado (T1486).</td>
+                                </tr>
+                                <tr>
+                                    <td>Sistemas comprometidos</td>
+                                    <td>Directorio Activo, sistemas de facturación SAP, servidores de correo y bases de
+                                        datos administrativas.</td>
+                                </tr>
+                                <tr>
+                                    <td>Duración del incidente</td>
+                                    <td>Aproximadamente 20 días desde la detección hasta la estabilización parcial de
+                                        sistemas.</td>
+                                </tr>
+                                <tr>
+                                    <td>Mecanismos de detección y respuesta</td>
+                                    <td>Aislamiento de nodos, apagado preventivo de la red y restauración mediante
+                                        backups (donde no fueron comprometidos).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Evaluación del Impacto (Modelo CIA)</h3>
+                    <ul class="tech-list">
+                        <li><strong>Confidencialidad: CRÍTICA.</strong> Filtración de secretos comerciales y datos
+                            personales en la Dark Web.</li>
+                        <li><strong>Integridad: ALTA.</strong> Alteración de la estructura de archivos y pérdida de
+                            acceso a registros originales mediante cifrado irreversible.</li>
+                        <li><strong>Disponibilidad: MUY ALTA.</strong> Suspensión de la logística de combustibles y
+                            parálisis administrativa nacional por más de 10 días.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Cálculo del Costo Total del Ciberataque (Marco Económico)</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">
+                        De acuerdo con la metodología solicitada, se ha realizado la conversión de los impactos
+                        financieros internacionales a pesos mexicanos utilizando el valor promedio de la divisa en el
+                        año del incidente.<br>
+                        <strong>Conversión de Moneda (Referencia Banxico 2019):</strong><br>
+                        • Tipo de cambio promedio (2019): $19.26 MXN por 1 USD.<br>
+                        • Rescate solicitado: 565 BTC (equivalentes en ese momento a $4,900,000 USD
+                        aproximadamente).<br>
+                        • Costo del rescate en MXN: $94,374,000 MXN.
+                    </p>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Tipo de costo</th>
+                                    <th>Descripción</th>
+                                    <th>Estimación (MXN)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Pérdidas operativas</td>
+                                    <td>Días de inactividad, procesos manuales y retrasos en logística.</td>
+                                    <td class="text-accent">$500,000,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Costos técnicos</td>
+                                    <td>Respuesta a incidentes, limpieza de red y nuevos licenciamientos.</td>
+                                    <td class="text-accent">$150,000,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Daños legales</td>
+                                    <td>Auditorías de la ASF y gestión de brecha de datos personales.</td>
+                                    <td class="text-accent">$25,000,000</td>
+                                </tr>
+                                <tr style="border-top: 2px solid var(--accent-color);">
+                                    <td colspan="2"><strong>Total estimado (Suma de impactos directos e
+                                            indirectos)</strong></td>
+                                    <td class="text-accent"><strong>$675,000,000</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Relación con Marcos Normativos</h3>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Marco Normativo</th>
+                                    <th>Controles Relacionados</th>
+                                    <th>Explicación de Prevención/Mitigación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>ISO/IEC 27001</strong></td>
+                                    <td>A.12.6.1 (Gestión de vulnerabilidades técnicas)</td>
+                                    <td>La implementación de un escaneo recurrente y un ciclo de parcheo estricto habría
+                                        eliminado las fallas críticas en SMB y Citrix antes de la infiltración.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>NIST CSF</strong></td>
+                                    <td>PR.IP-12 (Mantenimiento y reparación de infraestructura)</td>
+                                    <td>Un programa de gestión de activos habría identificado y retirado los servidores
+                                        Windows 2003 obsoletos, reduciendo la superficie de ataque.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>GDPR / LGPDPPSO</strong></td>
+                                    <td>Seguridad de los datos personales</td>
+                                    <td>El cifrado de datos en reposo y controles de exfiltración habrían mitigado el
+                                        impacto de la exposición de información de empleados y proveedores en la Dark
+                                        Web.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h3>Lecciones Aprendidas y Recomendaciones</h3>
+                    <p><strong>• Fallas Críticas Detectadas:</strong></p>
+                    <ul class="tech-list" style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li><strong>Técnicas:</strong> Uso de sistemas operativos con fin de soporte (End-of-Life) y
+                            falta de segmentación entre la red administrativa y operativa.</li>
+                        <li><strong>Humanas:</strong> Deficiencia en la cultura de prevención ante ataques de ingeniería
+                            social (phishing).</li>
+                    </ul>
+
+                    <p><strong>• Buenas Prácticas Sugeridas:</strong></p>
+                    <ul class="tech-list" style="margin-left: 1.5rem; margin-bottom: 1rem;">
+                        <li>Implementación de una arquitectura de Confianza Cero (Zero Trust) para limitar el movimiento
+                            lateral.</li>
+                        <li>Establecimiento de una política de respaldos inmutables y fuera de línea para garantizar la
+                            recuperación sin pagar rescates.</li>
+                    </ul>
+
+                    <p><strong>Recomendación para el Contexto Mexicano:</strong><br>
+                        Es imperativo que las empresas productivas del Estado cuenten con un presupuesto blindado para
+                        la actualización tecnológica constante, tratando la ciberseguridad como un activo de seguridad
+                        nacional.</p>
+                </section>
+
+                <section>
+                    <h2>Material multimedia</h2>
+                    <p class="text-muted">No aplica para esta actividad.</p>
+                </section>
+
+                <section>
+                    <h3>Análisis Económico Final y Comparativa Presupuestal</h3>
+                    <p>
+                        Basado en datos oficiales de Banxico (Tipo de cambio promedio 2019: $19.26 MXN) y reportes de la
+                        ASF:<br>
+                        • <strong>Costo Total Estimado del Ataque:</strong> $675,000,000 MXN.<br>
+                        • <strong>Presupuesto de Ciberseguridad Pemex 2019 (Est.):</strong> $450,000,000 MXN.<br><br>
+                        <strong>Comparativa Estratégica:</strong> El impacto económico de este único incidente
+                        representó un gasto equivalente al <strong>150% del presupuesto anual</strong> destinado a
+                        ciberseguridad. En términos simples, el costo de recuperación y pérdidas operativas fue 1.5
+                        veces mayor que lo que habría costado mantener una infraestructura protegida y actualizada
+                        durante todo el año.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Opinión o reflexión técnica del estudiante</h2>
+                    <h3>Conclusión</h3>
+                    <div class="quotation-box">
+                        <p>
+                            El ciberataque sufrido por PEMEX representó un evento de alto impacto que trascendió el
+                            ámbito técnico para convertirse en un asunto de seguridad nacional y estabilidad económica.
+                            El incidente no fue resultado de una amenaza sofisticada e imposible de contener, sino de
+                            fallas críticas y previsibles en los ámbitos técnico, humano y de gestión de la seguridad de
+                            la información.
+                            <br><br>
+                            El éxito de la operación del grupo Indrik Spider se basó principalmente en la explotación de
+                            vulnerabilidades conocidas y documentadas, las cuales contaban con parches disponibles desde
+                            años anteriores. La posterior filtración de datos confidenciales en la dark web agravó el
+                            impacto del ataque, afectando la credibilidad institucional y exponiendo información
+                            sensible de la organización.
+                            <br><br>
+                            Este ataque a PEMEX sirve como un recordatorio claro de que, en una era donde gran parte de
+                            las operaciones estratégicas dependen de sistemas digitales, la fortaleza de una nación
+                            también se mide por la seguridad de sus redes y la protección de sus datos, así como por la
+                            capacidad de anticiparse y responder de manera preventiva a las amenazas cibernéticas.
+                        </p>
+                    </div>
+
+                    <h3>Lecciones aprendidas (Resumen)</h3>
+                    <p>
+                        El ciberataque a PEMEX evidenció la importancia de mantener una gestión constante de
+                        vulnerabilidades y de eliminar sistemas obsoletos que incrementan la superficie de ataque.
+                        Asimismo, demostró que la ciberseguridad involucra tanto factores técnicos como humanos, siendo
+                        la capacitación del personal un elemento clave para prevenir ataques de ingeniería social.
+                        Finalmente, el incidente resaltó la necesidad de contar con respaldos seguros e independientes,
+                        así como de tratar la ciberseguridad como un componente estratégico de la seguridad nacional.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Referencias técnicas</h2>
+                    <ul class="tech-list">
+                        <li>1. Auditoría Superior de la Federación (ASF): Informe de Auditoría de Tecnologías de
+                            Información 2019 -0-18T00 -07-0466 -2020.</li>
+                        <li>2. CrowdStrike Intelligence: Análisis técnico del Ransomware DoppelPaymer y el grupo Indrik
+                            Spider.</li>
+                        <li>3. MITRE ATT&CK Framework: Mapeo de técnicas y tácticas del software S0425 (DoppelPaymer).
+                        </li>
+                    </ul>
+                </section>
+
+            </div>
+
+            <div class="export-section">
+                <a href="../PDFs/act01-Equipo4.pdf" target="_blank" class="btn download-btn">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </a>
+                <p class="crypto-text">SHA256: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</p>
+            </div>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>
