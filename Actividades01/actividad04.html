@@ -61,7 +61,7 @@
                     <section>
                         <h2>Introducción contextual al tema</h2>
                         <p class="intro-text">
-                            En la administración de redes seguras, es imperativo establecer políticas de control de
+                            En la administración de redes seguras, es importante establecer políticas de control de
                             tráfico que minimicen la superficie de ataque. Esta actividad se centra en la implementación
                             práctica de políticas para un servidor multifuncional (Web, Correo y DNS), aplicando el
                             principio de "concesión mínima de privilegios" mediante el uso de <code>iptables</code>. Se
@@ -82,73 +82,59 @@
                         <!-- Regla 1 -->
                         <section>
                             <h3>1. Establecer una política restrictiva</h3>
-                            <p>Se configura una regla base para aceptar tráfico TCP únicamente en los puertos web
-                                estándar (HTTP/HTTPS).</p>
                             <div class="code-block">
-                                <code>iptables -A INPUT -p tcp -m multiport --dports 80,443 -j ACCEPT</code>
+                                <code>iptables -P INPUT DROP</code>
+                                <code>iptables -P FORWARD DROP</code>
+                                <code>iptables -P OUTPUT DROP</code>
                             </div>
                         </section>
 
                         <!-- Regla 2 -->
                         <section>
                             <h3>2. Permitir el tráfico de conexiones ya establecidas</h3>
-                            <p>Es vital permitir el tráfico de retorno para conexiones que ya han sido aprobadas
-                                (Stateful Firewalling).</p>
                             <div class="code-block">
-                                <code>iptables -A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT</code>
+                                <code>iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT</code>
                             </div>
                         </section>
 
                         <!-- Regla 3 -->
                         <section>
                             <h3>3. Aceptar tráfico DNS (TCP) saliente de la red local</h3>
-                            <p>Permite que el servidor realice consultas DNS hacia el exterior.</p>
                             <div class="code-block">
-                                <code>iptables -A OUTPUT -p tcp -j ACCEPT</code>
+                                <code>iptables -A FORWARD -p tcp -s 192.1.2.0/24 -d 0.0.0.0/0 --dport 53 -m state --state NEW -j ACCEPT</code>
                             </div>
-                            <p class="text-muted small">Nota: Generalmente DNS usa UDP (puerto 53), pero TCP se usa para
-                                transferencias de zona o respuestas grandes.</p>
                         </section>
 
                         <!-- Regla 4 -->
                         <section>
-                            <h3>4. Aceptar correo entrante proveniente de Internet</h3>
-                            <p>Se permite tráfico dirigido específicamente al servidor de correo (IP interna
-                                192.1.2.10).</p>
+                            <h3>4. Aceptar correo entrante proveniente de Internet en el servidor de correo</h3>
+
                             <div class="code-block">
-                                <code>iptables -A INPUT -p tcp -d 192.1.2.10 -j ACCEPT</code>
+                                <code> iptables -A FORWARD -p tcp -s 0.0.0.0/0 -d 192.1.2.10 --dport 25 -m state --state NEW -j ACCEPT</code>
                             </div>
                         </section>
 
                         <!-- Regla 5 -->
                         <section>
-                            <h3>5. Permitir correo saliente a Internet</h3>
-                            <p>Se habilita al servidor de correo (192.1.2.10) para enviar mensajes hacia el exterior.
-                            </p>
+                            <h3>5. Permitir correo saliente a Internet desde el servidor de correo</h3>
                             <div class="code-block">
-                                <code>iptables -A OUTPUT -p tcp -s 192.1.2.10 -j ACCEPT</code>
+                                <code>iptables -A FORWARD -p tcp -s 192.1.2.10 -d 0.0.0.0/0 --dport 25 -m state --state NEW -j ACCEPT</code>
                             </div>
                         </section>
 
                         <!-- Regla 6 -->
                         <section>
-                            <h3>6. Aceptar conexiones HTTP desde Internet al servidor web</h3>
-                            <p>Regla específica para permitir tráfico web entrante destinado a la IP del servidor web
-                                (192.1.2.11).</p>
+                            <h3>6. Aceptar conexiones HTTP desde Internet a nuestro servidor web</h3>
                             <div class="code-block">
-                                <code>iptables -A INPUT -p tcp -s 192.1.2.11 --dport 80 -j ACCEPT</code>
+                                <code>iptables -A FORWARD -p tcp -s 0.0.0.0/0 -d 192.1.2.11 --dport 80 -m state --state NEW -j ACCEPT</code>
                             </div>
-                            <p class="text-alert warning">Correction Note: El flag <code>-s</code> indica origen
-                                (source). Para destino debería ser <code>-d</code>, o si la regla está en el servidor
-                                web mismo, solo <code>--dport</code>.</p>
                         </section>
 
                         <!-- Regla 7 -->
                         <section>
                             <h3>7. Permitir tráfico HTTP desde la red local a Internet</h3>
-                            <p>Permite que los usuarios internos naveguen por la web.</p>
                             <div class="code-block">
-                                <code>iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT</code>
+                                <code>iptables -A FORWARD -p tcp -s 192.1.2.0/24 -d 0.0.0.0/0 --dport 80 -m state --state NEW -j ACCEPT</code>
                             </div>
                         </section>
 
@@ -160,7 +146,7 @@
                     </section>
 
                     <section>
-                        <h2>Opinión o reflexión técnica del estudiante</h2>
+                        <h2>Conclusión</h2>
                         <p>
                             La implementación de políticas en <code>iptables</code> requiere una precisión absoluta. Un
                             error tipográfico en una dirección IP o un puerto (como confundir source <code>-s</code> con
@@ -172,7 +158,7 @@
                     </section>
 
                     <section>
-                        <h2>Referencias técnicas</h2>
+                        <h2>Bibliografía</h2>
                         <ul class="tech-list">
                             <li>Netfilter.org - Documentation main page.</li>
                             <li>RFC 5321 - Simple Mail Transfer Protocol.</li>

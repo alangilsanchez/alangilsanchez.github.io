@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 06</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+<header>
+    <div class="nav-container">
+        <div class="logo">
+            <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                class="prompt-path">~/actividades/act06</span>$ <span class="cursor"></span>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                <li><a href="../final.html" class="nav-link">/Final</a></li>
+                <li><a href="../actividades.html" class="btn-back">< Volver</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <article class="blog-container section-scroll">
+
+        <div style="height: 250px;"></div>
+
+        <header class="article-header">
+            <h1 style="margin-top: 8rem; margin-bottom: 3rem;">
+                ACTIVIDAD 06: Implementación IPSec VPN
+            </h1>
+
+            <div class="meta-info">
+                <span><i class="far fa-calendar"></i> Febrero 2026</span>
+                <span><i class="far fa-user"></i> Alan Gilberto Sánchez Zavala (177263)</span>
+            </div>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+
+                <section>
+                    <h2>Introducción</h2>
+                    <p class="intro-text">
+                        En esta actividad se implementó una VPN IPSec punto a punto entre dos redes locales,
+                        interconectadas a través de un router ISP. La finalidad es asegurar la comunicación entre
+                        las LAN 192.168.1.0/24 y 192.168.3.0/24 mediante cifrado AES-256 y autenticación con claves
+                        precompartidas.
+                    </p>
+
+                    <a href="../PDFs/177263-act06.pdf" class="btn btn-download" target="_blank">
+                        <i class="fas fa-file-pdf"></i> Exportar a PDF
+                    </a>
+                </section>
+
+                <section>
+                    <h2>Desarrollo técnico</h2>
+
+                    <h3>Topología utilizada</h3>
+                    <p>
+                        R1 se conecta al ISP mediante la red 209.165.100.0/24 y R3 mediante la red
+                        209.165.200.0/24. Cada router protege su red LAN interna usando un túnel IPSec.
+                    </p>
+
+                    <h3>Configuración de interfaces y rutas</h3>
+
+<pre><code>
+R1(config)# interface g0/0
+R1(config-if)# ip address 209.165.100.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1(config)# interface g0/1
+R1(config-if)# ip address 192.168.1.1 255.255.255.0
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1(config)# ip route 0.0.0.0 0.0.0.0 209.165.100.2
+</code></pre>
+
+<pre><code>
+R3(config)# interface g0/0
+R3(config-if)# ip address 209.165.200.1 255.255.255.0
+R3(config-if)# no shutdown
+R3(config-if)# exit
+R3(config)# interface g0/1
+R3(config-if)# ip address 192.168.3.1 255.255.255.0
+R3(config-if)# no shutdown
+R3(config-if)# exit
+R3(config)# ip route 0.0.0.0 0.0.0.0 209.165.200.2
+</code></pre>
+
+                    <h3>Configuración del ISP</h3>
+
+<pre><code>
+ISP(config)# interface g0/0
+ISP(config-if)# ip address 209.165.100.2 255.255.255.0
+ISP(config-if)# no shutdown
+ISP(config-if)# exit
+ISP(config)# interface g0/1
+ISP(config-if)# ip address 209.165.200.2 255.255.255.0
+ISP(config-if)# no shutdown
+</code></pre>
+
+                    <h3>Lista de acceso (tráfico interesante)</h3>
+
+<pre><code>
+R1(config)# access-list 100 permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
+R3(config)# access-list 100 permit ip 192.168.3.0 0.0.0.255 192.168.1.0 0.0.0.255
+</code></pre>
+
+                    <h3>ISAKMP, Transform-set y Crypto Map</h3>
+
+<pre><code>
+R1(config)# crypto isakmp policy 10
+R1(config-isakmp)# encryption aes 256
+R1(config-isakmp)# authentication pre-share
+R1(config-isakmp)# group 5
+R1(config-isakmp)# exit
+R1(config)# crypto isakmp key secretkey address 209.165.200.1
+R1(config)# crypto ipsec transform-set R1-R3 esp-aes 256 esp-sha-hmac
+R1(config)# crypto map IPSEC-MAP 10 ipsec-isakmp
+R1(config-crypto-map)# set peer 209.165.200.1
+R1(config-crypto-map)# set pfs group5
+R1(config-crypto-map)# set security-association lifetime seconds 86400
+R1(config-crypto-map)# set transform-set R1-R3
+R1(config-crypto-map)# match address 100
+R1(config)# interface g0/0
+R1(config-if)# crypto map IPSEC-MAP
+</code></pre>
+
+<pre><code>
+R3(config)# crypto isakmp policy 10
+R3(config-isakmp)# encryption aes 256
+R3(config-isakmp)# group 5
+R3(config-isakmp)# exit
+R3(config)# crypto isakmp key secretkey address 209.165.100.1
+R3(config)# crypto ipsec transform-set R3-R1 esp-aes 256 esp-sha-hmac
+R3(config)# crypto map IPSEC-MAP 10 ipsec-isakmp
+R3(config-crypto-map)# set peer 209.165.100.1
+R3(config-crypto-map)# set pfs group5
+R3(config-crypto-map)# set security-association lifetime seconds 86400
+R3(config-crypto-map)# set transform-set R3-R1
+R3(config-crypto-map)# match address 100
+R3(config)# interface g0/0
+R3(config-if)# crypto map IPSEC-MAP
+</code></pre>
+
+                </section>
+
+                <section>
+                    <h2>Prueba de conectividad</h2>
+                    <p>
+                        Se configuraron las PCs con sus respectivas direcciones IP, máscara y gateway.
+                        Posteriormente se realizó un ping desde la red 192.168.3.0 hacia la dirección
+                        <strong>192.168.1.10</strong>, verificando el establecimiento exitoso del túnel IPSec.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Conclusión</h2>
+                    <p>
+                        La práctica demuestra que IPSec es una solución efectiva para asegurar comunicaciones entre
+                        redes remotas. La correcta configuración de políticas ISAKMP, transform-sets y ACLs es
+                        esencial para garantizar la estabilidad y seguridad del túnel VPN.
+                    </p>
+                </section>
+
+            </div>
+        </header>
+    </article>
+</main>
+
+<footer>
+    <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+</footer>
+
+</body>
+</html>
