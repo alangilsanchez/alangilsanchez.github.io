@@ -20,70 +20,79 @@
 
 <body>
 
-<header>
-    <div class="nav-container">
-        <div class="logo">
-            <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
-                class="prompt-path">~/actividades/act06</span>$ <span class="cursor"></span>
-        </div>
-        <nav>
-            <ul class="nav-links">
-                <li><a href="../index.html" class="nav-link">/inicio</a></li>
-                <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
-                <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
-                <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
-                <li><a href="../final.html" class="nav-link">/Final</a></li>
-                <li><a href="../actividades.html" class="btn-back">< Volver</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
-
-<main>
-    <article class="blog-container section-scroll">
-
-        <div style="height: 250px;"></div>
-
-        <header class="article-header">
-            <h1 style="margin-top: 8rem; margin-bottom: 3rem;">
-                ACTIVIDAD 06: Implementación IPSec VPN
-            </h1>
-
-            <div class="meta-info">
-                <span><i class="far fa-calendar"></i> Febrero 2026</span>
-                <span><i class="far fa-user"></i> Alan Gilberto Sánchez Zavala (177263)</span>
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act06</span>$ <span class="cursor"></span>
             </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link">/proyectos</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="#" class="nav-link">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../final.html" class="nav-link">/Final</a></li>
+                    <li><a href="../actividades.html" class="btn-back">
+                            < Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
 
-            <hr class="neon-divider">
+    <main>
+        <article class="blog-container section-scroll">
 
-            <div class="article-body">
+            <div style="height: 250px;"></div>
 
-                <section>
-                    <h2>Introducción</h2>
-                    <p class="intro-text">
-                        En esta actividad se implementó una VPN IPSec punto a punto entre dos redes locales,
-                        interconectadas a través de un router ISP. La finalidad es asegurar la comunicación entre
-                        las LAN 192.168.1.0/24 y 192.168.3.0/24 mediante cifrado AES-256 y autenticación con claves
-                        precompartidas.
-                    </p>
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem;">
+                    ACTIVIDAD 06: Implementación IPSec VPN
+                </h1>
 
-                    <a href="../PDFs/177263-act06.pdf" class="btn btn-download" target="_blank">
-                        <i class="fas fa-file-pdf"></i> Exportar a PDF
-                    </a>
-                </section>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Febrero 2026</span>
+                    <span><i class="far fa-user"></i> Alan Gilberto Sánchez Zavala (177263)</span>
+                </div>
 
-                <section>
-                    <h2>Desarrollo </h2>
+                <hr class="neon-divider">
 
-                    <h3>Topología utilizada</h3>
-                    <p>
-                        R1 se conecta al ISP mediante la red 209.165.100.0/24 y R3 mediante la red
-                        209.165.200.0/24. Cada router protege su red LAN interna usando un túnel IPSec.
-                    </p>
+                <div class="article-body">
 
-                    <h3>Configuración de interfaces y rutas</h3>
+                    <section>
+                        <h2>Introducción</h2>
+                        <p class="intro-text">
+                            En esta actividad se implementó una VPN IPSec punto a punto entre dos redes locales,
+                            interconectadas a través de un router ISP. La finalidad es asegurar la comunicación entre
+                            las LAN 192.168.1.0/24 y 192.168.3.0/24 mediante cifrado AES-256 y autenticación con claves
+                            precompartidas.
+                        </p>
 
-<pre><code>
+                        <a href="../PDFs/177263-act06.pdf" class="btn btn-download" target="_blank">
+                            <i class="fas fa-file-pdf"></i> Exportar a PDF
+                        </a>
+                    </section>
+
+                    <section>
+                        <h2>Desarrollo técnico</h2>
+
+                        <h3>Topología utilizada</h3>
+                        <p>
+                            R1 se conecta al ISP mediante la red 209.165.100.0/24 y R3 mediante la red
+                            209.165.200.0/24. Cada router protege su red LAN interna usando un túnel IPSec.
+                        </p>
+
+                        <h3>Configuración de interfaces y rutas</h3>
+
+                        <pre><code>
 R1(config)# interface g0/0
 R1(config-if)# ip address 209.165.100.1 255.255.255.0
 R1(config-if)# no shutdown
@@ -95,7 +104,7 @@ R1(config-if)# exit
 R1(config)# ip route 0.0.0.0 0.0.0.0 209.165.100.2
 </code></pre>
 
-<pre><code>
+                        <pre><code>
 R3(config)# interface g0/0
 R3(config-if)# ip address 209.165.200.1 255.255.255.0
 R3(config-if)# no shutdown
@@ -107,9 +116,9 @@ R3(config-if)# exit
 R3(config)# ip route 0.0.0.0 0.0.0.0 209.165.200.2
 </code></pre>
 
-                    <h3>Configuración del ISP</h3>
+                        <h3>Configuración del ISP</h3>
 
-<pre><code>
+                        <pre><code>
 ISP(config)# interface g0/0
 ISP(config-if)# ip address 209.165.100.2 255.255.255.0
 ISP(config-if)# no shutdown
@@ -119,16 +128,16 @@ ISP(config-if)# ip address 209.165.200.2 255.255.255.0
 ISP(config-if)# no shutdown
 </code></pre>
 
-                    <h3>Lista de acceso (tráfico interesante)</h3>
+                        <h3>Lista de acceso (tráfico interesante)</h3>
 
-<pre><code>
+                        <pre><code>
 R1(config)# access-list 100 permit ip 192.168.1.0 0.0.0.255 192.168.3.0 0.0.0.255
 R3(config)# access-list 100 permit ip 192.168.3.0 0.0.0.255 192.168.1.0 0.0.0.255
 </code></pre>
 
-                    <h3>ISAKMP, Transform-set y Crypto Map</h3>
+                        <h3>ISAKMP, Transform-set y Crypto Map</h3>
 
-<pre><code>
+                        <pre><code>
 R1(config)# crypto isakmp policy 10
 R1(config-isakmp)# encryption aes 256
 R1(config-isakmp)# authentication pre-share
@@ -146,7 +155,7 @@ R1(config)# interface g0/0
 R1(config-if)# crypto map IPSEC-MAP
 </code></pre>
 
-<pre><code>
+                        <pre><code>
 R3(config)# crypto isakmp policy 10
 R3(config-isakmp)# encryption aes 256
 R3(config-isakmp)# group 5
@@ -163,34 +172,35 @@ R3(config)# interface g0/0
 R3(config-if)# crypto map IPSEC-MAP
 </code></pre>
 
-                </section>
+                    </section>
 
-                <section>
-                    <h2>Prueba de conectividad</h2>
-                    <p>
-                        Se configuraron las PCs con sus respectivas direcciones IP, máscara y gateway.
-                        Posteriormente se realizó un ping desde la red 192.168.3.0 hacia la dirección
-                        <strong>192.168.1.10</strong>, verificando el establecimiento exitoso del túnel IPSec.
-                    </p>
-                </section>
+                    <section>
+                        <h2>Prueba de conectividad</h2>
+                        <p>
+                            Se configuraron las PCs con sus respectivas direcciones IP, máscara y gateway.
+                            Posteriormente se realizó un ping desde la red 192.168.3.0 hacia la dirección
+                            <strong>192.168.1.10</strong>, verificando el establecimiento exitoso del túnel IPSec.
+                        </p>
+                    </section>
 
-                <section>
-                    <h2>Conclusión</h2>
-                    <p>
-                        La práctica demuestra que IPSec es una solución efectiva para asegurar comunicaciones entre
-                        redes remotas. La correcta configuración de políticas ISAKMP, transform-sets y ACLs es
-                        esencial para garantizar la estabilidad y seguridad del túnel VPN.
-                    </p>
-                </section>
+                    <section>
+                        <h2>Conclusión</h2>
+                        <p>
+                            La práctica demuestra que IPSec es una solución efectiva para asegurar comunicaciones entre
+                            redes remotas. La correcta configuración de políticas ISAKMP, transform-sets y ACLs es
+                            esencial para garantizar la estabilidad y seguridad del túnel VPN.
+                        </p>
+                    </section>
 
-            </div>
-        </header>
-    </article>
-</main>
+                </div>
+            </header>
+        </article>
+    </main>
 
-<footer>
-    <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
-</footer>
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
 
 </body>
+
 </html>

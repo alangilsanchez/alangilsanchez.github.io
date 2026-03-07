@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | PR02 - 01</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js for charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2pdf for export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        .tabs-container {
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: rgba(19, 20, 31, 0.6);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--text-color);
+        }
+
+        .tab-btn.active {
+            background: rgba(5, 217, 232, 0.1);
+            border-color: var(--accent-color);
+            color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(5, 217, 232, 0.2);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Form overrides */
+        .quiz-form {
+            background: rgba(19, 20, 31, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .email-scenario {
+            background: #fff;
+            color: #333;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            font-family: Arial, sans-serif;
+        }
+
+        .email-header {
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .email-header p {
+            margin: 0.2rem 0;
+            font-size: 0.9rem;
+        }
+
+        .email-body {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .email-btn {
+            display: inline-block;
+            background: #0078d4;
+            color: #fff;
+            padding: 0.5rem 1rem;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-top: 1rem;
+        }
+
+        .quiz-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .btn-phishing {
+            background: #e81123;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-legit {
+            background: #107c41;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Outlook-like styling */
+        .outlook-container {
+            border: 1px solid #e1dfdd;
+            border-radius: 4px;
+            background: #fff;
+            color: #333;
+            font-family: "Segoe UI", Arial, sans-serif;
+            text-align: left;
+            position: relative;
+        }
+
+        .outlook-header {
+            background: #f3f2f1;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e1dfdd;
+            display: flex;
+            align-items: center;
+        }
+
+        .outlook-avatar {
+            width: 48px;
+            height: 48px;
+            background: #0078d4;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .outlook-info {
+            flex-grow: 1;
+        }
+
+        .outlook-info p {
+            margin: 0.1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .outlook-body {
+            padding: 2rem 1.5rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            min-height: 200px;
+        }
+
+        /* Highlight classes for guided feedback */
+        .highlight-focus {
+            position: relative;
+            z-index: 10;
+            background: rgba(255, 255, 0, 0.4);
+            outline: 2px solid #e81123;
+            outline-offset: 4px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        /* Tooltip */
+        #guided-tooltip {
+            position: absolute;
+            z-index: 1000;
+            background: #fff;
+            color: #333;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            max-width: 320px;
+            border-left: 5px solid #e81123;
+            font-family: "Segoe UI", Arial, sans-serif;
+            transition: opacity 0.3s ease;
+        }
+
+        #guided-tooltip.legit-border {
+            border-left: 5px solid #107c41;
+        }
+
+        .tooltip-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .tooltip-title {
+            font-weight: bold;
+            color: #e81123;
+            margin: 0;
+        }
+
+        #guided-tooltip.legit-border .tooltip-title {
+            color: #107c41;
+        }
+
+        .feedback-box {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback-box.success {
+            background: rgba(16, 124, 65, 0.1);
+            border: 1px solid #107c41;
+            color: #107c41;
+        }
+
+        .feedback-box.error {
+            background: rgba(232, 17, 35, 0.1);
+            border: 1px solid #e81123;
+            color: #e81123;
+        }
+
+        /* Specific text colors for dark mode context outside emails */
+        .instruction-box {
+            background: rgba(19, 20, 31, 0.8);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Charts */
+        .chart-container {
+            background: rgba(19, 20, 31, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            height: 400px;
+        }
+
+        /* Light text for feedback headers to ensure readability when needed */
+        .feedback-box h4 {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/proyectos/PR02_01</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link active">/proyectos</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="#" class="nav-link">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../final.html" class="nav-link">/Final</a></li>
+                    <li><a href="../proyectos.html" class="btn-back">&lt; Volver</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+            <header class="article-header" style="margin-bottom: 0;">
+                <h1
+                    style="color: #fff; text-shadow: 0 0 10px rgba(5, 217, 232, 0.3); margin-top: 5rem; margin-bottom: 0.5rem; line-height: 1.4; display: block; padding-top: 0;">
+                    PR02 - 01: El eslabón más débil: diseño ético de una campaña de ingeniería social
+                </h1>
+            </header>
+
+            <div class="tabs-container" style="margin-top: 1rem;">
+                <button class="tab-btn active" onclick="switchTab('tab-investigacion')">Investigación</button>
+                <button class="tab-btn" onclick="switchTab('tab-quiz')">Phishing Quiz</button>
+                <button class="tab-btn" onclick="switchTab('tab-score')">Score Global</button>
+            </div>
+
+            <hr class="neon-divider">
+
+            <!-- TAB 1: INVESTIGACIÓN -->
+            <div id="tab-investigacion" class="article-body tab-content active">
+                <section>
+                    <h2>Introducción</h2>
+                    <div class="meta-info" style="justify-content: flex-start; margin-bottom: 2rem;">
+                        <span><i class="far fa-calendar"></i> Marzo 2026</span>
+                        <span><i class="far fa-user"></i> Alan Gilberto Sánchez Zavala (177263)</span>
+                    </div>
+                    <button class="btn" onclick="exportToPDF()" style="margin-bottom: 2rem; background-color: #e81123;">
+                        <i class="fas fa-file-pdf"></i> Exportar a PDF
+                    </button>
+                    <p>
+                        En el ecosistema de la ciberseguridad contemporánea, el factor humano sigue siendo identificado
+                        como el "eslabón más débil"; sin embargo, esta perspectiva está evolucionando hacia la visión
+                        del usuario como la primera línea de defensa activa. El presente trabajo se centra en el diseño,
+                        implementación y evaluación de una simulación educativa de phishing bajo un marco estrictamente
+                        ético.
+                        <br><br>
+                        A través del análisis de las plataformas líderes en Gestión del Riesgo Humano (HRM) y la
+                        creación de un Phishing Quiz de 10 escenarios realistas, se busca no solo medir la capacidad de
+                        detección de los usuarios, sino transformar su comportamiento mediante la retroalimentación
+                        formativa inmediata. En la ciberseguridad moderna, el éxito de una campaña de
+                        concientización ya no se mide solo por quién hace clic, sino por la capacidad de la organización
+                        para generar una respuesta proactiva. Para evaluar las plataformas actuales, es fundamental
+                        comprender tres métricas maestras:
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Click Rate (Tasa de Clic):</strong> Mide la vulnerabilidad inmediata ante
+                            indicadores de sospecha básicos.</li>
+                        <li><strong>Reporting Rate (Tasa de Reporte):</strong> La métrica más valiosa; mide la
+                            proactividad del usuario al alertar sobre amenazas reales o simuladas.</li>
+                        <li><strong>Risk Score (Puntuación de Riesgo):</strong> Algoritmo dinámico que cruza el
+                            comportamiento histórico, el nivel de acceso a datos sensibles y el desempeño en
+                            simulaciones.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Desarrollo</h2>
+                    <h3>Análisis de Plataformas de Simulación</h3>
+
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>
+                            <strong>Hoxhunt</strong>
+                            <ul>
+                                <li>Su núcleo técnico es la ciencia del comportamiento. Utiliza IA para distribuir
+                                    simulaciones individuales basadas en el historial del usuario en lugar de campañas
+                                    masivas.</li>
+                                <li><strong>Diferenciador:</strong> Gamifica el reporte positivo de correos tanto
+                                    simulados como reales.</li>
+                            </ul>
+                        </li>
+                        <br>
+                        <li>
+                            <strong>Proofpoint (PSAT)</strong>
+                            <ul>
+                                <li>Se integra con su Gateway de seguridad para convertir ataques reales detectados en
+                                    plantillas de simulación en cuestión de minutos.</li>
+                                <li><strong>Diferenciador:</strong> Su enfoque en <em>VAPs</em> (Very Attacked People)
+                                    permite aplicar controles estrictos a los objetivos más frecuentes.</li>
+                            </ul>
+                        </li>
+                        <br>
+                        <li>
+                            <strong>KnowBe4</strong>
+                            <ul>
+                                <li>Destaca por su plataforma PhishER, que automatiza la cuarentena de correos
+                                    reportados por los empleados.</li>
+                                <li><strong>Diferenciador:</strong> Su métrica <em>Phish-prone %</em> es el estándar de
+                                    la industria para el benchmarking comparativo.</li>
+                            </ul>
+                        </li>
+                        <br>
+                        <li>
+                            <strong>Cofense</strong>
+                            <ul>
+                                <li>Enfocada en la inteligencia colectiva; si un usuario reporta una amenaza, la
+                                    plataforma la busca y elimina en todos los buzones de la empresa.</li>
+                                <li><strong>Diferenciador:</strong> Prioriza la respuesta rápida a incidentes sobre el
+                                    contenido educativo tradicional.</li>
+                            </ul>
+                        </li>
+                        <br>
+                        <li>
+                            <strong>Phished</strong>
+                            <ul>
+                                <li>Representa la automatización total mediante algoritmos de aprendizaje automático que
+                                    deciden cuándo y qué enviar sin intervención manual.</li>
+                                <li><strong>Diferenciador:</strong> Ideal para equipos de IT pequeños que requieren una
+                                    solución autónoma.</li>
+                            </ul>
+                        </li>
+                        <br>
+                        <li>
+                            <strong>NINJIO</strong>
+                            <ul>
+                                <li>Utiliza el <em>Storytelling</em> emocional con episodios escritos por guionistas
+                                    profesionales para asegurar la retención de memoria a largo plazo.</li>
+                                <li><strong>Diferenciador:</strong> Ataca la psicología del usuario para fomentar la
+                                    protección del entorno familiar y laboral.</li>
+                            </ul>
+                        </li>
+                        <br>
+                        <li>
+                            <strong>Mimecast</strong>
+                            <ul>
+                                <li>Ofrece seguridad unificada, permitiendo bloquear enlaces en tiempo real si el
+                                    usuario falla el examen preventivo.</li>
+                                <li><strong>Diferenciador:</strong> Uso de la comedia para reducir la fatiga de
+                                    seguridad y mejorar el engagement.</li>
+                            </ul>
+                        </li>
+                        <br>
+                        <li>
+                            <strong>Infosec IQ</strong>
+                            <ul>
+                                <li>Se centra en la personalización técnica con rutas de aprendizaje específicas para
+                                    roles como desarrolladores (OWASP) o administrativos.</li>
+                                <li><strong>Diferenciador:</strong> Integración profunda con directorios activos para
+                                    automatizar el aprendizaje por roles.</li>
+                            </ul>
+                        </li>
+                    </ul>
+
+                    <h3 style="margin-top: 2rem;">Tabla Técnica Comparativa</h3>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Plataforma</th>
+                                    <th>Enfoque</th>
+                                    <th>Integración Clave</th>
+                                    <th>Métricas Propias</th>
+                                    <th>Limitaciones</th>
+                                    <th>Control Ético</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Hoxhunt</td>
+                                    <td>IA Adaptativa</td>
+                                    <td>API / Cloud</td>
+                                    <td>Resilience Score</td>
+                                    <td>Curva de aprendizaje inicial</td>
+                                    <td>Refuerzo positivo</td>
+                                </tr>
+                                <tr>
+                                    <td>Proofpoint</td>
+                                    <td>Amenazas Reales</td>
+                                    <td>Gateway Seg.</td>
+                                    <td>VAP Analytics</td>
+                                    <td>Configuración compleja</td>
+                                    <td>Riesgo operativo real</td>
+                                </tr>
+                                <tr>
+                                    <td>KnowBe4</td>
+                                    <td>Masivo / PhishER</td>
+                                    <td>API / AD</td>
+                                    <td>Phish-prone %</td>
+                                    <td>Biblioteca abrumadora</td>
+                                    <td>Transparencia / Ranking</td>
+                                </tr>
+                                <tr>
+                                    <td>Cofense</td>
+                                    <td>Detección Rápida</td>
+                                    <td>SOC / SIEM</td>
+                                    <td>Tasa Resiliencia</td>
+                                    <td>Menos multimedia</td>
+                                    <td>Colaboración activa</td>
+                                </tr>
+                                <tr>
+                                    <td>Phished</td>
+                                    <td>Autónomo</td>
+                                    <td>Cloud Native</td>
+                                    <td>Behavioral Index</td>
+                                    <td>Menor control manual</td>
+                                    <td>No intrusivo</td>
+                                </tr>
+                                <tr>
+                                    <td>NINJIO</td>
+                                    <td>Storytelling</td>
+                                    <td>LMS Externos</td>
+                                    <td>Retention Rate</td>
+                                    <td>No es técnico</td>
+                                    <td>Empatía / Familia</td>
+                                </tr>
+                                <tr>
+                                    <td>Mimecast</td>
+                                    <td>Integrado / Humor</td>
+                                    <td>Email Stack</td>
+                                    <td>Risk Dashboard</td>
+                                    <td>Dependencia de licencia</td>
+                                    <td>Micro-learning</td>
+                                </tr>
+                                <tr>
+                                    <td>Infosec IQ</td>
+                                    <td>Técnico / Rol</td>
+                                    <td>Azure AD</td>
+                                    <td>Culture Index</td>
+                                    <td>Gestión manual frecuente</td>
+                                    <td>Niveles de habilidad</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Conclusión</h2>
+                    <div class="quotation-box">
+                        <p>
+                            La simulación realizada demuestra que el reconocimiento de amenazas de ingeniería social no
+                            depende únicamente de la intuición, sino de un entrenamiento técnico continuo y adaptativo.
+                            Al comparar las plataformas de mercado, queda claro que la tendencia actual se aleja de los
+                            ataques masivos genéricos para centrarse en la personalización basada en IA y el refuerzo
+                            positivo.
+                            <br><br>
+                            La implementación ética de estas pruebas —asegurando el consentimiento informado y evitando
+                            la captura de datos sensibles— es fundamental para mantener la confianza entre el
+                            departamento de seguridad y los empleados. En última instancia, gestionar el riesgo humano
+                            no consiste en eliminar el error, sino en reducir su probabilidad y magnitud mediante una
+                            educación que convierta al usuario en un sensor crítico dentro de la red corporativa.
+                        </p>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Bibliografía</h2>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>CloudSEK. (2026). 10 Best Phishing Simulation Tools in 2026: Features and Analysis.
+                            https://www.cloudsek.com/blog/best-phishing-simulation-tools</li>
+                        <li>Hoxhunt. (2026). Human Risk Management Report: The State of Behavioral Cybersecurity.
+                            https://www.hoxhunt.com/resource/human-risk-management-report</li>
+                        <li>KnowBe4. (2025). Phishing Industry Benchmarking Report.
+                            https://www.knowbe4.com/phishing-benchmarking-report</li>
+                        <li>ISACA. (2026). Crafting Better Phishing Simulations: A Call for Innovation in Cybersecurity.
+                            Journal of Information Systems Audit and Control.</li>
+                        <li>NINJIO. (2025). The Power of Narrative: Why Storytelling Changes Security Behavior.
+                            https://ninjio.com/resources/white-papers/</li>
+                    </ul>
+                </section>
+            </div>
+
+            <!-- TAB 2: PHISHING QUIZ -->
+            <div id="tab-quiz" class="tab-content">
+                <div id="quiz-intro" class="article-body">
+                    <h2>¡Bienvenido a la Simulación Educativa de Phishing!</h2>
+                    <p>La ingeniería social es la técnica más utilizada por los atacantes para comprometer
+                        organizaciones. El objetivo de este ejercicio es ayudarte a desarrollar un "ojo crítico" para
+                        detectar amenazas antes de que sea demasiado tarde.</p>
+
+                    <div class="instruction-box">
+                        <h3>Instrucciones:</h3>
+                        <ol style="margin-left: 1.5rem; color: var(--text-color);">
+                            <li>Analiza cuidadosamente cada uno de los 10 escenarios que se te presentarán.</li>
+                            <li>Presta atención a los remitentes, enlaces y el tono del mensaje.</li>
+                            <li>Decide si el correo es Legítimo o si se trata de un intento de Phishing.</li>
+                        </ol>
+                    </div>
+
+                    <div class="instruction-box" style="border-left-color: var(--accent-purple);">
+                        <h3>Consentimiento Informado y Ética:</h3>
+                        <ul style="margin-left: 1.5rem; color: var(--text-color);">
+                            <li><strong>Propósito:</strong> Este es un ejercicio estrictamente educativo y de
+                                investigación académica.</li>
+                            <li><strong>Privacidad:</strong> Para participar, por favor utiliza un nombre y correo
+                                electrónico ficticios en el siguiente formulario. No ingreses datos reales.</li>
+                            <li><strong>Seguridad:</strong> En ningún momento se te pedirán contraseñas reales, datos
+                                bancarios o información sensible. Todos los enlaces dentro del quiz son simulados y
+                                seguros.</li>
+                        </ul>
+                        <p style="margin-top: 1rem;"><em>Al hacer clic en "Comenzar Quiz", confirmas que has leído esta
+                                información y aceptas participar voluntariamente en esta simulación.</em></p>
+                    </div>
+
+                    <div class="quiz-form">
+                        <h3>Formulario de Registro</h3>
+                        <div class="form-group" style="margin-bottom: 1rem;">
+                            <label for="fakeName">Nombre ficticio:</label>
+                            <input type="text" id="fakeName" class="form-input" placeholder="Ej. Linus Torvalds"
+                                required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 1.5rem;">
+                            <label for="fakeEmail">Correo electrónico ficticio:</label>
+                            <input type="email" id="fakeEmail" class="form-input"
+                                placeholder="Ej. linus.torvalds@outlook.com" required>
+                        </div>
+                        <button class="btn" onclick="startQuiz()">Comenzar Quiz</button>
+                    </div>
+                </div>
+
+                <!-- Contenedor dinámico de escenarios -->
+                <div id="quiz-container" style="display: none;">
+                    <div class="meta-info" style="justify-content: space-between; margin-bottom: 2rem;">
+                        <span id="quiz-progress"
+                            style="color: var(--accent-color); font-weight: bold; font-size: 1.2rem;">Escenario 1 de
+                            10</span>
+                        <span style="color: var(--text-muted);"><i class="far fa-user"></i> <span
+                                id="display-email"></span></span>
+                    </div>
+
+                    <!-- Escenario Dinámico -->
+                    <div id="scenario-content">
+                        <!-- Header del escenario (descripción Google style) -->
+                        <div style="margin-bottom: 1rem;">
+                            <h3 id="scenario-title" style="color: var(--accent-cyan);">Título del escenario</h3>
+                            <p id="scenario-intro" style="color: var(--text-color);">Introducción del escenario</p>
+                        </div>
+
+                        <!-- El mock del correo -->
+                        <div class="outlook-container" id="email-mockup-wrapper">
+                            <div class="outlook-header">
+                                <div class="outlook-avatar">
+                                    <i class="fas fa-user"></i>
+                                </div>
+                                <div class="outlook-info">
+                                    <p style="font-size: 1.15rem; font-weight: 600; margin-bottom: 0.3rem;"
+                                        id="email-subject"></p>
+                                    <p id="email-sender" style="color: #666;"></p>
+                                    <p
+                                        style="color: #888; margin-top: 0.5rem; display: flex; justify-content: space-between;">
+                                        <span>Para: <span id="email-to"></span></span>
+                                        <span id="email-date"></span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="outlook-body">
+                                <p id="email-body-text"></p>
+                                <div id="email-body-link" style="margin-top: 2rem;"></div>
+                            </div>
+
+                            <!-- Tooltip para retroalimentación guiada -->
+                            <div id="guided-tooltip" style="display: none; bottom: 10px; right: 10px;">
+                                <div class="tooltip-header">
+                                    <h4 class="tooltip-title" id="tooltip-title">Atención</h4>
+                                    <span id="tooltip-counter" style="font-size: 0.8rem; color: #666;">1/3</span>
+                                </div>
+                                <p id="tooltip-text" style="font-size: 0.95rem; margin-bottom: 15px; line-height: 1.5;">
+                                </p>
+                                <div style="display: flex; justify-content: flex-end;">
+                                    <button class="btn" style="padding: 0.5rem 1rem; font-size: 0.9rem;"
+                                        onclick="nextFeedbackStep()" id="tooltip-next-btn">Siguiente</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 2rem;">
+                            <h3 id="quiz-question-text" style="margin-bottom: 1rem;">¿Es este correo legítimo o
+                                phishing?</h3>
+                            <div class="quiz-actions" style="justify-content: center;">
+                                <button class="btn-phishing" onclick="answerScenario('phishing')"><i
+                                        class="fas fa-fish"></i> Es Phishing</button>
+                                <button class="btn-legit" onclick="answerScenario('legitimo')"><i
+                                        class="fas fa-check-circle"></i> Es Legítimo</button>
+                            </div>
+                        </div>
+
+                        <!-- Feedback Dinámico -->
+                        <div id="feedback-content" class="feedback-box"
+                            style="display: none; margin-top: 2rem; margin-bottom: 1rem;">
+                            <h3 id="feedback-title" style="margin-bottom: 0.5rem;" class="tooltip-title">¡Resultado!
+                            </h3>
+                            <p id="feedback-text" style="margin-bottom: 1.5rem;"></p>
+                            <button class="btn" onclick="startGuidedFeedback()">Ver análisis detallado</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="quiz-results" style="display: none; text-align: center;" class="article-body">
+                    <h2>Simulación Completada</h2>
+                    <h1 id="final-score" style="font-size: 4rem; color: var(--accent-color); margin: 2rem 0;">8/10</h1>
+                    <p style="margin-bottom: 2rem;">Has completado el phishing quiz. Revisa el Score Global para ver
+                        cómo te comparas con otros participantes y análisis detallados.</p>
+                    <button class="btn" onclick="switchTab('tab-score')">Ver Score Global</button>
+                </div>
+            </div>
+
+            <!-- TAB 3: SCORE GLOBAL -->
+            <div id="tab-score" class="tab-content">
+                <div class="article-body">
+                    <h2>Análisis y Score Global</h2>
+                    <p>En esta sección se consolidan los resultados de los participantes de la simulación. La analítica
+                        nos permite entender los escenarios más difíciles y mejorar los enfoques educativos.</p>
+
+                    <div style="display: flex; flex-wrap: wrap; gap: 2rem; margin-top: 2rem;">
+                        <div style="flex: 1; min-width: 300px;">
+                            <div class="chart-container">
+                                <h3 style="text-align: center; margin-bottom: 1rem;">Aciertos vs Errores por Escenario
+                                </h3>
+                                <canvas id="performanceChart"></canvas>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 300px;">
+                            <div class="chart-container">
+                                <h3 style="text-align: center; margin-bottom: 1rem;">Tiempo de respuesta promedio (s)
+                                </h3>
+                                <canvas id="timeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="margin-top: 3rem;">Ranking de Jugadores</h3>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Posición</th>
+                                    <th>Alias</th>
+                                    <th>Puntuación</th>
+                                    <th>Efectividad</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-body">
+                                <tr>
+                                    <td colspan="4" style="text-align: center;">No hay puntuaciones registradas aún.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+    <!-- SCENARIOS DATA AND SCRIPT -->
+    <script>
+        // Data for the 10 scenarios
+        const scenarios = [
+            {
+                type: 'phishing',
+                name: 'Escenario 1: El aviso de IT.',
+                title: 'Tu contraseña está a punto de caducar.',
+                intro: 'Recibes un aviso del equipo de soporte técnico sobre tu cuenta corporativa. Presta mucha atención antes de intentar actualizar tus credenciales.',
+                email: {
+                    sender: 'Soporte de IT &lt;it-support@microsoft-security-update.org&gt;',
+                    date: '28 de febrero de 2026, 09:15 a.m.',
+                    subject: 'ACCIÓN REQUERIDA: Tu contraseña de Microsoft 365 expira hoy',
+                    body: 'Hola, tu contraseña de red corporativa expira en las próximas 24 horas debido a la política de seguridad trimestral. Para evitar el bloqueo de tu cuenta y la pérdida de acceso a Outlook, OneDrive y Teams, por favor actualízala ahora para mantener tu sesión activa.',
+                    linkText: 'MANTENER CONTRASEÑA ACTUAL',
+                    linkUrl: 'https://m365-login.seguridad-corporativa.net/auth/update'
+                },
+                feedback: {
+                    correctTitle: '¡Correcto! Este correo utilizó un dominio de remitente falso.',
+                    correctText: 'Aunque el nombre dice "Soporte de IT", el dominio @microsoft-security-update.org no pertenece a la empresa ni a Microsoft. Los atacantes suelen registrar dominios que suenan oficiales para generar confianza y robar contraseñas mediante urgencia.',
+                    incorrectTitle: '¡Incorrecto! En realidad, este es un correo de phishing.',
+                    incorrectText: 'El remitente y la URL del botón (seguridad-corporativa.net) son señales de alerta. Si hubieras introducido tus datos en ese enlace, los atacantes tendrían acceso total a tu correo y archivos de la empresa.'
+                },
+                feedbackSteps: [
+                    { target: 'email-sender', title: 'Dominio del remitente', text: 'Aunque parece oficial, el dominio @microsoft-security-update.org no es de Microsoft (microsoft.com) ni de un departamento interno real de IT.' },
+                    { target: 'email-body-text', title: 'Urgencia inducida', text: 'El mensaje advierte que la cuenta se bloqueará "hoy", presionando al usuario para que actúe rápido sin verificar los detalles.' },
+                    { target: 'email-body-link', title: 'URL sospechosa', text: 'Al pasar el ratón sobre el botón, el enlace seguridad-corporativa.net es un dominio genérico registrado por atacantes, no una dirección oficial de la empresa o del servicio.' }
+                ]
+            },
+            {
+                type: 'phishing',
+                name: 'Escenario 2: El archivo compartido',
+                title: 'Un documento importante te espera en la nube.',
+                intro: 'Alguien parece haber compartido un reporte confidencial contigo. Verifica bien los detalles antes de abrir el archivo.',
+                email: {
+                    sender: 'Google Drive &lt;notifications@drive-share-service.com&gt;',
+                    date: '1 de marzo de 2026, 10:15 a.m.',
+                    subject: 'Han compartido un documento contigo: "Reporte_Salarial_2026.pdf"',
+                    body: 'Alguien ha compartido un documento contigo. Haz clic abajo para verlo en línea.',
+                    linkText: 'ABRIR DOCUMENTO',
+                    linkUrl: 'https://drive-google-com-shared.login-secure.xyz/access/v3'
+                },
+                feedback: {
+                    correctTitle: '¡Acertaste! Se trata de una URL "look-alike".',
+                    correctText: 'Al pasar el cursor sobre el botón, la URL drive-google-com-shared.login-secure.xyz delata el engaño. Los atacantes usan subdominios que contienen palabras conocidas para que la dirección real (el final del dominio) pase desapercibida.',
+                    incorrectTitle: '¡Falso! Este correo es un intento de robo de identidad.',
+                    incorrectText: 'El anzuelo es el nombre del archivo ("Reporte Salarial"). Es una técnica de ingeniería social diseñada para que la curiosidad nuble tu juicio técnico sobre la procedencia del correo.'
+                },
+                feedbackSteps: [
+                    { target: 'email-sender', title: 'Remitente engañoso', text: 'El dominio @drive-share-service.com intenta imitar a Google, pero los correos reales de Drive provienen de @google.com.' },
+                    { target: 'email-body-link', title: 'URL "Look-alike"', text: 'La URL del botón utiliza subdominios (drive-google-com-shared) para confundir, pero el dominio real es login-secure.xyz.' },
+                    { target: 'email-subject', title: 'Curiosidad explotada', text: 'Utiliza un nombre de archivo atractivo ("Reporte Salarial") para forzar el clic inmediato.' }
+                ]
+            },
+            {
+                type: 'legitimo',
+                name: 'Escenario 3: Comunicado de RR.HH.',
+                title: 'Es momento de actualizar tus beneficios médicos.',
+                intro: 'El departamento de Recursos Humanos envía la convocatoria anual para el seguro de salud. ¿Parece seguro seguir las instrucciones?',
+                email: {
+                    sender: 'Recursos Humanos &lt;rrhh@mercedes-benz.com&gt;',
+                    date: '2 de marzo de 2026, 09:00 a.m.',
+                    subject: 'Periodo de inscripción para el Seguro Médico 2026',
+                    body: 'Hola [Nombre del Usuario], te informamos que ya puedes revisar tus opciones de seguro en el portal interno. Consulta el manual aquí:',
+                    linkText: 'Manual_Seguro_2026.pdf',
+                    linkUrl: 'https://intranet.mercedes-benz.com/beneficios/seguro',
+                    isLink: true
+                },
+                feedback: {
+                    correctTitle: '¡Correcto! Este es un correo electrónico legítimo.',
+                    correctText: 'El dominio del remitente coincide con el de tu empresa y el enlace dirige a la intranet oficial bajo un protocolo seguro (HTTPS). En este caso, no hay señales de urgencia irracional ni errores técnicos.',
+                    incorrectTitle: '¡Incorrecto! Este mensaje es totalmente seguro.',
+                    incorrectText: 'A veces, la precaución excesiva puede hacernos ignorar procesos internos reales. Recuerda que si el dominio es el corporativo oficial y el contexto es esperado, generalmente es una comunicación segura.'
+                },
+                feedbackSteps: [
+                    { target: 'email-sender', title: 'Dominio corporativo', text: 'El remitente coincide exactamente con el dominio oficial de la empresa (@mercedes-benz.com).' },
+                    { target: 'email-subject', title: 'Contexto esperado', text: 'Es un proceso anual esperado (inscripción al seguro médico).' },
+                    { target: 'email-body-link', title: 'HTTPS y Certificado', text: 'La URL dirige a la intranet protegida de la empresa sin redirecciones extrañas.' }
+                ]
+            },
+            {
+                type: 'phishing',
+                name: 'Escenario 4: Alerta de seguridad social',
+                title: 'Alguien entró a tu cuenta desde el extranjero.',
+                intro: 'Instagram te avisa sobre un inicio de sesión sospechoso en Rusia. ¿Actuarás de inmediato para proteger tu cuenta?',
+                email: {
+                    sender: 'Instagram Security &lt;security@mail.instagram-support.com&gt;',
+                    date: '3 de marzo de 2026, 02:45 p.m.',
+                    subject: 'Se ha detectado un inicio de sesión inusual',
+                    body: 'Detectamos un acceso desde Moscú, Rusia. Si no fuiste tú, por favor protege tu cuenta de inmediato.',
+                    linkText: 'ASEGURAR CUENTA',
+                    linkUrl: 'https://bit.ly/secure-insta-auth-99'
+                },
+                feedback: {
+                    correctTitle: '¡Bien hecho! Detectaste el uso de un acortador de enlaces.',
+                    correctText: 'Las grandes plataformas de redes sociales nunca utilizan acortadores como bit.ly para alertas de seguridad críticas. Además, el remitente @mail.instagram-support.com es un dominio no oficial.',
+                    incorrectTitle: '¡Error! Has caído en la trampa del miedo.',
+                    incorrectText: 'Los atacantes usan ubicaciones geográficas alarmantes para que entres en pánico y hagas clic sin pensar. Verificar el remitente es el primer paso para no caer en estos engaños.'
+                },
+                feedbackSteps: [
+                    { target: 'email-body-text', title: 'Miedo y Urgencia', text: 'Utiliza una ubicación geográfica alarmante (Rusia) para provocar pánico.' },
+                    { target: 'email-body-link', title: 'Enlace acortado', text: 'Los servicios oficiales de seguridad raramente usan acortadores como bit.ly para enlaces críticos de seguridad.' },
+                    { target: 'email-sender', title: 'Dominio falso', text: 'El dominio instagram-support.com no es el oficial (instagram.com).' }
+                ]
+            },
+            {
+                type: 'phishing',
+                name: 'Escenario 5: Problemas con tu suscripción',
+                title: 'Tu cuenta de streaming será suspendida.',
+                intro: 'Netflix informa que tu último pago falló y perderás el servicio hoy mismo. Revisa bien antes de poner los datos de tu tarjeta.',
+                email: {
+                    sender: 'Netflix Billing &lt;no-reply@billing-netflix.co&gt;',
+                    date: '4 de marzo de 2026, 11:20 p.m.',
+                    subject: 'Tu cuenta será suspendida en 24 horas',
+                    body: 'No pudimos procesar tu último pago. Para evitar la interrupción del servicio, actualiza tu método de pago.',
+                    linkText: 'ACTUALIZAR PAGO',
+                    linkUrl: 'https://netflix-payment-update.net/billing'
+                },
+                feedback: {
+                    correctTitle: '¡Exacto! Notaste el error sutil en el dominio.',
+                    correctText: 'El remitente utiliza el dominio .co en lugar del oficial .com. Es una técnica llamada typosquatting que aprovecha errores de lectura rápidos para llevarte a una pasarela de pago falsa.',
+                    incorrectTitle: '¡Incorrecto! Esta es una estafa de facturación.',
+                    incorrectText: 'El botón te envía a netflix-payment-update.net. Al dar tus datos ahí, no estarías pagando tu suscripción, sino entregando tu número de tarjeta y código de seguridad a un criminal.'
+                },
+                feedbackSteps: [
+                    { target: 'email-sender', title: 'Extensión de dominio', text: 'El remitente usa .co en lugar de .com, un error sutil pero crítico (typosquatting).' },
+                    { target: 'email-subject', title: 'Amenaza', text: '"Será suspendida en 24 horas" es una técnica para evitar que el usuario piense con claridad.' },
+                    { target: 'email-body-link', title: 'URL falsa', text: 'El dominio netflix-payment-update.net es una web creada por atacantes.' }
+                ]
+            },
+            {
+                type: 'legitimo',
+                name: 'Escenario 6: El código de verificación',
+                title: 'Un código de seguridad ha llegado a tu bandeja.',
+                intro: 'Recibes un código para acceder a tu cuenta de Microsoft que tú no solicitaste. ¿Qué harías con este correo?',
+                email: {
+                    sender: 'Equipo de cuentas de Microsoft &lt;account-security-noreply@accountprotection.microsoft.com&gt;',
+                    date: '5 de marzo de 2026, 04:10 p.m.',
+                    subject: 'Código de seguridad de la cuenta de Microsoft',
+                    body: 'Alguien ha solicitado un código para iniciar sesión en tu cuenta. Tu código es: 554321. Si no fuiste tú, ignora este mensaje.',
+                    linkText: '',
+                    linkUrl: ''
+                },
+                feedback: {
+                    correctTitle: '¡Correcto! Este correo es informativo y seguro.',
+                    correctText: 'El mensaje proviene del dominio legítimo de protección de Microsoft y, lo más importante, no te pide hacer clic en ningún enlace. Solo te da un código e indica que ignores el mensaje si no fuiste tú.',
+                    incorrectTitle: '¡Incorrecto! Este mensaje es auténtico.',
+                    incorrectText: 'Muchos usuarios marcan estos correos como phishing por miedo, pero son alertas reales. Lo que debes hacer es ir directamente a la web oficial (sin usar enlaces del correo) y cambiar tu contraseña por seguridad.'
+                },
+                feedbackSteps: [
+                    { target: 'email-sender', title: 'Dominio oficial', text: 'accountprotection.microsoft.com es el dominio legítimo que Microsoft usa para estos avisos.' },
+                    { target: 'email-body-text', title: 'Sin enlaces', text: 'El correo no te pide hacer clic en nada "urgente", solo te proporciona información o te dice que ignores el mensaje si no fuiste tú.' }
+                ]
+            },
+            {
+                type: 'phishing',
+                name: 'Escenario 7: El paquete retenido',
+                title: 'Hay un problema con tu envío internacional.',
+                intro: 'DHL indica que tu paquete no puede ser entregado por una pequeña tasa pendiente. ¿Pagarás los $2.00 para recibirlo?',
+                email: {
+                    sender: 'DHL Express &lt;entrega@dhl-track.info&gt;',
+                    date: '6 de marzo de 2026, 08:30 a.m.',
+                    subject: 'Error en la dirección de entrega de su paquete',
+                    body: 'Su envío con guía #88231 no pudo entregarse. Debe pagar una tasa de reprogramación de $2.00 USD.',
+                    linkText: 'REPROGRAMAR ENTREGA',
+                    linkUrl: 'https://dhl-logistics.support-check.com/pay'
+                },
+                feedback: {
+                    correctTitle: '¡Muy bien! Identificaste una estafa de "pago bajo".',
+                    correctText: 'El uso de una cifra pequeña ($2.00) es un anzuelo para que bajes la guardia. El dominio .info del remitente y la URL extraña del botón confirman que es un sitio de captura de tarjetas.',
+                    incorrectTitle: '¡Cuidado! Es un fraude de paquetería.',
+                    incorrectText: 'Esta es una de las estafas más comunes. Los atacantes envían miles de estos correos esperando que alguien que realmente esté esperando un paquete caiga en la trampa por la coincidencia.'
+                },
+                feedbackSteps: [
+                    { target: 'email-body-text', title: 'Cebo financiero', text: 'Pide un monto pequeño ($2.00) para que la víctima no sospeche, pero el objetivo es capturar los datos de la tarjeta de crédito.' },
+                    { target: 'email-sender', title: 'Remitente genérico', text: 'El dominio .info no es propio de una empresa de logística global.' },
+                    { target: 'email-body-text', title: 'Falta de personalización', text: 'No menciona el nombre del destinatario ni qué contiene el paquete.' }
+                ]
+            },
+            {
+                type: 'phishing',
+                name: 'Escenario 8: El favor del jefe',
+                title: 'Una tarea urgente de la dirección general.',
+                intro: 'Tu jefe te escribe porque está en una reunión y necesita que le compres unas tarjetas de regalo rápidamente. ¿Cumplirás con la orden?',
+                email: {
+                    sender: 'Derrick Halvorsen &lt;ceo.oficina.ejecutiva@gmail.com&gt;',
+                    date: '7 de marzo de 2026, 10:00 a.m.',
+                    subject: '¿Estás en tu escritorio? Tarea urgente',
+                    body: 'Hola, necesito que me hagas un favor rápido. Estoy en una reunión y no puedo hablar. ¿Puedes comprar 5 tarjetas de regalo de Amazon y enviarme los códigos? Te reembolso en la tarde.',
+                    linkText: '',
+                    linkUrl: ''
+                },
+                feedback: {
+                    correctTitle: '¡Correcto! Detectaste un ataque de "CEO Fraud".',
+                    correctText: 'Aunque el nombre es real, la dirección es de gmail.com. Un directivo nunca usaría su cuenta personal para pedir favores financieros urgentes y fuera de los canales oficiales de la empresa.',
+                    incorrectTitle: '¡Incorrecto! Has sido víctima de ingeniería social de autoridad.',
+                    incorrectText: 'Los criminales usan la jerarquía para presionar a los empleados. Siempre verifica estas solicitudes inusuales por otro canal (como una llamada o mensaje interno) antes de realizar cualquier gasto.'
+                },
+                feedbackSteps: [
+                    { target: 'email-sender', title: 'Suplantación de identidad (BEC)', text: 'Utiliza el nombre de un alto ejecutivo pero desde una cuenta de gmail.com gratuita.' },
+                    { target: 'email-body-text', title: 'Solicitud inusual', text: 'Ningún directivo pedirá la compra de tarjetas de regalo a través de un empleado por correo.' },
+                    { target: 'email-body-text', title: 'Canal de comunicación', text: 'Intenta sacar la conversación fuera de los canales oficiales.' }
+                ]
+            },
+            {
+                type: 'legitimo',
+                name: 'Escenario 9: Actualización de desarrollador',
+                title: 'Tienes nuevas notificaciones en tus proyectos.',
+                intro: 'Recibes el resumen mensual de GitHub sobre tus repositorios. ¿Es seguro revisar la actividad?',
+                email: {
+                    sender: 'GitHub &lt;noreply@github.com&gt;',
+                    date: '8 de marzo de 2026, 01:00 p.m.',
+                    subject: 'Novedades en tus repositorios este mes',
+                    body: 'Hola, aquí tienes el resumen de actividad de tus repositorios seguidos.',
+                    linkText: 'Ver actividad completa',
+                    linkUrl: 'https://github.com/notifications',
+                    isLink: true
+                },
+                feedback: {
+                    correctTitle: '¡Excelente! Es una comunicación legítima.',
+                    correctText: 'El remitente es el oficial (noreply@github.com) y el enlace apunta directamente al dominio principal del servicio. No hay lenguaje alarmista ni peticiones de datos sensibles.',
+                    incorrectTitle: '¡Incorrecto! Este es un correo seguro de plataforma.',
+                    incorrectText: 'Es importante distinguir entre correos transaccionales (legítimos) y phishing. Si el enlace te lleva a la página donde ya tienes sesión iniciada sin pedirte datos extra, suele ser seguro.'
+                },
+                feedbackSteps: [
+                    { target: 'email-sender', title: 'Remitente consistente', text: 'Proviene del dominio exacto de la plataforma (@github.com).' },
+                    { target: 'email-subject', title: 'Contenido esperado', text: 'Resumen basado en la actividad real y periódica del usuario en la plataforma.' },
+                    { target: 'email-body-link', title: 'URL limpia', text: 'Dirige directamente a la sección de notificaciones oficial sin alterar direcciones.' }
+                ]
+            },
+            {
+                type: 'phishing',
+                name: 'Escenario 10: Firma de contrato digital',
+                title: 'Firma pendiente: Acuerdo de Confidencialidad.',
+                intro: 'Te envían un documento legal por DocuSign que debe ser firmado antes de que termine el día. ¿Estás listo para firmar?',
+                email: {
+                    sender: 'DocuSign Service &lt;no-reply@docusign-docs.com&gt;',
+                    date: '9 de marzo de 2026, 02:30 p.m.',
+                    subject: 'Acción requerida: Por favor, firma el documento "Acuerdo_Confidencialidad_2026.pdf"',
+                    body: 'Hola, tienes un documento pendiente de firma electrónica enviado por el Departamento Legal de tu organización. Por favor, haz clic en el botón de abajo para revisar y completar el proceso de firma antes del cierre de la jornada.',
+                    linkText: 'REVISAR DOCUMENTO',
+                    linkUrl: 'https://docusign.com.secure-signing.online/v2/document-access'
+                },
+                feedback: {
+                    correctTitle: '¡Correcto! El enlace es engañoso y peligroso.',
+                    correctText: 'La URL docusign.com.secure-signing.online es un truco clásico. Aunque empiece con el nombre de la marca, el dominio real es secure-signing.online. DocuSign siempre usa su dominio raíz para gestionar documentos.',
+                    incorrectTitle: '¡Error! Este es un ataque de suplantación de identidad.',
+                    incorrectText: 'Al hacer clic en este tipo de enlaces, llegarías a una página idéntica a la de DocuSign que te pediría iniciar sesión con tu correo corporativo, robando así tus credenciales de acceso a la empresa.'
+                },
+                feedbackSteps: [
+                    { target: 'email-sender', title: 'Dominio del remitente', text: 'El dominio oficial de DocuSign es @docusign.com. El uso de @docusign-docs.com es una táctica de suplantación ("typosquatting").' },
+                    { target: 'email-body-link', title: 'URL engañosa', text: 'Aunque el inicio de la URL dice "docusign.com", el dominio base es "secure-signing.online", un sitio malicioso para robar credenciales.' },
+                    { target: 'email-body-text', title: 'Saludo genérico', text: 'El correo no menciona tu nombre, lo cual es inusual en una plataforma legal que ya posee tus datos.' }
+                ]
+            }
+        ];
+
+        let currentScenarioIndex = 0;
+        let score = 0;
+        let userEmailInput = "";
+
+        // Variables para Tracking Real
+        let scenarioStartTime = 0;
+        let currentAttemptAggregator = { answers: [], times: [] };
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            let btnIndex = tabId === 'tab-investigacion' ? 0 : tabId === 'tab-quiz' ? 1 : 2;
+            document.querySelectorAll('.tab-btn')[btnIndex].classList.add('active');
+
+            if (tabId === 'tab-score') {
+                renderCharts();
+            }
+        }
+
+        // Quiz Logic
+        function startQuiz() {
+            const name = document.getElementById('fakeName').value;
+            const email = document.getElementById('fakeEmail').value;
+
+            if (!name || !email) {
+                alert("Por favor, ingresa un nombre y correo ficticios para continuar.");
+                return;
+            }
+
+            userEmailInput = email;
+
+            // Reset state
+            currentScenarioIndex = 0;
+            score = 0;
+            currentAttemptAggregator = { answers: [], times: [] };
+
+            document.getElementById('quiz-intro').style.display = 'none';
+            document.getElementById('quiz-container').style.display = 'block';
+            document.getElementById('display-email').innerText = email;
+
+            loadScenario(0);
+        }
+
+        function loadScenario(index) {
+            const scenario = scenarios[index];
+            document.getElementById('quiz-progress').innerText = `Escenario ${index + 1} de 10`;
+
+            // Ocultar mensaje y question 
+            document.getElementById('quiz-question-text').style.display = 'block';
+
+            document.getElementById('scenario-title').innerText = scenario.name;
+            document.getElementById('scenario-intro').innerText = scenario.intro;
+
+            document.getElementById('email-sender').innerText = scenario.email.sender.replace(/&lt;/g, '<').replace(/&gt;/g, '>');
+            document.getElementById('email-to').innerText = userEmailInput;
+            document.getElementById('email-date').innerText = scenario.email.date;
+            document.getElementById('email-subject').innerText = scenario.email.subject;
+
+            let bodyText = scenario.email.body.replace('[Nombre del Usuario]', document.getElementById('fakeName').value);
+            document.getElementById('email-body-text').innerHTML = bodyText;
+
+            const linkDiv = document.getElementById('email-body-link');
+            if (scenario.email.linkText) {
+                if (scenario.email.isLink) {
+                    linkDiv.innerHTML = `<a href="#" style="color: #0078d4; text-decoration: underline;" title="${scenario.email.linkUrl}">${scenario.email.linkText}</a>`;
+                } else {
+                    linkDiv.innerHTML = `<a href="#" class="email-btn" title="${scenario.email.linkUrl}">${scenario.email.linkText}</a>`;
+                }
+            } else {
+                linkDiv.innerHTML = '';
+            }
+
+            // Cleanup any past feedback
+            document.querySelectorAll('.highlight-focus').forEach(el => el.classList.remove('highlight-focus'));
+            document.getElementById('guided-tooltip').style.display = 'none';
+
+            document.querySelector('.quiz-actions').style.display = 'flex';
+
+            // Start timer
+            scenarioStartTime = Date.now();
+        }
+
+        let currentStepIndex = 0;
+
+        function answerScenario(userAnswer) {
+            const scenario = scenarios[currentScenarioIndex];
+            const isCorrect = userAnswer === scenario.type;
+            const timeTaken = Math.round((Date.now() - scenarioStartTime) / 1000);
+
+            if (isCorrect) score++;
+
+            // Tracking 
+            currentAttemptAggregator.answers.push(isCorrect ? 1 : 0);
+            currentAttemptAggregator.times.push(timeTaken);
+
+            // Document Feedback
+            const fBox = document.getElementById('feedback-content');
+            fBox.style.display = 'block';
+            fBox.className = 'feedback-box ' + (isCorrect ? 'success' : 'error');
+
+            document.getElementById('feedback-title').innerText = isCorrect ? scenario.feedback.correctTitle : scenario.feedback.incorrectTitle;
+            document.getElementById('feedback-text').innerText = isCorrect ? scenario.feedback.correctText : scenario.feedback.incorrectText;
+
+            // Hide actions
+            document.querySelector('.quiz-actions').style.display = 'none';
+            document.getElementById('quiz-question-text').style.display = 'none';
+        }
+
+        function startGuidedFeedback() {
+            document.getElementById('feedback-content').style.display = 'none';
+
+            // Start Guided Feedback Tooltips
+            currentStepIndex = 0;
+            showFeedbackStep();
+        }
+
+        function showFeedbackStep() {
+            const scenario = scenarios[currentScenarioIndex];
+
+            document.querySelectorAll('.highlight-focus').forEach(el => el.classList.remove('highlight-focus'));
+
+            if (currentStepIndex < scenario.feedbackSteps.length) {
+                const step = scenario.feedbackSteps[currentStepIndex];
+                const targetEl = document.getElementById(step.target);
+
+                if (targetEl) targetEl.classList.add('highlight-focus');
+
+                const tooltip = document.getElementById('guided-tooltip');
+                tooltip.style.display = 'block';
+
+                if (scenario.type === 'legitimo') {
+                    tooltip.classList.add('legit-border');
+                } else {
+                    tooltip.classList.remove('legit-border');
+                }
+
+                document.getElementById('tooltip-title').innerText = step.title;
+                document.getElementById('tooltip-text').innerText = step.text;
+                document.getElementById('tooltip-counter').innerText = `${currentStepIndex + 1}/${scenario.feedbackSteps.length}`;
+
+                document.getElementById('tooltip-next-btn').innerText = (currentStepIndex === scenario.feedbackSteps.length - 1) ? 'Terminar Análisis' : 'Siguiente';
+            } else {
+                document.getElementById('guided-tooltip').style.display = 'none';
+                nextScenario();
+            }
+        }
+
+        function nextFeedbackStep() {
+            currentStepIndex++;
+            showFeedbackStep();
+        }
+
+        function nextScenario() {
+            currentScenarioIndex++;
+            if (currentScenarioIndex < scenarios.length) {
+                loadScenario(currentScenarioIndex);
+            } else {
+                showResults();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz-container').style.display = 'none';
+            document.getElementById('quiz-results').style.display = 'block';
+            document.getElementById('final-score').innerText = `${score}/10`;
+
+            const userName = document.getElementById('fakeName').value;
+
+            // Save to LocalStorage
+            let scores = JSON.parse(localStorage.getItem('phishing_scores')) || [];
+            scores.push({ name: userName, score: score, effectiveness: (score * 10) + '%' });
+            scores.sort((a, b) => b.score - a.score);
+            localStorage.setItem('phishing_scores', JSON.stringify(scores));
+
+            // Save detailed attempts for real charts
+            let attemptsData = JSON.parse(localStorage.getItem('phishing_attempts')) || [];
+            attemptsData.push(currentAttemptAggregator);
+            localStorage.setItem('phishing_attempts', JSON.stringify(attemptsData));
+
+            renderRanking(userName);
+        }
+
+        function renderRanking(currentUserName = null) {
+            let scores = JSON.parse(localStorage.getItem('phishing_scores')) || [];
+            const tbody = document.getElementById('ranking-body');
+            tbody.innerHTML = '';
+
+            if (scores.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">No hay puntuaciones registradas aún.</td></tr>';
+                return;
+            }
+
+            scores.forEach((entry, index) => {
+                const tr = document.createElement('tr');
+                if (entry.name === currentUserName) {
+                    tr.style.backgroundColor = 'rgba(5, 217, 232, 0.2)';
+                }
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${entry.name}</td>
+                    <td>${entry.score}/10</td>
+                    <td>${entry.effectiveness}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderRanking();
+        });
+
+        // Export to PDF
+        function exportToPDF() {
+            // Cambiamos 'investigacion-content' por 'tab-investigacion'
+            const element = document.getElementById('tab-investigacion');
+
+            const originalBg = element.style.backgroundColor;
+            const originalColor = element.style.color;
+
+            // Forzar apariencia para el PDF
+            element.style.backgroundColor = '#0a0b10';
+            element.style.color = '#ffffff';
+            element.style.padding = '2rem';
+
+            const opt = {
+                margin: 0.5,
+                filename: 'PR02_Investigacion_AlanSanchez.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, backgroundColor: '#0a0b10', scrollY: 0 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Restaurar estilos originales después de exportar
+                element.style.backgroundColor = originalBg;
+                element.style.color = originalColor;
+                element.style.padding = '';
+            });
+        }
+
+        // Charts Rendering with real localStorage data
+        let chart1, chart2;
+
+        function renderCharts() {
+            const attemptsData = JSON.parse(localStorage.getItem('phishing_attempts')) || [];
+
+            // Default arrays if no data
+            let answersAciertos = new Array(10).fill(0);
+            let answersErrores = new Array(10).fill(0);
+            let timeAvgs = new Array(10).fill(0);
+
+            if (attemptsData.length > 0) {
+                for (let s = 0; s < 10; s++) {
+                    let sumCorrect = 0;
+                    let sumTime = 0;
+
+                    attemptsData.forEach(attempt => {
+                        if (attempt.answers[s]) sumCorrect++;
+                        sumTime += attempt.times[s] || 0;
+                    });
+
+                    answersAciertos[s] = sumCorrect;
+                    answersErrores[s] = attemptsData.length - sumCorrect;
+                    timeAvgs[s] = Math.round(sumTime / attemptsData.length);
+                }
+            }
+
+            const labels = ['Esc. 1', 'Esc. 2', 'Esc. 3', 'Esc. 4', 'Esc. 5', 'Esc. 6', 'Esc. 7', 'Esc. 8', 'Esc. 9', 'Esc. 10'];
+
+            const ctx1 = document.getElementById('performanceChart').getContext('2d');
+            if (chart1) chart1.destroy();
+            chart1 = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        { label: 'Aciertos', data: answersAciertos, backgroundColor: '#107c41' },
+                        { label: 'Errores', data: answersErrores, backgroundColor: '#e81123' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { stacked: true, ticks: { precision: 0 } }, x: { stacked: true } },
+                    plugins: { legend: { labels: { color: '#fff' } } }
+                }
+            });
+
+            const ctx2 = document.getElementById('timeChart').getContext('2d');
+            if (chart2) chart2.destroy();
+            chart2 = new Chart(ctx2, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Tiempo promedio (s)',
+                        data: timeAvgs,
+                        borderColor: '#05d9e8',
+                        tension: 0.3,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { labels: { color: '#fff' } } },
+                    scales: {
+                        y: { ticks: { color: '#a5b3ce' }, grid: { color: 'rgba(255,255,255,0.1)' } },
+                        x: { ticks: { color: '#a5b3ce' }, grid: { color: 'rgba(255,255,255,0.1)' } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

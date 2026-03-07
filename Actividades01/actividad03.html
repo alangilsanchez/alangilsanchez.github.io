@@ -28,8 +28,15 @@
                 <ul class="nav-links">
                     <li><a href="../index.html" class="nav-link">/inicio</a></li>
                     <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link">/proyectos</a></li>
                     <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
                     <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="#" class="nav-link">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
                     <li><a href="../final.html" class="nav-link">/Final</a></li>
                     <li>
                         <a href="../actividades.html" class="btn-back">
@@ -59,7 +66,7 @@
                 <div class="article-body">
 
                     <section>
-                        <h2>Introducción</h2>
+                        <h2>Introducción contextual al tema</h2>
                         <p class="intro-text">
                             En el ecosistema Linux, <strong>iptables</strong> es la herramienta de espacio de usuario
                             por excelencia para controlar el sistema de filtrado de paquetes del kernel (Netfilter).
@@ -75,7 +82,7 @@
                     </section>
 
                     <section>
-                        <h2>Desarrollo de la actividad</h2>
+                        <h2>Desarrollo técnico de la actividad</h2>
 
                         <!-- Pregunta 1 -->
                         <section>
@@ -178,7 +185,8 @@
                                         <tr>
                                             <td>b) Filtrar por IP de origen</td>
                                             <td class="text-accent"><code>--src 192.168.25.0/24</code> (o
-                                                <code>-s</code>)</td>
+                                                <code>-s</code>)
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>c) Ver solo números, sin resolución DNS</td>
@@ -201,7 +209,8 @@
                             </div>
                             <p><strong>Explicación:</strong> Permite tráfico TCP entrante por la interfaz
                                 <code>eth0</code> a los puertos 22 (SSH), 80 (HTTP) y 443 (HTTPS), siempre que sea parte
-                                de una conexión <strong>nueva</strong> o <strong>establecida</strong>.</p>
+                                de una conexión <strong>nueva</strong> o <strong>establecida</strong>.
+                            </p>
                         </section>
 
                         <!-- Preguntas 7-11 -->
@@ -247,7 +256,7 @@ iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m conntrack --
                     </section>
 
                     <section>
-                        <h2>Conclusión</h2>
+                        <h2>Opinión o reflexión técnica del estudiante</h2>
                         <p>
                             iptables representa la primera línea de defensa a nivel de host en servidores Linux. A
                             diferencia de un firewall perimetral que protege toda una red, iptables permite definir
@@ -263,7 +272,7 @@ iptables -A INPUT -i eth0 -p tcp -m multiport --dports 22,80,443 -m conntrack --
                     </section>
 
                     <section>
-                        <h2>Bibliografía</h2>
+                        <h2>Referencias técnicas</h2>
                         <ul class="tech-list">
                             <li>Manual de usuario de iptables (<code>man iptables</code>).</li>
                             <li>Netfilter Project Documentation (netfilter.org).</li>
