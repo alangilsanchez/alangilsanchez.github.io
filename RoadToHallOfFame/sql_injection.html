@@ -122,7 +122,8 @@
                             <div class="payload-box">Pets' OR 1=1--</div>
                             <p><strong>Análisis:</strong> La comilla simple cierra la cadena original. El operador
                                 <code>OR 1=1</code> fuerza a que la cláusula WHERE sea siempre verdadera. Los guiones
-                                finales comentan el resto de la lógica del servidor.</p>
+                                finales comentan el resto de la lógica del servidor.
+                            </p>
                             <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
                             <div class="mitigation-box">Implementación de consultas parametrizadas (sentencias
                                 preparadas), tratando las entradas del usuario estrictamente como datos y no como parte
@@ -188,7 +189,7 @@
                             <div class="lab-info">
                                 <h3>SQL injection attack, querying the database type and version on Oracle</h3>
                                 <div class="lab-badges">
-                                    <span class="badge badge-level-apprentice">Apprentice</span>
+                                    <span class="badge badge-level-practitioner">Practitioner</span>
                                     <span class="badge badge-type">Union-based</span>
                                 </div>
                             </div>
@@ -200,7 +201,8 @@
                             <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
                             <p>La vulnerabilidad permite realizar un ataque de unión para extraer metadatos del
                                 servidor. En Oracle, es necesario consultar tablas del sistema como
-                                <code>v$version</code> y cumplir con la estructura de la consulta original.</p>
+                                <code>v$version</code> y cumplir con la estructura de la consulta original.
+                            </p>
                             <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
                             <ol>
                                 <li>Identificar el número de columnas devueltas por la consulta original.</li>
@@ -335,7 +337,8 @@
                             <ol>
                                 <li>Realizar una inyección UNION SELECT con el número de columnas conocido.</li>
                                 <li>Sustituir secuencialmente cada NULL por una cadena de prueba (ej.
-                                    <code>'abc'</code>).</li>
+                                    <code>'abc'</code>).
+                                </li>
                                 <li>Si el servidor no devuelve error, esa columna es apta para texto.</li>
                             </ol>
                             <h4><i class="fas fa-code"></i> Payload utilizado</h4>
@@ -385,7 +388,8 @@
                             <div class="payload-box">' UNION SELECT username, password FROM users--</div>
                             <p><strong>Análisis:</strong> El operador UNION fusiona los resultados de la tabla
                                 <code>users</code> con los de productos, volcando las credenciales directamente en el
-                                HTML de la página.</p>
+                                HTML de la página.
+                            </p>
                             <h4><i class="fas fa-shield-alt"></i> Mitigación</h4>
                             <div class="mitigation-box">Aplicar el principio de menor privilegio, asegurando que la
                                 cuenta de la aplicación no tenga permisos de lectura sobre tablas administrativas.</div>
@@ -471,7 +475,8 @@
                                 <li>Inyectar <code>UNION SELECT table_name, NULL FROM information_schema.tables</code>
                                     para listar tablas.</li>
                                 <li>Identificar la tabla de usuarios y sus columnas mediante
-                                    <code>information_schema.columns</code>.</li>
+                                    <code>information_schema.columns</code>.
+                                </li>
                                 <li>Realizar la exfiltración final con los nombres descubiertos.</li>
                             </ol>
                             <h4><i class="fas fa-code"></i> Payload utilizado</h4>
@@ -511,7 +516,8 @@
                             <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
                             <p>A diferencia de otros sistemas, Oracle utiliza tablas como <code>all_tables</code> y
                                 <code>all_tab_columns</code>. El ataque debe adaptarse a esta sintaxis específica de
-                                catálogo.</p>
+                                catálogo.
+                            </p>
                             <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
                             <ol>
                                 <li>Consultar <code>all_tables</code> para encontrar tablas sospechosas.</li>
@@ -599,7 +605,8 @@
                             <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
                             <p>Algunas bases de datos como Oracle permiten usar funciones que lanzan errores (como
                                 <code>TO_CHAR(1/0)</code>) solo si se cumple una condición, permitiendo exfiltrar datos
-                                mediante códigos de error 500.</p>
+                                mediante códigos de error 500.
+                            </p>
                             <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
                             <ol>
                                 <li>Inyectar una instrucción CASE que evalúe la contraseña.</li>
@@ -691,7 +698,8 @@
                             <h4><i class="fas fa-flask"></i> Explicación técnica</h4>
                             <p>Cuando no hay cambios visuales ni errores, se inyectan funciones de retardo (como
                                 <code>pg_sleep</code>). El tiempo de respuesta del servidor se convierte en el canal de
-                                salida para confirmar la ejecución de código.</p>
+                                salida para confirmar la ejecución de código.
+                            </p>
                             <h4><i class="fas fa-list-ol"></i> Procedimiento</h4>
                             <ol>
                                 <li>Identificar la cookie <code>TrackingId</code> en el proxy.</li>
