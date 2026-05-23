@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 18</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act18</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link">/proyectos</a></li>
+                    <li><a href="../certificaciones.html" class="nav-link">/certificaciones</a></li>
+                    <li><a href="../pf01.html" class="nav-link">/PF01</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="../RoadToHallOfFame/sql_injection.html" class="nav-link nav-hof">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">&lt; Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 18: Análisis de Intrusiones con el Modelo Diamante</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Mayo 2026</span>
+                    <span><i class="far fa-user"></i> Equipo 4</span>
+                </div>
+                <div class="team-members"
+                     style="margin-top: 2rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem;">
+                    <p>Integrantes:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>Alonso Castillo Omar Karim (179033)</li>
+                        <li>Cruz Juárez Francisco Javier (177622)</li>
+                        <li>Espinoza Aguilar Brian Salvador (175031)</li>
+                        <li>Martínez Lara Santiago de la Cruz (177685)</li>
+                        <li>Sánchez Ramírez Mayeli (173030)</li>
+                        <li>Sánchez Zavala Alan Gilberto (177263)</li>
+                    </ul>
+                </div>
+            </header>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+
+                <section>
+                    <h2>1. Introducción</h2>
+                    <p>
+                        Las organizaciones enfrentan amenazas cibernéticas que comprometen la seguridad de sus sistemas. En esta actividad se aplica el Modelo Diamante de Análisis de Intrusiones para relacionar elementos clave como el adversario, la víctima, la infraestructura y las capacidades. Además, se complementa con la Cyber Kill Chain para comprender las fases del ataque.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>2. Comprensión del Modelo</h2>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Elemento</th>
+                                    <th>Descripción</th>
+                                    <th>Ejemplo práctico</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Adversario</td>
+                                    <td>Actor responsable de utilizar una capacidad contra una víctima.</td>
+                                    <td>Grupo de ciberdelincuentes con campaña de ransomware contra hospitales.</td>
+                                </tr>
+                                <tr>
+                                    <td>Capacidad</td>
+                                    <td>Herramientas, técnicas y tácticas del adversario.</td>
+                                    <td>Malware tipo troyano diseñado para evadir antivirus.</td>
+                                </tr>
+                                <tr>
+                                    <td>Infraestructura</td>
+                                    <td>Medio físico o lógico para establecer contacto.</td>
+                                    <td>Servidor de Comando y Control (C2) en la nube.</td>
+                                </tr>
+                                <tr>
+                                    <td>Víctima</td>
+                                    <td>Objetivo del ataque.</td>
+                                    <td>Departamento de finanzas recibiendo phishing.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>3. Análisis de Evento</h2>
+                    <p>
+                        <strong>Escenario:</strong> Una organización detecta comportamiento anómalo. Se detecta malware, dominios C2, resolución a IPs externas, y múltiples hosts conectándose. WHOIS revela el posible origen.
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Fase:</strong> Comando y Control (C2). Post-explotación.</li>
+                        <li><strong>Resultado:</strong> Compromiso activo de red.</li>
+                        <li><strong>Dirección:</strong> Saliente.</li>
+                        <li><strong>Metodología y Recursos:</strong> Malware emplea dominios específicos. Se usan IPs externas, y herramientas como WHOIS.</li>
+                    </ul>
+                    <p><strong>Preguntas Clave:</strong></p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Adversario:</strong> Actor externo responsable de controlar el malware y dominios C2.</li>
+                        <li><strong>Capacidad:</strong> Software malicioso con función de ejecutar consultas a C2.</li>
+                        <li><strong>Infraestructura:</strong> Nombres de dominio e IPs externas (servidores remotos).</li>
+                        <li><strong>Víctima Primaria:</strong> Host inicial infectado (y la organización en general).</li>
+                        <li><strong>Movimiento Lateral:</strong> Sí, los logs muestran múltiples hosts conectándose a las mismas IPs externas.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>4. Relación con la Kill Chain</h2>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Evento</th>
+                                    <th>Fase Kill Chain</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Detección de malware</td>
+                                    <td>Instalación</td>
+                                </tr>
+                                <tr>
+                                    <td>Envío de phishing</td>
+                                    <td>Entrega (Delivery)</td>
+                                </tr>
+                                <tr>
+                                    <td>Conexión a C2</td>
+                                    <td>Comando y Control (C2)</td>
+                                </tr>
+                                <tr>
+                                    <td>Ejecución del malware</td>
+                                    <td>Explotación / Ejecución</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>5. Hilos de Actividad</h2>
+                    <p><strong>Hilo 1:</strong></p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Phishing dirigido a administrador → abre enlace → malware se ejecuta → conexión C2 → acceso remoto obtenido.</li>
+                    </ul>
+                    <p><strong>Hilo 2:</strong></p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Uso de equipo comprometido como proxy → conexiones a otros dispositivos internos → segundo equipo comprometido → ampliación del alcance.</li>
+                    </ul>
+                    <p><strong>Relación:</strong> El atacante utiliza la primera víctima como punto de apoyo para desplazarse lateralmente (pivoting).</p>
+                </section>
+
+                <section>
+                    <h2>6. Conclusión</h2>
+                    <div class="quotation-box">
+                        <p>
+                            El Modelo Diamante es una metodología efectiva para identificar y correlacionar los elementos involucrados en un incidente. La integración con la Cyber Kill Chain facilita la comprensión de las fases del ataque, fortaleciendo el análisis forense, la detección de patrones y apoyando la toma de decisiones para mejorar las estrategias de protección tecnológica.
+                        </p>
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="export-section">
+                <a href="../PDFs/act18_Equipo4.pdf" target="_blank" class="btn download-btn">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </a>
+                <p class="crypto-text">SHA256: d18b95f269...9f428d001b</p>
+            </div>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>

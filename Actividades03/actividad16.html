@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 16</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act16</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link">/proyectos</a></li>
+                    <li><a href="../certificaciones.html" class="nav-link">/certificaciones</a></li>
+                    <li><a href="../pf01.html" class="nav-link">/PF01</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="../RoadToHallOfFame/sql_injection.html" class="nav-link nav-hof">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">&lt; Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 16: Análisis de Dilemas Éticos en Ciberseguridad</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Mayo 2026</span>
+                    <span><i class="far fa-user"></i> Equipo 4</span>
+                </div>
+                <div class="team-members"
+                     style="margin-top: 2rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem;">
+                    <p>Integrantes:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>Alonso Castillo Omar Karim (179033)</li>
+                        <li>Cruz Juárez Francisco Javier (177622)</li>
+                        <li>Espinoza Aguilar Brian Salvador (175031)</li>
+                        <li>Martínez Lara Santiago de la Cruz (177685)</li>
+                        <li>Sánchez Ramírez Mayeli (173030)</li>
+                        <li>Sánchez Zavala Alan Gilberto (177263)</li>
+                    </ul>
+                </div>
+            </header>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+
+                <section>
+                    <h2>1. Introducción y Marco Teórico</h2>
+                    <p>
+                        El ingeniero en tecnologías de la información no es solo un operador técnico, sino un custodio de la infraestructura crítica de la sociedad. La ética en ciberseguridad trasciende el simple cumplimiento de normas; implica la comprensión de que cada línea de código, cada auditoría y cada acceso a datos impacta directamente en la vida, la privacidad y la economía de las personas. Este reporte se fundamenta en tres pilares:
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Privacidad:</strong> El derecho del individuo a controlar su información.</li>
+                        <li><strong>Integridad:</strong> La garantía de que los datos no han sido alterados de forma no autorizada.</li>
+                        <li><strong>Responsabilidad (Accountability):</strong> La capacidad de responder por las acciones realizadas en el entorno digital.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>2. Escenario 01: Acceso No Autorizado Interno</h2>
+                    <p><strong>Enunciado:</strong> Durante una revisión de logs detectas que un compañero accedió a correos privados del director general sin autorización, argumentando que lo hizo para "detectar posibles fugas de información".</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Dilema ético:</strong> Conflicto por usar una justificación noble para cometer un acto de Amenaza Interna (Insider Threat).</li>
+                        <li><strong>Solución:</strong> Notificar inmediatamente mediante un reporte formal de auditoría. Se realizó una escalada de privilegios lógica fuera del Scope of Work (SOW).</li>
+                        <li><strong>Justificación Ética:</strong> Utilitarista (rompe cadena de confianza), de derechos (Imperativo Categórico de Kant), y del bien común.</li>
+                        <li><strong>Mandamiento:</strong> Violación del Mandamiento 4: "No usarás una computadora para leer los archivos ajenos".</li>
+                        <li><strong>Tipo de Delito:</strong> Delito informático ("Acceso ilícito a sistemas").</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>3. Escenario 02: Vulnerabilidad Crítica No Reportada</h2>
+                    <p><strong>Enunciado:</strong> Durante un pentest encuentras una vulnerabilidad en un sistema financiero que permite extraer dinero. El cliente aún no ha firmado el contrato final y podrías explotarla sin ser detectado.</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Dilema ético:</strong> Beneficio económico ilícito frente a responsabilidad profesional. La frontera entre ser Ethical Hacker y Cibercriminal.</li>
+                        <li><strong>Solución:</strong> Ejecutar el protocolo de Divulgación Responsable (Responsible Disclosure) bajo el estándar ISO/IEC 29147.</li>
+                        <li><strong>Justificación Ética:</strong> Utilitarista (evita quiebra y protege empleos), derechos y bien común.</li>
+                        <li><strong>Mandamiento:</strong> Respeto al Mandamiento 2: "No interferirás con el trabajo de informática de otras personas".</li>
+                        <li><strong>Tipo de Delito:</strong> De explotarse, sería un delito asistido por computadora (fraude financiero).</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>4. Escenario 03: Uso de Herramientas OSINT</h2>
+                    <p><strong>Enunciado:</strong> Encuentras información personal de un sospechoso mediante OSINT. Tu superior pide usarla para presionarlo psicológicamente.</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Dilema ético:</strong> Uso de OSINT para Doxing Corporativo y coacción.</li>
+                        <li><strong>Solución:</strong> Negar la petición por ser ingeniería social maliciosa, lo que además arruinaría la validez de la investigación legal.</li>
+                        <li><strong>Justificación Ética:</strong> Utilitarista (Teoría del Fruto del Árbol Envenenado), derechos (dignidad) y bien común.</li>
+                        <li><strong>Mandamiento:</strong> Vulneración del Mandamiento 10: "Utilizarás una computadora de manera que asegure la consideración y el respeto de tus semejantes".</li>
+                        <li><strong>Tipo de Delito:</strong> Delito incidental (uso de tecnología para extorsión o hostigamiento).</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>5. Conclusión y Propuestas de Mejora</h2>
+                    <div class="quotation-box">
+                        <p>La integridad es el firewall más potente que un profesional puede instalar en su carrera. Se proponen las siguientes mejoras organizacionales:</p>
+                        <br>
+                        <ul class="tech-list" style="margin-left: 1.5rem;">
+                            <li><strong>Segregación de Funciones:</strong> Implementar controles para que ningún analista actúe de forma aislada.</li>
+                            <li><strong>Cláusulas Éticas en Preventa:</strong> Establecer acuerdos legales que protejan los hallazgos técnicos antes de la firma formal del contrato.</li>
+                            <li><strong>Comités de Ética Independientes:</strong> Espacios donde los empleados puedan denunciar órdenes poco éticas de superiores sin temor a represalias.</li>
+                        </ul>
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="export-section">
+                <a href="../PDFs/act16-Equipo4.pdf" target="_blank" class="btn download-btn">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </a>
+                <p class="crypto-text">SHA256: f19d28e75a...7a33c1e285</p>
+            </div>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>

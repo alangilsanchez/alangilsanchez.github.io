@@ -5,18 +5,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Alan | PF02</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
         rel="stylesheet">
+    <!-- Styles -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
+
     <header>
         <div class="nav-container">
             <div class="logo">
-                <span class="text-accent">root@alan</span>:~/portafolio/pf02$ <span class="cursor"></span>
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/portafolio/pf02</span>$ <span class="cursor"></span>
             </div>
             <nav>
                 <ul class="nav-links">
@@ -24,6 +30,7 @@
                     <li><a href="actividades.html" class="nav-link">/actividades</a></li>
                     <li><a href="proyectos.html" class="nav-link">/proyectos</a></li>
                     <li><a href="certificaciones.html" class="nav-link">/certificaciones</a></li>
+                    <li><a href="pf01.html" class="nav-link">/PF01</a></li>
                     <li><a href="pf02.html" class="nav-link active">/PF02</a></li>
                     <li><a href="pf03.html" class="nav-link">/PF03</a></li>
                     <li class="nav-item-dropdown">
@@ -32,25 +39,64 @@
                             <li><a href="RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
                         </ul>
                     </li>
-                    <li><a href="final.html" class="nav-link">/Final</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
-    <main class="container"
-        style="padding-top: 8rem; min-height: 80vh; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-        <h1 class="section-title">Parcial 2</h1>
-        <div class="card" style="text-align: center; border-style: dashed; padding: 3rem;">
-            <i class="fas fa-lock" style="font-size: 3rem; margin-bottom: 1rem; color: #555;"></i>
-            <h3 class="text-accent">> Access Denied / Locked</h3>
-            <p>El contenido de este módulo se habilitará en el segundo parcial.</p>
-        </div>
+    <main>
+        <section class="container section-scroll" style="padding-top: 8rem;">
+            <h2 class="section-title">Parcial 2</h2>
+            <div class="activity-grid">
+
+                <!-- Actividad 08 -->
+                <a href="Actividades02/actividad08.html" class="article-card">
+                    <div class="article-content">
+                        <span class="article-tag">SQL Injection</span>
+                        <h3>ACTIVIDAD 08</h3>
+                        <p>Resolución sistemática de laboratorios de inyección SQL en la plataforma PortSwigger Web Security Academy.</p>
+                        <span class="read-more">Leer actividad <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <!-- Actividad 09 -->
+                <a href="Actividades02/actividad09.html" class="article-card">
+                    <div class="article-content">
+                        <span class="article-tag">Pentesting</span>
+                        <h3>ACTIVIDAD 09</h3>
+                        <p>Auditoría de seguridad y penetración sobre la máquina vulnerable My File Server 1, explotando SMB y Dirty COW.</p>
+                        <span class="read-more">Leer actividad <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <!-- Actividad 10 -->
+                <a href="Actividades02/actividad10.html" class="article-card">
+                    <div class="article-content">
+                        <span class="article-tag">Fundamentos</span>
+                        <h3>ACTIVIDAD 10</h3>
+                        <p>Ensayo sobre los fundamentos de ciberseguridad, amenazas de ingeniería social, e impacto organizacional de la IA generativa.</p>
+                        <span class="read-more">Leer actividad <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+                <!-- Actividad 11 -->
+                <a href="Actividades02/actividad11.html" class="article-card">
+                    <div class="article-content">
+                        <span class="article-tag">Pentesting</span>
+                        <h3>ACTIVIDAD 11</h3>
+                        <p>Prueba de penetración sobre la máquina Napping 1.0.1, explotando Tabnabbing y escalando privilegios mediante cron y Sudoers.</p>
+                        <span class="read-more">Leer actividad <i class="fas fa-arrow-right"></i></span>
+                    </div>
+                </a>
+
+            </div>
+        </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 Alan Gilberto Sánchez Zavala.</p>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
     </footer>
+
 </body>
 
 </html>

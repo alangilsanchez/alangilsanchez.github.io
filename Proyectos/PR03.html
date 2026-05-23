@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | PR03</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf for export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/proyectos/PR03</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link active">/proyectos</a></li>
+                    <li><a href="../certificaciones.html" class="nav-link">/certificaciones</a></li>
+                    <li><a href="../pf01.html" class="nav-link">/PF01</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="../RoadToHallOfFame/sql_injection.html"
+                            class="nav-link nav-hof">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="../proyectos.html" class="btn-back">&lt; Volver</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+            <header class="article-header" style="margin-bottom: 2rem;">
+                <h1
+                    style="color: #fff; text-shadow: 0 0 10px rgba(5, 217, 232, 0.3); margin-top: 5rem; margin-bottom: 0.5rem; line-height: 1.4; display: block; padding-top: 0;">
+                    PR03 - Implementación de SGSI basado en ISO 27001: Caso de Estudio ABB
+                </h1>
+            </header>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+                <!-- ===== INTRODUCCIÓN ===== -->
+                <section>
+                    <h2>1. Introducción</h2>
+                    <div class="meta-info" style="justify-content: flex-start; margin-bottom: 2rem;">
+                        <span><i class="far fa-calendar"></i> Abril - Mayo 2026</span>
+                        <span><i class="far fa-user"></i> Equipo 4</span>
+                    </div>
+                    <button class="btn" onclick="exportToPDF()" style="margin-bottom: 2rem; background-color: #e81123;">
+                        <i class="fas fa-file-pdf"></i> Exportar a PDF
+                    </button>
+                    <p>
+                        Proyecto de consultoría académica que diseña un SGSI (Sistema de Gestión de Seguridad de la Información) basado en ISO 27001 para ABB, específicamente para la división IS Application Service Delivery Organization. ABB es una empresa dedicada a la electrificación y automatización industrial.
+                    </p>
+                </section>
+
+                <!-- ===== CONTEXTO DE LA ORGANIZACIÓN ===== -->
+                <section>
+                    <h2>2. Contexto de la Organización</h2>
+                    <p>
+                        ABB tiene como misión impulsar la transformación de la sociedad e industria. La división IS Application Service Delivery se enfoca en la gestión de activos heredados de GE. La estructura jerárquica incluye roles clave como CEO/CISO, Gerente de Producto de Ciclo de Vida, Ingeniero de Soporte Técnico Senior, Manager Continental de Ciberseguridad, entre otros.
+                    </p>
+                </section>
+
+                <!-- ===== ALCANCE DEL SGSI ===== -->
+                <section>
+                    <h2>3. Alcance del SGSI</h2>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Departamento:</strong> Servicios de Electrificación (División de activos heredados GE).</li>
+                        <li><strong>Proceso:</strong> Gestión de Vulnerabilidades y Eliminación de Información en servidores de control industrial retirados.</li>
+                        <li><strong>Activo Clave:</strong> Servidor de Almacenamiento de Datos de Configuración (Main Controller Server).</li>
+                        <li><strong>Referencias Normativas:</strong> ISO/IEC 27001:2022, ISO/IEC 27002, ISO/IEC 27017, e ISO/IEC 27019.</li>
+                    </ul>
+                </section>
+
+                <!-- ===== INVENTARIO DE ACTIVOS ===== -->
+                <section>
+                    <h2>4. Inventario de Activos</h2>
+                    <p>Se identificaron un total de 40 activos críticos clasificados en:</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>20 Activos Internos:</strong> Código fuente, configuraciones de red, servidores DCS, bases PII, planos de ingeniería, credenciales, logs de auditoría, etc.</li>
+                        <li><strong>20 Activos Externos:</strong> Servicios Cloud (Azure/AWS), repuestos OEM, leyes de privacidad, inteligencia de amenazas, proveedores de internet, etc.</li>
+                    </ul>
+                </section>
+
+                <!-- ===== POLÍTICAS DE SEGURIDAD ===== -->
+                <section>
+                    <h2>5. Políticas de Seguridad</h2>
+                    <p>Se establecieron 20 políticas funcionales estructuradas en estándares, directrices y procedimientos:</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Políticas Internas (10):</strong> Control de Acceso (MFA obligatorio), Desarrollo Seguro, Gestión de Almacenamiento, Respaldo de Datos, Monitoreo de Seguridad, Protección de la Privacidad, Documentación Técnica, Configuración de Red, Formación de Personal, Salud de Activos.</li>
+                        <li><strong>Políticas Externas (10):</strong> Seguridad en la Nube, Gestión de Riesgos de Proveedores, Cumplimiento Regulatorio, Integridad de Suministros, Inteligencia de Amenazas, Software de Terceros, Continuidad de Servicios Críticos, Intercambio Seguro, Uso de Código Abierto, Gestión de Auditorías Externas.</li>
+                    </ul>
+                </section>
+
+                <!-- ===== MATRIZ DE RIESGO ===== -->
+                <section>
+                    <h2>6. Matriz de Riesgo</h2>
+                    <p>Se evaluaron los 20 activos utilizando una matriz de Impacto x Probabilidad. Los riesgos más críticos identificados son:</p>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Activo Crítico</th>
+                                    <th>Nivel de Riesgo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>I9</td>
+                                    <td>Personal y Ética (Ingeniería Social)</td>
+                                    <td>20 - EXTREMO</td>
+                                </tr>
+                                <tr>
+                                    <td>E9</td>
+                                    <td>Bibliotecas Código Abierto (Malware)</td>
+                                    <td>20 - EXTREMO</td>
+                                </tr>
+                                <tr>
+                                    <td>I1</td>
+                                    <td>Credenciales de Acceso (Robo)</td>
+                                    <td>15 - MUY ALTO</td>
+                                </tr>
+                                <tr>
+                                    <td>I3</td>
+                                    <td>Servidores Almacén (Fuga de datos)</td>
+                                    <td>15 - MUY ALTO</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ===== OPERACIÓN ===== -->
+                <section>
+                    <h2>7. Operación</h2>
+                    <p>Se implementó el <strong>Protocolo de Desincorporación Segura (PDS)</strong> para el Main Controller Server:</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Preparación:</strong> Ticket de baja, snapshot cifrado a Azure, bloqueo de puertos.</li>
+                        <li><strong>Ejecución Técnica:</strong> Borrado lógico mediante sobreescritura de datos usando el estándar NIST 800-88 (Purge) con Blancco Drive Eraser en un entorno limpio.</li>
+                    </ul>
+                </section>
+
+                <!-- ===== EVALUACIÓN DEL DESEMPEÑO ===== -->
+                <section>
+                    <h2>8. Evaluación del Desempeño</h2>
+                    <p>Los indicadores clave (KPIs) incluyen la eficacia de sanitización y el control de identidades (Microsoft Entra IAM). Se ejecutó una auditoría interna verificando 9 controles:</p>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Control / Requisito</th>
+                                    <th>Evidencia</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Registro formal del activo previo al retiro</td>
+                                    <td>Inventario de activos</td>
+                                </tr>
+                                <tr>
+                                    <td>Método NIST Purge (3 pasadas)</td>
+                                    <td>Reporte técnico (Blancco/DBAN)</td>
+                                </tr>
+                                <tr>
+                                    <td>Uso de MFA activo para baja</td>
+                                    <td>Logs de Microsoft Entra IAM</td>
+                                </tr>
+                                <tr>
+                                    <td>Certificado de Destrucción de Datos</td>
+                                    <td>Formato de salida firmado</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- ===== MEJORA CONTINUA ===== -->
+                <section>
+                    <h2>9. Mejora Continua</h2>
+                    <p>Para la gestión de no conformidades se utiliza el Análisis de Causa Raíz (5 Porqués). Las propuestas de mejora proactiva a mediano plazo incluyen:</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Automatización del Offboarding:</strong> Integrar herramientas de sanitización física con Microsoft Entra IAM.</li>
+                        <li><strong>Actualización del Modelo de Amenazas:</strong> Revisión semestral de la matriz de riesgos.</li>
+                        <li><strong>Evolución del Plan de Conciencia:</strong> Simulaciones dinámicas de ingeniería social.</li>
+                    </ul>
+                </section>
+
+                <!-- ===== CONCLUSIÓN ===== -->
+                <section>
+                    <h2>10. Conclusión</h2>
+                    <div class="quotation-box">
+                        <p>La correcta alineación entre las políticas funcionales, la asignación precisa de riesgos cuantitativos, los flujos de soporte técnico, la ejecución tangible bajo estándares internacionales y las directrices de auditoría e identidad corporativa demuestran la viabilidad de implementar un marco de gobernanza de ciberseguridad robusto, eficiente y completamente apegado a las exigencias normativas de la industria tecnológica actual.</p>
+                    </div>
+                </section>
+
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+    <script>
+        function exportToPDF() {
+            const element = document.querySelector('.blog-container');
+            const originalBg = element.style.backgroundColor;
+            const originalColor = element.style.color;
+            element.style.backgroundColor = '#0b0c15';
+            element.style.color = '#e0ffff';
+            element.style.padding = '2rem';
+            const opt = {
+                margin: 0.5,
+                filename: 'PR03_SGSI_ISO27001.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, backgroundColor: '#0b0c15', scrollY: 0 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save().then(() => {
+                element.style.backgroundColor = originalBg;
+                element.style.color = originalColor;
+                element.style.padding = '';
+            });
+        }
+    </script>
+</body>
+
+</html>

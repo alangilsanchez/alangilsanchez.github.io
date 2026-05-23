@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 15</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act15</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link">/proyectos</a></li>
+                    <li><a href="../certificaciones.html" class="nav-link">/certificaciones</a></li>
+                    <li><a href="../pf01.html" class="nav-link">/PF01</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="../RoadToHallOfFame/sql_injection.html" class="nav-link nav-hof">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">&lt; Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 15: Simulación de Campaña de Phishing con Social-Engineer Toolkit (SET)</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Mayo 2026</span>
+                    <span><i class="far fa-user"></i> Equipo 4</span>
+                </div>
+                <div class="team-members"
+                     style="margin-top: 2rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem;">
+                    <p>Integrantes:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>Alonso Castillo Omar Karim (179033)</li>
+                        <li>Cruz Juárez Francisco Javier (177622)</li>
+                        <li>Espinoza Aguilar Brian Salvador (175031)</li>
+                        <li>Martínez Lara Santiago de la Cruz (177685)</li>
+                        <li>Sánchez Ramírez Mayeli (173030)</li>
+                        <li>Sánchez Zavala Alan Gilberto (177263)</li>
+                    </ul>
+                </div>
+            </header>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+
+                <section>
+                    <h2>1. Resumen Ejecutivo</h2>
+                    <p>
+                        El presente documento detalla la ejecución de una prueba de concepto (PoC) enfocada en la simulación de una campaña de phishing utilizando Social-Engineer Toolkit (SET). El objetivo principal de esta práctica es demostrar cómo un atacante puede aprovechar servicios legítimos de retransmisión SMTP (en este caso, Brevo) para falsificar la identidad de un remitente corporativo y enviar correos electrónicos engañosos. A través de este ejercicio, se evalúa la efectividad de los filtros de correo no deseado actuales.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>2. Alcance (Scope)</h2>
+                    <p>
+                        Esta simulación está estrictamente limitada a un entorno de pruebas controlado con fines académicos y de concienciación en ciberseguridad.
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Vectores evaluados:</strong> Envío de correo electrónico falsificado (E-mail Spoofing) mediante Mass Mailer Attack en SEToolkit.</li>
+                        <li><strong>Herramientas utilizadas:</strong> Kali Linux, Social-Engineer Toolkit (SET), y el servicio de SMTP Relay gratuito de Brevo.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>3. Metodología Aplicada</h2>
+                    <p>Se siguió una metodología de auditoría de caja blanca (White-box) estructurada en 4 fases:</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Preparación de Infraestructura:</strong> Registro y verificación de una cuenta en Brevo utilizando el correo remitente para validar la identidad ante el servicio de relay.</li>
+                        <li><strong>Configuración del Payload:</strong> Uso de SEToolkit en Kali Linux para orquestar el ataque.</li>
+                        <li><strong>Ejecución (Delivery):</strong> Inyección de los parámetros de falsificación y credenciales SMTP en SEToolkit para realizar el envío hacia el objetivo.</li>
+                        <li><strong>Análisis de Resultados:</strong> Verificación de la bandeja de entrada del objetivo para evaluar el comportamiento del proveedor de correo.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>4. Desarrollo Práctico</h2>
+                    <p>Para la configuración y ejecución del ataque se siguieron los siguientes pasos:</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Inicio de SEToolkit en Kali Linux con privilegios de superusuario.</li>
+                        <li>Selección de <strong>Social-Engineering Attacks</strong> (opción 1).</li>
+                        <li>Acceso al módulo <strong>Mass Mailer Attack</strong> (opción 5).</li>
+                        <li>Selección de <strong>E-Mail Attack Single Email Address</strong> (opción 1) para un buzón de prueba.</li>
+                        <li>Uso de la plantilla predefinida <strong>"Have you seen this?"</strong> (opción 5) por su sentido de urgencia.</li>
+                        <li>Configuración de credenciales SMTP generadas en Brevo.</li>
+                        <li>Configuración de parámetros: From address falso, FROM NAME (Soporte Tecnico), servidor <code>smtp-relay.brevo.com</code>, y puerto 587.</li>
+                    </ul>
+                    <p>El correo fue recibido en la cuenta objetivo, sin embargo, fue clasificado correctamente en la carpeta de "Correo no deseado" mostrando advertencias de seguridad.</p>
+                </section>
+
+                <section>
+                    <h2>5. Análisis de Impacto (Modelo CIA)</h2>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Confidencialidad (Alto):</strong> Si el usuario proporciona sus credenciales, el atacante obtiene acceso no autorizado a sistemas internos y datos de clientes.</li>
+                        <li><strong>Integridad (Medio - Alto):</strong> Con credenciales comprometidas, el atacante podría modificar registros o alterar configuraciones de red.</li>
+                        <li><strong>Disponibilidad (Medio):</strong> Podría ser el vector de entrada para un Ransomware, interrumpiendo las operaciones de la empresa.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>6. Recomendaciones Técnicas</h2>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Configuración de Registros de Autenticación de Correo:</strong> Implementar protocolos SPF, DKIM y DMARC de forma estricta.</li>
+                        <li><strong>Plataformas de Simulación y Concientización:</strong> Desplegar campañas internas utilizando plataformas como KnowBe4 o Proofpoint.</li>
+                        <li><strong>Seguridad Perimetral de Correo (SEG):</strong> Reforzar las políticas del gateway para analizar anomalías en cabeceras.</li>
+                        <li><strong>Autenticación Multifactor (MFA):</strong> Requerir MFA obligatorio para todos los accesos a sistemas críticos.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>7. Tabla de Hallazgos</h2>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Hallazgo</th>
+                                    <th>Riesgo</th>
+                                    <th>Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>H-01</td>
+                                    <td>Alto</td>
+                                    <td>Uso de Relay Verificado (Brevo) para saltar bloqueos.</td>
+                                </tr>
+                                <tr>
+                                    <td>H-02</td>
+                                    <td>Medio</td>
+                                    <td>Suplantación de Nombre (Soporte Tecnico) que induce a error.</td>
+                                </tr>
+                                <tr>
+                                    <td>H-03</td>
+                                    <td>Medio</td>
+                                    <td>Uso de plantillas de Urgencia ("¿Has visto esto?") para forzar el clic.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="export-section">
+                <a href="../PDFs/act15-Equipo4.pdf" target="_blank" class="btn download-btn">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </a>
+                <p class="crypto-text">SHA256: e81b95f269...9f428d009b</p>
+            </div>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>

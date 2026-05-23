@@ -1,0 +1,1974 @@
+--- PAGE 1 ---
+ 
+
+--- PAGE 2 ---
+Contenido  
+Introducción  ................................ ................................ ................................ ................................ ........  4 
+Marco teórico  ................................ ................................ ................................ ................................ ...... 4 
+Funcionamiento de bases de datos relaci onales  ................................ ................................ ............  4 
+Consultas SQL básicas (SELECT, WHERE, UNION, ETC.)  ................................ ................................ .. 5 
+¿Qué es SQL Injection?  ................................ ................................ ................................ ....................  6 
+Clasificación de ataques SQLi  ................................ ................................ ................................ ..........  6 
+In-band (Union -based, Error -based)  ................................ ................................ ...............................  6 
+Blind (Boolean -based, Time -based)  ................................ ................................ ................................  7 
+Out-of-band  ................................ ................................ ................................ ................................ ..... 7 
+Impacto en la confidencialidad, integridad y disponibilidad  ................................ ..........................  8 
+Relación con OWASP Top 10  ................................ ................................ ................................ ...........  8 
+Importancia en pruebas de penetración  ................................ ................................ .........................  9 
+Tipos de payloa ds ................................ ................................ ................................ ..........................  10 
+Principios de defensa  ................................ ................................ ................................ ....................  10 
+Desarrollo práctico  ................................ ................................ ................................ ............................  11 
+LABS APPRENTICE  ................................ ................................ ................................ ..........................  11 
+Laboratorio 1  ................................ ................................ ................................ .............................  11 
+Laboratorio 2  ................................ ................................ ................................ .............................  13 
+LABS APPRENTICE  ................................ ................................ ................................ ..........................  15 
+Laboratorio 3  ................................ ................................ ................................ .............................  15 
+Laboratorio 4  ................................ ................................ ................................ .............................  17 
+Laboratorio 5  ................................ ................................ ................................ .............................  22 
+Laboratorio 6  ................................ ................................ ................................ .............................  26 
+Laboratorio 7  ................................ ................................ ................................ .............................  30 
+Laboratorio 8  ................................ ................................ ................................ .............................  37 
+Laboratorio 9  ................................ ................................ ................................ .............................  42 
+Laboratorio 10  ................................ ................................ ................................ ...........................  48 
+Laborat orio 11  ................................ ................................ ................................ ...........................  52 
+Laboratorio 12  ................................ ................................ ................................ ...........................  55 
+Laboratorio 13  ................................ ................................ ................................ ...........................  59 
+Laboratorio 14  ................................ ................................ ................................ ...........................  63 
+Laboratorio 15  ................................ ................................ ................................ ...........................  66 
+--- PAGE 3 ---
+Laborat orio 16  ................................ ................................ ................................ ...........................  68 
+Laboratorio 17  ................................ ................................ ................................ ...........................  70 
+Laboratorio 18  ................................ ................................ ................................ ...........................  73 
+Conclusión  ................................ ................................ ................................ ................................ .........  75 
+Referencias  ................................ ................................ ................................ ................................ ........  76 
+ 
+  
+--- PAGE 4 ---
+Introducción  
+SQL Injection es una de las vulnerabilidades más relevantes en el ámbito de la seguridad web, ya 
+que permite alterar consultas hacia la base de datos mediante la manipulación de entradas no 
+validadas correctamente. A través de este tipo de ataque, un atacante puede consultar información 
+sensible, omitir mecanismos de autenticación, modificar registros e incluso comprometer por 
+completo la confiden cialidad e integridad de la aplicación. Por esta razón, SQL Injection continúa 
+siendo un tema fundamental dentro de las pruebas de penetración y del desarrollo seguro de 
+software.  
+El presente documento técnico -profesional tiene como finalidad documentar de  manera 
+estructurada la resolución de los laboratorios oficiales de SQL Injection de la plataforma PortSwigger 
+Web Security Academy, empleando Burp Suite como herramienta principal para la interceptación, 
+modificación y análisis de peticiones HTTP. A lo la rgo del desarrollo se presenta el fundamento 
+teórico del ataque, la clasificación de sus variantes, el procedimiento práctico seguido en cada 
+laboratorio, la explicación de los payloads utilizados, así como las medidas de mitigación 
+recomendadas para preve nir este tipo de vulnerabilidades en aplicaciones web.  
+Asimismo, este trabajo busca demostrar no solo la ejecución práctica de los laboratorios, sino 
+también la comprensión técnica de la lógica detrás de cada explotación, el impacto de seguridad 
+que repres enta una inyección SQL y la importancia de aplicar controles defensivos como consultas 
+parametrizadas, validación de entradas y principios de mínimo privilegio. De esta manera, el 
+documento integra tanto el enfoque ofensivo de identificación y explotación,  como la visión 
+defensiva orientada a la protección de sistemas y datos.  
+Marco teórico  
+Funcionamiento de bases de datos relacionales  
+Las bases de datos relacionales son sistemas diseñados para almacenar, organizar y consultar 
+información de manera estructu rada mediante tablas. Cada tabla se compone de filas y columnas: 
+las filas representan registros individuales, mientras que las columnas representan los atributos o 
+campos de dichos registros. Por ejemplo, en una aplicación web puede existir una tabla de u suarios 
+con columnas como id, username, password y email, donde cada fila corresponde a un usuario 
+distinto.  
+El modelo relacional permite que diferentes tablas se vinculen entre sí mediante claves primarias y 
+claves foráneas. Una clave primaria identifica de forma única cada registro dentro de una tabla, 
+mientras que una clave foránea establece relaciones con registros de otra tabla. Gracias a esto, las 
+aplicaciones pueden consultar datos relacionados sin necesidad de duplicar información. Por 
+ejemplo, una tienda en línea puede tener una tabla de productos y otra de categorías, 
+relacionándolas para mostrar los artículos de una categoría específica.  
+Para interactuar con una base de datos relacional se utiliza el lenguaje SQL (Structured Query 
+Language), el cu al permite realizar operaciones como consultar, insertar, actualizar y eliminar datos. 
+Cuando una aplicación web recibe información del usuario, como credenciales de inicio de sesión o 
+filtros de búsqueda, normalmente construye consultas SQL para recuperar  la información 
+correspondiente desde la base de datos. Si esta interacción no se implementa de forma segura, un 
+--- PAGE 5 ---
+atacante puede manipular la consulta original e introducir instrucciones maliciosas, dando lugar a 
+vulnerabilidades como SQL Injection.  
+La impo rtancia de comprender el funcionamiento de las bases de datos relacionales dentro de la 
+ciberseguridad radica en que la mayoría de las aplicaciones web modernas dependen de este 
+modelo para gestionar información sensible. Por ello, conocer cómo se estructu ran las tablas, cómo 
+se relacionan y cómo se ejecutan las consultas SQL es fundamental para entender tanto el origen 
+como la explotación de vulnerabilidades en el acceso a los datos.  
+Consultas SQL básicas (SELECT, WHERE, UNION, ETC.)  
+SQL, por sus siglas en  inglés Structured Query Language, es el lenguaje utilizado para interactuar 
+con bases de datos relacionales. Mediante SQL es posible consultar, insertar, actualizar y eliminar 
+información almacenada en tablas. En el contexto de aplicaciones web, las consu ltas SQL se ejecutan 
+constantemente para autenticar usuarios, mostrar productos, filtrar categorías o recuperar datos 
+específicos según la solicitud realizada por el cliente.  
+Una de las instrucciones más utilizadas es SELECT, la cual permite recuperar info rmación de una o 
+varias columnas de una tabla. Por ejemplo, una consulta como 𝑆𝐸𝐿𝐸𝐶𝑇  𝑢𝑠𝑒𝑟𝑛𝑎𝑚𝑒  𝐹𝑅𝑂𝑀  𝑢𝑠𝑒𝑟𝑠  
+solicita los valores de la columna username de la tabla users. Si se desea obtener todos los campos 
+de una tabla, puede emplears e 𝑆𝐸𝐿𝐸𝐶𝑇  ∗ 𝐹𝑅𝑂𝑀  𝑢𝑠𝑒𝑟𝑠 , aunque en entornos reales se recomienda 
+seleccionar únicamente las columnas necesarias para reducir exposición de datos y mejorar el 
+rendimiento.  
+Otra cláusula fundamental es WHERE, utilizada para establecer condicione s dentro de una consulta. 
+Esta cláusula permite filtrar resultados con base en criterios específicos. Por ejemplo, 𝑆𝐸𝐿𝐸𝐶𝑇  ∗
+ 𝐹𝑅𝑂𝑀  𝑢𝑠𝑒𝑟𝑠  𝑊𝐻𝐸𝑅𝐸  𝑢𝑠𝑒𝑟𝑛𝑎𝑚𝑒  = ′𝑎𝑑𝑚𝑖𝑛𝑖𝑠𝑡𝑟𝑎𝑡𝑜𝑟 ′ busca únicamente el registro cuyo 
+nombre de usu ario sea administrator. En aplicaciones web, esta lógica suele emplearse en 
+formularios de inicio de sesión, búsquedas internas o filtros por categoría. Precisamente por ello, 
+cuando los valores que llegan a la cláusula WHERE no son validados correctamente , pueden 
+convertirse en un punto crítico para ataques de inyección SQL.  
+La instrucción UNION permite combinar los resultados de dos consultas SQL en un solo conjunto de 
+resultados. Para que funcione correctamente, ambas consultas deben devolver el mismo nú mero 
+de columnas y, además, estas deben ser compatibles en tipo de dato y orden. Por ejemplo, un 
+atacante puede aprovechar una vulnerabilidad para inyectar una consulta con UNION SELECT y así 
+recuperar información de otras tablas, como nombres de usuarios o contraseñas. Esta técnica fue 
+precisamente una de las más utilizadas en los laboratorios desarrollados, ya que permite exfiltrar 
+información desde la misma respuesta de la aplicación.  
+Comprender el uso de SELECT, WHERE y UNION es esencial para analizar c ómo una aplicación 
+consulta datos y cómo un atacante puede alterar ese comportamiento cuando existe una 
+implementación insegura. Estas instrucciones constituyen la base de muchas explotaciones de SQL 
+Injection, por lo que su estudio resulta indispensable t anto para el análisis ofensivo como para la 
+aplicación de mecanismos de defensa en seguridad informática.  
+ 
+--- PAGE 6 ---
+¿Qué es SQL Injection?  
+SQL Injection es una vulnerabilidad de seguridad que ocurre cuando una aplicación web inserta 
+directamente datos proporcionado s por el usuario dentro de una consulta SQL sin aplicar 
+mecanismos adecuados de validación o sanitización. Como consecuencia, un atacante puede 
+modificar la estructura de la consulta original y ejecutar instrucciones no previstas por el 
+desarrollador. Esto  permite alterar la lógica de autenticación, acceder a información confidencial, 
+enumerar tablas y columnas, o incluso comprometer por completo la base de datos.  
+Este tipo de ataque aprovecha la confianza indebida que la aplicación deposita en la entrada d el 
+usuario. Por ejemplo, si un sistema concatena directamente un valor ingresado en un formulario de 
+inicio de sesión o en un filtro de categoría, el atacante puede introducir caracteres especiales, 
+operadores lógicos o sentencias SQL adicionales. De esta manera, la base de datos interpreta la 
+entrada maliciosa como parte legítima de la consulta, en lugar de tratarla únicamente como un dato.  
+La gravedad de SQL Injection radica en que puede afectar directamente los tres pilares de la 
+seguridad de la informac ión. En términos de confidencialidad, permite acceder a datos sensibles 
+como usuarios, contraseñas o información personal. En cuanto a la integridad, puede facilitar la 
+modificación o eliminación de registros. Respecto a la disponibilidad, un atacante pued e provocar 
+errores, saturación del sistema o incluso dañar la operación de la base de datos. Por ello, SQL 
+Injection ha sido históricamente considerada una de las vulnerabilidades más críticas en entornos 
+web.  
+Dentro de las pruebas de penetración, SQL Injection es una técnica fundamental porque demuestra 
+cómo una falla aparentemente simple en la validación de entradas puede derivar en un compromiso 
+total del sistema. Además, sigue siendo una vulnerabilidad relevante en marcos de referen cia 
+reconocidos como OWASP Top 10, debido a su impacto y frecuencia en aplicaciones inseguras. Por 
+esta razón, comprender su funcionamiento no solo permite explotarla en un entorno controlado de 
+laboratorio, sino también diseñar mejores estrategias de prev ención y endurecimiento de 
+aplicaciones reales.  
+Clasificación de ataques SQLi  
+Los ataques de SQL Injection pueden clasificarse de acuerdo con la forma en que el atacante 
+introduce la consulta maliciosa y obtiene la información del servidor. Esta clasificac ión permite 
+comprender mejor el comportamiento de cada técnica, su nivel de complejidad y el tipo de 
+evidencia que puede observarse durante una prueba de seguridad. En términos generales, las 
+variantes más conocidas son In -band, Blind y Out -of-band.  
+In-band (Union -based, Error -based)  
+La inyección SQL de tipo In -band ocurre cuando el atacante utiliza el mismo canal de comunicación 
+para enviar la carga maliciosa y recibir la respuesta del servidor. Es decir, la explotación y la 
+extracción de datos se realizan  directamente a través de la respuesta HTTP de la aplicación. Esta es 
+una de las formas más comunes y fáciles de identificar dentro de laboratorios y entornos 
+vulnerables, ya que los resultados suelen mostrarse de forma inmediata en la página.  
+Dentro de es ta categoría se encuentran dos subtipos principales:  
+ 
+--- PAGE 7 ---
+→ Union -based SQL Injection . 
+Se basa en el uso del operador UNION para combinar la consulta original de la aplicación 
+con una consulta inyectada por el atacante. Su propósito es mostrar en la misma respuesta 
+datos de otras tablas, como nombres de usuario, contraseñas o versiones del motor de base 
+de datos. Para que funcione correctamente, ambas consultas deben devolver el mismo 
+número de columnas y tipos de datos compatibles.  
+ 
+→ Error -based SQL Injecti on. 
+En esta técnica, el atacante provoca errores intencionales en la base de datos para que el 
+sistema revele información útil en los mensajes de error. Si la aplicación muestra detalles 
+internos del motor SQL, dichos errores pueden exponer nombres de tabl as, columnas, 
+estructura de la consulta o incluso datos sensibles. Esta técnica depende de una 
+configuración insegura que permita mostrar errores detallados al usuario.  
+Blind (Boolean -based, Time -based)  
+La inyección SQL de tipo Blind  se presenta cuando la aplicación no devuelve mensajes de error 
+visibles ni muestra directamente los resultados de la consulta maliciosa. En este escenario, el 
+atacante debe inferir la información observando cambios indirectos en la respuesta del sistema, 
+como variaciones en el contenido, el comportamiento o el tiempo de respuesta. Aunque este tipo 
+de explotación suele ser más lenta, sigue siendo altamente peligrosa.  
+Sus dos variantes más comunes son:  
+→ Boolean -based Blind SQL Injection.  
+Consiste en enviar condiciones lógicas que p rovocan respuestas diferentes según si la 
+expresión es verdadera o falsa. Por ejemplo, la página puede mostrar un mensaje como 
+“Welcome back” cuando la condición se cumple, y omitirlo cuando no se cumple. A partir 
+de estas diferencias sutiles, el atacante puede extraer información carácter por carácter.  
+ 
+→ Time -based Blind SQL Injection.  
+En esta variante, el atacante introduce funciones que obligan a la base de datos a retrasar 
+su respuesta durante un número específico de segundos. Si la respuesta tarda exact amente 
+el tiempo esperado, se confirma que la condición inyectada fue verdadera. De esta forma, 
+el tiempo de respuesta se convierte en el canal para inferir datos aun cuando la página no 
+muestre resultados visibles.  
+ 
+Out-of-band  
+La inyección SQL Out-of-band ocurre cuando la extracción de información no se realiza a través de 
+la misma respuesta HTTP de la aplicación, sino por un canal externo controlado por el atacante, 
+como DNS o HTTP. Este tipo de ataque suele utilizarse cuando no es posible obtener datos mediante 
+respuestas directas ni mediante diferencias visibles o temporales.  
+Aunque es menos común que las variantes anteriores, puede ser muy efectiva en escenarios donde 
+el servidor tiene conectividad hacia servicios externos. Por ejemplo, una carga malic iosa puede 
+forzar a la base de datos a realizar una consulta DNS hacia un dominio controlado por el atacante, 
+--- PAGE 8 ---
+enviando en esa petición información sensible codificada. Debido a ello, este tipo de SQL Injection 
+representa un riesgo importante en infraestruc turas mal segmentadas o con configuraciones 
+permisivas.  
+Comprender la clasificación de los ataques SQL Injection es fundamental para interpretar 
+correctamente el comportamiento de cada laboratorio, seleccionar la técnica de explotación 
+adecuada y proponer medidas defensivas acordes al tipo de vulnerabilidad identificada. Cada 
+variante demuestra que una mala validación de entradas puede convertirse en una puerta de acceso 
+crítica hacia la base de datos y, en consecuencia, hacia la información sensib le de una aplicación 
+web.  
+Impacto en la confidencialidad, integridad y disponibilidad  
+La vulnerabilidad de SQL Injection puede afectar directamente los tres principios fundamentales de 
+la seguridad de la información: confidencialidad, integridad y disponib ilidad. Esto se debe a que la 
+explotación de una inyección SQL permite interactuar de forma no autorizada con la base de datos, 
+que normalmente contiene información crítica para el funcionamiento de la aplicación.  
+En cuanto a la confidencialidad, el impact o ocurre cuando un atacante logra consultar datos que no 
+debería conocer, como credenciales de acceso, información personal de usuarios, correos 
+electrónicos, historiales, registros internos o datos administrativos. En varios laboratorios de esta 
+práctica fue posible extraer nombres de usuario y contraseñas, lo que demuestra cómo una mala 
+validación de entradas puede terminar exponiendo información sensible.  
+Respecto a la integridad, SQL Injection también puede permitir la alteración de la información 
+almac enada. Si la cuenta de base de datos utilizada por la aplicación tiene privilegios suficientes, un 
+atacante podría modificar registros, cambiar contraseñas, insertar datos falsos o eliminar 
+información existente. Esto compromete la confiabilidad de los dat os y afecta directamente la 
+operación del sistema.  
+En términos de disponibilidad, una inyección SQL puede provocar fallos en la aplicación, errores 
+internos del servidor, bloqueos de procesos o consultas costosas que consuman recursos excesivos. 
+Incluso, e n escenarios más graves, podría utilizarse para borrar tablas o afectar la estructura de la 
+base de datos, dejando el servicio fuera de operación. Por ello, SQL Injection no solo representa un 
+problema de exposición de información, sino un riesgo integral para todo el sistema.  
+Relación con OWASP Top 10  
+La vulnerabilidad de SQL Injection se encuentra estrechamente relacionada con los riesgos más 
+críticos identificados por OWASP Top 10, una de las referencias más importantes en seguridad de 
+aplicaciones web. OWASP, cuyas siglas corresponden a Open Worldwide Application Security 
+Project, mantiene esta clasificación con el propósito de concientizar sobre las fallas más comunes y 
+peligrosas que afectan a los sistemas modernos. Dentro de este marco, SQL Injection ha sido 
+históricamente una de las vulnerabilidades más representativas.  
+En versiones anteriores del OWASP Top 10, los ataques de inyección aparecían de forma explícita 
+como una categoría principal debido a su alta frecuencia e impacto. Aunque en versiones más 
+recientes la clasificación se ha ampliado y reorganizado, SQL Injection continúa formando parte del 
+grupo de vulnerabilidades relacionadas con fallas de validación, interpretación insegura de entradas 
+--- PAGE 9 ---
+y ejecución no intencionada de comandos sobre siste mas internos. Esto demuestra que, a pesar de 
+los avances en frameworks y buenas prácticas de desarrollo, la inyección sigue siendo una amenaza 
+vigente.  
+La razón por la que SQL Injection ocupa un lugar tan importante dentro de OWASP es que una sola 
+vulnerab ilidad de este tipo puede escalar rápidamente a una afectación completa del sistema. A 
+diferencia de otras fallas que requieren múltiples condiciones para ser explotadas, una inyección 
+SQL exitosa puede bastar para obtener acceso a información confidencial , evadir autenticaciones, 
+comprometer cuentas administrativas o incluso tomar control de la lógica de la aplicación. Por ello, 
+OWASP la considera una falla de alto riesgo tanto por su explotabilidad como por su impacto 
+potencial.  
+Relacionar SQL Injection c on OWASP Top 10 es importante dentro de este proyecto porque permite 
+ubicar los laboratorios realizados dentro de un contexto profesional y reconocido 
+internacionalmente. No se trata solo de resolver ejercicios técnicos, sino de comprender que este 
+tipo de  prácticas reproducen vulnerabilidades reales presentes en sistemas productivos. Por esta 
+razón, el análisis de SQL Injection y sus mecanismos de defensa constituye una competencia esencial 
+para cualquier estudiante o profesional orientado a la seguridad i nformática, auditoría de 
+aplicaciones y pruebas de penetración.  
+Importancia en pruebas de penetración  
+SQL Injection es una de las vulnerabilidades más importantes dentro de las pruebas de penetración, 
+ya que permite evaluar de forma directa la seguridad en  la interacción entre la aplicación web y la 
+base de datos. Su detección demuestra que existe una validación deficiente de entradas y que el 
+sistema podría ser manipulado para ejecutar instrucciones no autorizadas.  
+Durante un pentest, identificar una vulne rabilidad de SQL Injection tiene un alto valor porque puede 
+conducir rápidamente a resultados críticos, como evasión de autenticación, enumeración de tablas 
+y columnas, recuperación de credenciales, acceso a cuentas privilegiadas o extracción de 
+informació n sensible. Por esta razón, suele considerarse una de las pruebas más relevantes dentro 
+de la auditoría de aplicaciones web.  
+Además, la explotación controlada de SQL Injection permite medir el impacto real de la falla y 
+generar recomendaciones concretas de  remediación. No se trata únicamente de demostrar que la 
+vulnerabilidad existe, sino de analizar hasta dónde puede llegar un atacante si la organización no 
+implementa consultas parametrizadas, validación de entradas, controles de privilegios y manejo 
+segur o de errores.  
+Su importancia en pruebas de penetración también radica en que combina análisis técnico, 
+comprensión de bases de datos, manipulación de peticiones HTTP y uso de herramientas 
+especializadas como Burp Suite. Por ello, el estudio y documentación  de estos laboratorios fortalece 
+habilidades esenciales para la evaluación ofensiva y defensiva de aplicaciones web.  
+ 
+ 
+--- PAGE 10 ---
+Tipos de payloads  
+En SQL Injection, un payload es la cadena de texto o instrucción que el atacante inserta en un 
+parámetro vulnerable con  el objetivo de alterar el comportamiento de la consulta SQL original. Los 
+payloads varían según el tipo de inyección, la base de datos utilizada y el objetivo del ataque, ya sea 
+autenticar sin credenciales, identificar columnas, extraer datos o provocar r etrasos en la respuesta.  
+Un tipo común son los payloads de evasión de autenticación, utilizados para modificar la lógica de 
+una consulta de inicio de sesión. Su propósito es hacer que la condición del WHERE se evalúe como 
+verdadera sin necesidad de conocer  la contraseña legítima. Este tipo de payload demuestra cómo 
+una autenticación insegura puede ser anulada con una entrada manipulada.  
+También existen los payloads UNION -based, que se emplean para combinar la consulta original de 
+la aplicación con una consu lta inyectada por el atacante. Estos payloads permiten recuperar 
+información de otras tablas, como usuarios, contraseñas, nombres de columnas o versiones del 
+motor de base de datos. Suelen incluir valores NULL para identificar el número de columnas y 
+despu és reemplazarlos por texto o datos de interés.  
+Otro grupo importante son los payloads error -based, diseñados para provocar errores controlados 
+en la base de datos y obtener información a partir de los mensajes devueltos por el servidor. Cuando 
+la aplicació n expone errores detallados, estos payloads pueden revelar datos sensibles, estructura 
+de tablas o resultados de subconsultas.  
+En el caso de Blind SQL Injection, se utilizan payloads booleanos y payloads basados en tiempo. Los 
+booleanos introducen condicio nes verdaderas o falsas para observar diferencias en la respuesta de 
+la página, mientras que los basados en tiempo emplean funciones de retraso para confirmar si una 
+condición fue ejecutada correctamente por la base de datos. Aunque estos métodos suelen se r más 
+lentos, son muy efectivos cuando la aplicación no muestra errores ni resultados visibles.  
+Finalmente, también pueden existir payloads de enumeración y payloads de exfiltración, orientados 
+a descubrir tablas, columnas, tipos de datos o extraer múltipl es valores en una sola columna. En 
+todos los casos, el payload representa la parte central del ataque, ya que es el medio por el cual se 
+manipula la consulta original. Por ello, entender su estructura y propósito es indispensable tanto 
+para la explotación en entornos controlados como para la implementación de defensas efectivas.  
+Principios de defensa  
+La prevención de SQL Injection requiere aplicar controles de seguridad desde el diseño y desarrollo 
+de la aplicación, no únicamente después de detectar la vuln erabilidad. La medida más importante y 
+efectiva consiste en utilizar consultas parametrizadas o sentencias preparadas, ya que estas separan 
+de forma estricta la estructura del comando SQL y los datos introducidos por el usuario. De esta 
+manera, aunque un a tacante intente enviar caracteres especiales, operadores lógicos o sentencias 
+maliciosas, la base de datos los interpretará únicamente como datos literales y no como 
+instrucciones ejecutables.  
+Otro principio fundamental es la validación estricta de entradas. Toda información recibida desde 
+formularios, parámetros de URL, encabezados HTTP o cookies debe comprobarse antes de ser 
+procesada. Esto implica verificar longitud, formato, tipo de dato y v alores permitidos. Cuando es 
+posible, se recomienda aplicar esquemas de lista blanca, aceptando únicamente valores 
+--- PAGE 11 ---
+previamente definidos por la lógica de la aplicación. Aunque la validación por sí sola no sustituye a 
+las consultas parametrizadas, sí contri buye a reducir la superficie de ataque.  
+También es recomendable utilizar ORMs o frameworks seguros, ya que muchos de ellos incorporan 
+mecanismos internos para manejar consultas parametrizadas y abstraer el acceso directo a la base 
+de datos. Sin embargo, su  uso no garantiza seguridad automática si el desarrollador implementa 
+consultas dinámicas inseguras o concatena manualmente valores sin control. Por ello, el framework 
+debe entenderse como un apoyo y no como un sustituto de las buenas prácticas de desarrol lo 
+seguro.  
+El principio de mínimo privilegio en la base de datos es otra medida crítica. La cuenta utilizada por 
+la aplicación web no debería tener permisos innecesarios sobre todas las tablas, vistas o 
+procedimientos. Si un atacante logra explotar una iny ección SQL, el alcance del daño dependerá en 
+gran parte de los privilegios asociados a esa cuenta. Limitar permisos de lectura, escritura, 
+modificación y administración reduce significativamente el impacto potencial de una explotación.  
+Finalmente, es impor tante complementar estas defensas con manejo seguro de errores, monitoreo 
+de actividad sospechosa y pruebas periódicas de seguridad. Los mensajes de error no deben 
+exponer detalles internos del motor de base de datos, ya que pueden facilitar ataques de tip o error -
+based. Asimismo, el monitoreo de consultas anómalas y la realización de auditorías permiten 
+identificar comportamientos sospechosos antes de que deriven en un incidente mayor. En conjunto, 
+estas medidas forman una estrategia defensiva integral cont ra una de las vulnerabilidades más 
+peligrosas en aplicaciones web.  
+Desarrollo práctico  
+En esta sección se presenta el desarrollo de los laboratorios de SQL Injection realizados en la 
+plataforma Web Security Academy de PortSwigger, utilizando Burp Suite com o herramienta 
+principal para la interceptación, análisis y modificación de peticiones HTTP.  
+LABS APPRENTICE  
+Laboratorio 1 
+Nombre del laboratorio:  
+Lab: SQL injection vulnerability in WHERE clause allowing retrieval of hidden data . 
+Nivel:  
+Apprentice  
+Tipo de  SQLi:  
+SQL Injection In -band basada en modificación de la cláusula WHERE . 
+Objetivo del laboratorio:  
+El objetivo principal de esta práctica es explotar una vulnerabilidad de SQL injection attack para 
+recibir todos los documentos que aún  no han sido publicados.  
+ 
+ 
+--- PAGE 12 ---
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad ocurre porque la aplicación web no filtra adecuadamente el parámetro de entrada 
+category antes de incluirlo en una consulta SQL. Esto permite a un atacante alterar la ló gica de la 
+consulta original para correr la consulta completa y omitir el resto de la consulta original.  
+Procedimiento paso a paso:  
+1. Iniciar el laboratorio:  
+a) Tendremos que iniciar el laboratorio y dirigirnos al página de alguna categoría 
+para poder ver como  se hace el recorrido:  
+ 
+ 
+2. Una vez visualizado que la categoría se filtra con el parámetro URL:  
+𝐟𝐢𝐥𝐭𝐞𝐫 ?𝐜𝐚𝐭𝐞𝐠𝐨𝐫𝐲 =𝐏𝐞𝐭𝐬  
+ 
+3. Podemos insertar directamente una categoría mal formada para recibir todos los 
+parámetros de la query y sobreescribir la query original para ignorar el filtro restante:  
+ 
+𝐟𝐢𝐥𝐭𝐞𝐫 ?𝐜𝐚𝐭𝐞𝐠𝐨𝐫𝐲 =𝐏𝐞𝐭𝐬 ’+𝐎𝐑+𝟏=𝟏−− 
+ 
+ 
+
+--- PAGE 13 ---
+Payload  
+El payload utilizado fue  𝐟𝐢𝐥𝐭𝐞𝐫 ?𝐜𝐚𝐭𝐞𝐠𝐨𝐫𝐲 =𝐏𝐞𝐭𝐬 ’+𝐎𝐑+𝟏=𝟏−−: Cierra la cadena de texto de 
+la consulta origi nal para poder inyectar comandos adicionales.  
+Explicación:  
+• --: Comenta el resto de la consulta original de la aplicación para evitar errores de sintaxis al 
+ejecutar el payload.  
+Mitigación recomendada:  
+Implementación de consultas parametrizadas o sentencias preparadas. En lugar de concatenar 
+directamente la entrada del usuario en la cadena de la consulta, se utilizan marcadores de posición 
+que el motor de la base de datos trata estrictamente como datos . 
+Confirmación:  
+Lab Solved  
+Laboratorio 2  
+Nombre del laboratorio:  
+Lab: SQL injection vulnerability allowing login bypass . 
+Nivel:  
+Apprentice  
+Tipo de SQLi:  
+SQL Injection In -band orientada a evasión de autenticación (login bypass).  
+Objetivo del laboratorio:  
+El objetivo principal de esta práctica es explotar una vulnerabilidad de SQL injection attack para 
+iniciar sesión como administrador . 
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad ocurre porque la aplicación web no filtra adecuadamente el par ámetro de entrada 
+de las credenciales antes de incluirlo en una consulta SQL. Esto permite a un atacante alterar la 
+lógica de la consulta original para correr la consulta completa y omitir el resto de la consulta original.  
+Procedimiento paso a paso:  
+1. Iniciar el laboratorio:  
+a) Tendremos que iniciar el laboratorio y dirigirnos al pagina de alguna categoría 
+para poder ver como se hace el recorrido:  
+ 
+
+--- PAGE 14 ---
+2. Abrimos la ventana de loggeo de red para visalizar como se realiza el servicio POST:   
+ 
+3. Podemos ver que se envían  las credenciales completas, vamos a intenar iniciar sesión con 
+el usuario administrator  y usaremos una SQL Injection básica para omitir el parámetro de 
+la contraseña, y así iniciar sesión sin depender de esta.  
+4. Usaremos las siguientes credenciales:  
+a) admini strator’ -- 
+b) <cualquier constraseña>  
+5. Podemos confirmar que entramos como administrador.  
+ 
+Payload : 
+El payload utilizado fue  −− 
+Explicación:  
+• --: Comenta el resto de la consulta original de la aplicación para evitar errores de sintaxis 
+al ejecutar el payload.   
+Mitigación recomendada:  
+Implementación de consultas parametrizadas o sentencias preparadas. En lugar de concatenar 
+directamente la entrada del usuario en la cadena de la consulta, se utilizan marcadores de posición 
+que el motor de la base de dato s trata estrictamente como datos . 
+Confirmación:  
+Lab Solved  
+ 
+
+--- PAGE 15 ---
+LABS APPRENTICE  
+Laboratorio 3 
+Nombre del laboratorio:  
+Lab: SQL injection attack, querying the database type and version on OracleAppretince  
+Nivel:  
+Practitione r 
+Tipo de SQLi:  
+SQL Injection In -band basada en UNION . 
+Objetivo del laboratorio:  
+El objetivo principal de esta práctica es explotar una vulnerabilidad de SQL injection UNION attack 
+para  obtener información de la base de datos.  
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad ocurre porque la aplicación web no filtra adecuadamente el parámetro de entrada 
+de las credenciales antes de incluirlo en una consulta SQL. Esto permite a un atacante alterar la 
+lógica de la consulta original para correr la consulta completa y omitir el resto de la consulta original.  
+Procedimiento paso a paso:  
+1. Iniciar el laboratorio:  
+a) Tendremos que, al acceder a una categoría, obtenemos información en 2 filas:  
+ 
+ 
+2. Oracle SQL devuelve la información de la base de datos por medio de la columna BANNER 
+desde la tabla v$version, podemos injectar esta consulta para la obtención de la información 
+requerida para el laboratorio usando el siguiente filtro de categoría:  
+/filter ?category = ′+UNION +SELECT +BANNER ,+NULL +FROM +v$version — 
+
+--- PAGE 16 ---
+ 
+ 
+Payload  
+El payload utilizado fue:  /filter ?category = ′+UNION +SELECT +BANNER ,+NULL +
+FROM +v$version — 
+Explicación:  
+• ‘ : cierra la cadena original de la consulta SQL y permite inyectar instrucciones adicionales. 
+Esto se infiere por la estructura del payload mostrado en el documento.  
+• UNION SELECT  : combina los resultados de la consulta original con una nueva consulta 
+creada por el atacante.  [Parte 3 del payload]  
+• BANNER  : es una columna de Oracle que contiene información descriptiva sobre la versión 
+de la base de datos.  
+• NULL  : se usa como valor de rel leno para respetar el número de columnas esperado por la 
+consulta original. Esto es consistente con que el laboratorio trabajaba con dos columnas.  
+• FROM v$version  : indica que los datos serán extraídos de la vista del sistema que 
+almacena información sobre la versión del motor Oracle.  
+• -- : comenta el resto de la consulta original para evitar errores de sintaxis durante la 
+ejecución. El documento usa guion largo al final, pero la intención técnica es comentar el 
+resto de la consulta.  
+Mitigación recomendada:  
+Implementación de consultas parametrizadas o sentencias preparadas. En lugar de concatenar 
+directamente la entrada del usuario en la cadena de la consulta, se utilizan marcadores de posición 
+que el motor de la base de datos trata estrictamente como datos . 
+Confirmación:  
+Lab Solved  
+ 
+ 
+
+--- PAGE 17 ---
+Laboratorio  4  
+Nombre del laboratorio:  
+SQL injection attack, querying the database type and version on MySQL and Microsoft  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Union -Based SQL Injection  
+Objetivo del laboratorio:  
+El objetivo de este laboratorio es explotar una vulnerabilidad de SQL Injection mediante la técnica 
+UNION  para consultar y mostrar la versión del sistema gestor de base de datos utilizado por la 
+aplicación. Para resolver el laboratorio se debe lograr que l a base de datos devuelva la cadena 
+correspondiente a su versión.  
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad ocurre porque la aplicación web incluye directamente el parámetro category 
+dentro de una consulta SQL sin realizar una validación a decuada de los datos ingresados por el 
+usuario.  
+Esto permite que un atacante modifique la consulta original utilizando instrucciones SQL adicionales 
+como UNION SELECT , lo cual permite combinar los resultados de la consulta original con otra 
+consulta creada  por el atacante.  
+Si el número de columnas coincide, es posible mostrar información sensible proveniente de la base 
+de datos, como la versión del servidor.  
+Procedimiento paso a paso:  
+1. Primero accedemos al laboratorio en la plataforma de Web Security Academy  y abrimos la 
+herramienta Burp Suite  para interceptar el tráfico de la aplicación.  
+ 
+ 
+ 
+
+--- PAGE 18 ---
+2. Una vez dentro del laboratorio seleccionamos cualquiera de las categorías del filtro de la 
+tienda, por ejemplo Pets , lo cual generará una petición HTTP hacia el servidor.  
+ 
+ 
+3. En Burp Suite interceptamos esta petición y observamos que la aplicación realiza una 
+solicitud similar a la siguiente:  
+ 
+Esto indica que el parámetro category  es utilizado en la consulta SQL.  
+4. Enviamos la petición al módulo Repeater  para poder modificarla manualmente y probar 
+distintos payloads de SQL Injection.  
+ 
+
+--- PAGE 19 ---
+Primero verificamos cuántas columnas tiene la consulta utilizando la instrucción:  
+ 
+Posteriormente incrementamos el número:  
+  
+Cuando el servidor devuelve un error intern o, significa que hemos superado el número de 
+columnas existentes.  
+5. En este caso el error aparece en 3, por lo que la consulta contiene 2 columnas.  
+6. Después verificamos qué columna permite mostrar texto utilizando las siguientes 
+consultas:  
+
+--- PAGE 20 ---
+ 
+ 
+7. Finalmente utilizamos la función del sistema gestor de base de datos para obtener la 
+versión del servidor:  
+ 
+8. Una vez que aparece la cadena con la versión del servidor en la página, el laboratorio se 
+marca automáticamente como resuelto . 
+
+--- PAGE 21 ---
+ 
+ 
+Payload utilizado:  
+ 
+Explicación:  
+• Pets' : Cierra la cadena original de la consulta SQL para poder insertar una nueva 
+instruc ción.  
+• UNION SELECT : Permite combinar los resultados de la consulta original con los resultados 
+de nuestra consulta inyectada.  
+• NULL : Se utiliza en la primera columna porque el ataque determinó que la primera 
+columna no permite mostrar texto.  
+• @@version : Es una variable del sistema que devuelve la versión del servidor de base de 
+datos en MySQL y Microsoft SQL Server.  
+• --: Comenta el resto de la consulta original para evitar errores de sintaxis.  
+ 
+Mitigación recomendada:  
+La principal mitigación contra este tipo de vulnerabilidad es el uso de consultas parametrizadas o 
+sentencias preparadas, las cuales separan los datos de entrada del código SQL ejecutable.  
+Además, se recomienda implementar:  
+Validación estricta de entradas del usuario  
+Uso de ORM o frameworks que utilicen consultas preparadas  
+Principio de menor privilegio en la base de datos  
+ 
+Estas medidas evitan que las entradas del usuario sean interpretadas como instrucciones SQL 
+ejecutables.  
+ 
+
+--- PAGE 22 ---
+Laboratorio 5 
+Nombre del laboratorio:  
+SQL injection at tack, listing the database contents (non -Oracle)  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Union -Based SQL Injection . 
+Objetivo del laboratorio:  
+Usar SQL Injection UNION  para:  
+1. Encontrar las tablas de la base de datos . 
+2. Identificar la tabla que contiene usuarios . 
+3. Encontrar las columnas de esa tabla . 
+4. Obtener username y password . 
+Iniciar sesión como administrator . 
+ 
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad ocurre porque la aplicación inserta directamente el parámetro category  dentro 
+de una  consulta SQL sin validarlo de forma segura. Esto permite que un atacante cierre la cadena 
+original e inyecte una consulta con UNION SELECT , combinando los resultados legítimos de la 
+aplicación con datos obtenidos desde otras tablas de la base de datos. En  este laboratorio, esa 
+debilidad se aprovecha para enumerar tablas, identificar columnas sensibles y recuperar usuarios y 
+contraseñas.  
+Procedimiento paso a paso:  
+1. Interceptar la petición : 
+a) Entra al laboratorio.  
+b) Haz clic en Lifestyle o cualquier categoría.  
+c) Intercepta la petición en Burp Suite . 
+d) Mándala a Repeater.  
+--- PAGE 23 ---
+ 
+ 
+Veremos lo siguiente:  
+ 
+2. Confirmamos las columnas:  
+Vemos que responde correctamente.  
+3. Listar las tablas de la basede datos.  
+Ahora queremos ver qué tablas existen.  
+ 
+4. Ver las columnas de la tabla : 
+
+--- PAGE 24 ---
+ 
+5. Obtener usuarios y contraseñas : 
+Ahora ya podemos leer la tabla.  
+ 
+6. Iniciar sesión  
+a) Copia la contraseña del administrator  
+b) Ve a My account  
+c) Login  
+ 
+Cuando logramos entrar aparece esto:  
+
+--- PAGE 25 ---
+ 
+Y ahora el laboratorio cambió a solved : 
+ 
+ 
+Payload  
+ 
+Explicación:  
+• Lifestyle'  : Se utiliza para cerrar la cadena de texto original de la consulta SQL que utiliza la 
+aplicación, permitiendo insertar instrucciones adicionales.  
+• UNION SELECT  : Permite combinar los resultados de la consulta original con los resultados 
+de una consulta creada por el atacante. Esto hace posible mostrar información de otras 
+tablas de la base de datos.  
+• username_utpasc,password_spjiov  : Son las columnas obtenidas previamente al enumerar 
+las columnas de la tabla use rs_xpjxxo. Estas columnas contienen los nombres de usuario y 
+las contraseñas almacenadas en la base de datos.  
+• FROM users_xpjxxo  : Indica que los datos deben obtenerse de la tabla que contiene las 
+credenciales de los usuarios.  
+• -- : Se utiliza para comentar el resto de la consulta original del servidor y evitar errores de 
+sintaxis al ejecutar la inyección.  
+Mitigación recomendada:  
+La mitigación principal para este tipo de vulnerabilidad es el uso de consultas parametrizadas o 
+sentencias preparadas, las cuales separan los datos de entrada del usuario del código SQL 
+ejecutable. De esta forma, aunque un atacante introduzca comandos como UNION SELECT, estos 
+serán tratados únicamente como datos y no como parte de la consulta.  
+Además, se recomienda implementar las si guientes medidas de seguridad:  
+
+--- PAGE 26 ---
+• Validación y sanitización de entradas para asegurar que los datos enviados por el usuario 
+cumplan con el formato esperado.  
+• Principio de menor privilegio en las cuentas de la base de datos para limitar el acceso a 
+información sensible.  
+• Uso de ORM o frameworks seguros que manejen automáticamente las consultas 
+parametrizadas.  
+• Monitoreo y registro de consultas sospechosas para detectar posibles intentos de 
+explotación.  
+Laboratorio  6 
+Nombre del laboratorio:  
+SQL injection attack, listing the database contents on Oracle  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Union -Based SQL Injection  
+Objetivo del laboratorio:  
+Explotar una vulnerabilidad SQL Injection UNION  para:  
+1. Identificar la tabla que contiene los usuarios.  
+2. Encontrar las column as de esa tabla.  
+3. Obtener username y password.  
+4. Iniciar sesión como administrator.  
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad se presenta porque la aplicación incorpora directamente el parámetro category 
+dentro de una consulta SQL sin valida rlo de forma segura. Esto permite cerrar la cadena original e 
+inyectar una consulta con UNION SELECT. En Oracle, la enumeración de metadatos no se realiza con 
+information_schema, sino mediante vistas del sistema como all_tables y all_tab_columns, por lo 
+que el atacante puede usar estas estructuras para descubrir tablas, columnas y finalmente extraer 
+credenciales desde la tabla de usuarios. Esto se desprende del flujo del laboratorio, donde primero 
+se confirman columnas, luego se listan tablas y después se c onsultan las columnas y credenciales.  
+ 
+Procedimiento paso a paso:  
+1. Interceptar la petición  
+a) Abre el laboratorio.  
+b) Haz clic en Food & Drinks.  
+c) Intercepta la petición en Burp Suite.  
+d) Envíala a Repeater.  
+--- PAGE 27 ---
+ 
+Este es el parámetro que aparece:  
+ 
+2. Confirmar SQL Injection: en Repeater cambia el parámetro de la siguiente manera:  
+Si aparece error -> la inyección funciona.  
+3. Confirmamos número de columnas: usamos dual.  
+ 
+Al darnos el Ok significa que hay 2 columnas y que ambas aceptan texto.  
+4. Listar las tablas:  
+
+--- PAGE 28 ---
+ 
+Nos da Ok, significa que nos dará muchas tablas, ahora buscamos la tabla usuarios:  
+ 
+5. Obtenemos columnas de la tabla usando el comando:  
+ 
+6. Obtenemos usuarios y contraseñas:  
+ 
+7. Iniciamos sesión:  
+
+--- PAGE 29 ---
+ 
+Ingresamos:  
+ 
+Laboratorio resuelto:  
+ 
+Payload:  
+El payload utilizado fue:  
+ 
+Explicación:  
+• Food & Drinks'  : Se utiliza para cerrar la cadena de texto original de la consulta SQL que 
+realiza la aplicación web, permitiendo insertar instrucciones adicionales en la consulta.  
+• UNION SELECT  : Permite combinar los resultados de la consulta original con otra consulta 
+creada por el atacante, lo que hace posible obtener información de otras tablas de la base 
+de datos.  
+• USERNAME_ABC, PASSWORD_ABC  : Son las columnas encontradas previamente al 
+enumerar  las columnas de la tabla de usuarios. Estas columnas contienen las credenciales 
+almacenadas en la base de datos.  
+• FROM USERS_ABC123  : Es la tabla donde se almacenan los datos de los usuarios de la 
+aplicación.  
+• -- : Se utiliza para comentar el resto de la co nsulta original y evitar errores de sintaxis al 
+ejecutar la inyección SQL.  
+Mitigación recomendada:  
+Para prevenir vulnerabilidades de SQL Injection, se recomienda implementar consultas 
+parametrizadas o sentencias preparadas. Estas separan los datos introduc idos por el usuario del 
+
+--- PAGE 30 ---
+código SQL ejecutable, evitando que comandos maliciosos sean interpretados como parte de la 
+consulta.  
+Además, es recomendable aplicar las siguientes medidas de seguridad:  
+• Implementar validación y sanitización de entradas para asegur ar que los datos introducidos 
+por el usuario cumplan con el formato esperado.  
+• Aplicar el principio de mínimos privilegios en las cuentas de la base de datos, limitando el 
+acceso a información sensible.  
+• Utilizar frameworks u ORM seguros que gestionen automá ticamente consultas 
+parametrizadas.  
+• Implementar monitoreo y registros de consultas sospechosas para detectar posibles 
+intentos de explotación.  
+Laboratori o 7  
+Nombre del laboratorio:  
+SQL injection UNION attack, determining the number of columns returned by the query  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Inyección SQL In -band (basada en UNION)  
+Objetivo del laboratorio:  
+Mapeo de la estructura (Número de columnas): Nuestro objetivo principal en esta fase no es extraer 
+datos (todavía), sino realizar una labor de reconocimiento. Necesitamos determinar el número 
+exacto de columnas que devuelve la consulta SQL original de la página. El operador UNION tiene 
+una regla estricta: para poder fusionar dos consultas, ambas deben tener exactamente la misma 
+cantidad de columnas. Descubrir este número es el requisito indispensable para poder, en pasos 
+posteriores, extraer información sensible como tablas de usuarios y contraseñas.  
+Explicación técnica de la vulnerabilidad:  
+Falta de sanitización y concatenación directa: La falla de seguridad ocurre en cómo el servidor 
+procesa el parámetro category de la URL. El backend de la aplicación está tomando el texto que 
+seleccionamos en el filtro (por ejemplo, "Food & Drink") y lo está "pegando" o concatenando 
+directamente dentro del código de una consulta SQL (probablemente algo parecido a SELECT * 
+FROM products WHERE category = 'texto_del_usuario'). Al no limpiar (sanitizar) nuestra entrada, el 
+motor de la base de datos es incapaz de distinguir dónde termina el dato legítimo y dó nde empiezan 
+nuestras instrucciones maliciosas, ejecutando ambas por igual.  
+Procedimiento paso a paso:  
+1. En nuestro Kali Linux, abrimos el menú de aplicaciones, buscamos "burp" y seleccionamos 
+el icono de Burp Suite. Al abrirla, estamos iniciando un proxy de interceptación, nos va a 
+permitir estar "en medio" de nuestro navegador y el servidor web para poder capturar, 
+analizar y modificar el tráfico a nuestro antojo.  
+--- PAGE 31 ---
+ 
+2. En la pantalla de bienvenida, nos aseguramos de marcar la opción Temporary project i n 
+memory (Proyecto temporal en memoria) y damos clic en Next.  
+ 
+3. Seleccionamos la opción Use Burp defaults (Usar valores predeterminados) y presionamos 
+el botón Start Burp. Con esto le indicamos a la herramienta que arranque con sus 
+configuraciones de fábri ca: 
+ 
+4. Esperamos unos instantes en la pantalla de carga.  
+  
+
+--- PAGE 32 ---
+5. En el menú superior nos dirigimos a la pestaña Proxy y después abrimos el navegador 
+integrado presionando el botón naranja Open browser.  ¡Listo! Veremos cómo se abre el 
+navegador especial de Burp.  
+ 
+Observamos que se abre el navegador utilizado por Burp Suite  
+ 
+ 
+6. En la página de la Web Security Academy de PortSwigger, ubicamos el botón naranja que 
+dice Access the  lab y le damos clic para iniciar nuestro entorno.  
+ 
+ 
+7. Una vez que el laboratorio cargue en nuestro navegador habitual, nos dirigimos a la barra 
+de direcciones y copiamos la URL completa que se ha generado:  
+ 
+
+--- PAGE 33 ---
+8. Nos vamos al navegador Chromium que abrimos desde Bu rp Suite en los pasos anteriores, 
+pegamos la URL de nuestro laboratorio en la barra de direcciones y damos Enter para cargar 
+la página de la tienda.    
+ 
+9. Regresamos a la ventana prin cipal de Burp Suite. En la pestaña de Proxy, vamos a la 
+subpestaña Intercep t y hacemos clic en el botón para que cambie a Intercept is on (veremos 
+que se pone de color azul).  
+ 
+ 
+Al encender esta opción, el proxy pasa a un modo activo. Esto significa que cualquier clic o 
+petición que hagamos en el navegador quedará "congelada" y retenida en Burp Suite antes 
+de ser enviada al servidor web.  
+ 
+ 
+10. Volvemos al navegador de Burp Suite y hacemos clic en alguna de las categorías para filtrar 
+los productos de la tienda; por ejemplo, seleccionamos "Food & Drink" . 
+ 
+
+--- PAGE 34 ---
+11. Notaremos que  la página web se queda "cargando". Si vamos a Burp Suite (ya sea en la 
+pestaña de Intercept o revisando el HTTP history), veremos la petición capturada. Hacemos 
+clic derecho sobre ella y seleccionamos la opción Send to Repeater (también podemos usar 
+el at ajo Ctrl+R).  
+ 
+Al hacer clic en un filtro, obligamos a nuestro navegador a enviar una petición HTTP (método 
+GET) al servidor. En la URL se agregan parámetros específicos (como 
+?category=Food+Drink ). En el ámbito de la ciberseguridad, estos parámetros dinámicos 
+suelen ser  nuestros "vectores de ataque", es decir, los lugares donde intentaremos inyectar 
+código para ver cómo reacciona la base de datos.  
+ 
+ 
+12. Nos dirigimos a la pestaña Repeater  en el menú superior. Aquí veremos la petición HTTP 
+original estructurada en texto plano  del lado izquierdo (bajo la pestaña Request).  
+ 
+El Repeater  divide nuestra área de trabajo en dos paneles principales: a la izquierda vemos 
+exactamente lo que le vamos a enviar al servidor, y a la derecha veremos cómo nos 
+responde. Al aislar la petición d e esta manera, podemos experimentar manipulando cada 
+fragmento de la solicitud de forma manual, controlada y sin depender del navegador.  
+ 
+13. Hacemos clic en el botón naranja Send en la esquina superior izquierda. En el panel derecho 
+(Response) observaremos la  respuesta del servidor, encabezada por un código de estado  
+HTTP/2  200 OK.   
+
+--- PAGE 35 ---
+Antes de atacar, siempre debemos enviar la petición original sin alteraciones para 
+establecer nuestra "línea base". El código 200 OK  nos confirma que el servidor procesa 
+correctame nte la petición legítima.  
+ 
+14. En la primera línea de la petición (la cabecera GET), localizamos el parámetro category. 
+Borramos su valor original y escribimos nuestra carga útil ( payload ): 
+'+UNION+SELECT+NULL --. Presionamos Send  y notaremos que la respuesta del servidor 
+cambia a un HTTP/2 500 Internal Server Error.  
+ 
+Payload:  
+El operador UNION en SQL se usa para combinar los resultados de dos consultas distintas en una 
+sola tabla. Sin embargo, hay una regla estricta: ambas consultas deben devolver exactamente el 
+mismo número de columnas.  
+Explicación de payload:  
+• La comilla simple (') sirve para "romper" la consulta original del desarrollador.  
+• + (Símbolo de suma): En el contexto de una URL (URL encoding), representa un espacio en 
+blanco para separar los comandos SQL.  
+• UNION SELECT: Es la directiva SQL que le ordena a la base de datos unir nuestra nueva 
+consulta con la original de la página.  
+• Inyectamos datos NULL intentando adivinar el numero de columnas de la tabla. Utilizamos 
+el valor NULL (nu lo) porque es un "comodín" universal en las bases de datos; es compatible 
+con cualquier tipo de dato  
+Los guiones ( --) comentan el resto del código original para que no cause errores de sintaxis.  
+ 
+
+--- PAGE 36 ---
+El error 500 nos confirma a nivel de base de datos que la c onsulta falló, lo que significa que la tabla 
+original no tiene una sola columna.  
+ 
+15. Como un solo valor no funcionó, vamos a ir agregando más columnas separadas por comas 
+para seguir adivinando. Modificamos nuestro payload añadiendo un segundo valor: 
+'+UNION +SELECT+NULL,NULL -- y presionamos Send . Observaremos que seguimos 
+recibiendo el error 500.  
+ 
+16. Agregamos un tercer valor nulo, dejando nuestra inyección así: 
+'+UNION+SELECT+NULL,NULL,NULL --. Al presionar Send, el servidor por fin nos devuelve 
+una respuesta HTTP/2 200 OK.  
+ 
+Que el servidor responda correctamente con un código 200 OK significa que la cantidad de valores 
+NULL que inyectamos coincide perfectamente con las columnas de la consulta original. Con esto 
+acabamos de descubrir información crítica sobre la arquitectura del sistema: la base de datos detrás 
+
+--- PAGE 37 ---
+de esta aplicación devuelve exactamente 3 columnas. Este descubrimiento es el cimiento obligatorio 
+para, en un ataque real, poder extraer datos confidenciales (como usuarios o contraseñas) en esos 
+espaci os recién descubiertos.  
+Mitigación recomendada:  
+La forma definitiva de erradicar esta vulnerabilidad no es intentar filtrar caracteres extraños (lo cual 
+suele fallar), sino cambiar la forma en que la aplicación habla con la base de datos mediante el uso 
+de Consultas Parametrizadas . 
+Con este método, el desarrollador pre -compila la estructura de la consulta SQL y envía los datos del 
+usuario por un canal separado como simples variables. De esta manera, sin importar si inyectamos 
+comillas, operadores UNION o comandos maliciosos, la base de datos siempre tratará nuestra 
+entrada de forma literal, como un simple texto inofensivo, eliminando cualquier posibilidad de que 
+se ejecute como código.  
+Laboratorio  8 
+Nombre del laboratorio:  
+SQL injection UNION attack, findi ng a column containing text  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Inyección SQL In -band (basada en UNION)  
+Objetivo del laboratorio:  
+Identificación de columnas de texto. El objetivo aquí es sondear sistemáticamente cada columna 
+descubierta previamente para determinar cuáles son compatibles con tipos de datos de texto, 
+preparándonos para la extracción final de credenciales.  
+Explicación técnica de la vulnerabilidad:  
+Conflictos de tipos de datos en bases de datos relacionales. Cuando usamos el operador UNION, no 
+solo exigimos que ambas consultas tengan el mismo número de columnas, sino que los tipos de 
+datos deben ser compatibles en el orden correspondiente. Si la consulta original pide un número 
+entero en la primera columna, e intentamos inyect ar texto ahí con nuestro UNION SELECT, el motor 
+de la base de datos (como PostgreSQL o MySQL) lanzará un error de conversión de tipo, lo que se 
+traduce en el error 500 Internal Server Error que vemos en la aplicación web.  
+Procedimiento paso a paso:  
+1. Dentro del navegador de Burp, accedemos a la página del laboratorio "SQL injection UNION 
+attack, finding a column containing text". Identificamos el botón naranja Access the lab y le 
+damos clic para desplegar nuestra instancia vulnerable.   
+--- PAGE 38 ---
+ 
+2. Una vez que el labora torio cargue en nuestro navegador habitual, nos dirigimos a la barra 
+de direcciones y copiamos la URL completa que se ha generado , tomamos nota de la cadena 
+de texto aleatoria que el laboratorio nos pide inyectar (en este ejemplo, 'QAAUcU'). Esta 
+cadena es  nuestra "bandera" para demostrar que logramos manipular la base de datos.  
+ 
+3. Nos vamos al navegador Chromium que abrimos desde Burp Suite en los pasos anteriores, 
+pegamos la URL de nuestro laboratorio en la barra de direcciones y damos Enter para cargar 
+la página de la tienda.    
+ 
+4. Regresamos a la ventana principal de Burp Suite. En la pestaña de Proxy, vamos a la 
+subpestaña Intercept y hacemos clic en el botón para que cambie a Intercept is on (veremos 
+que se pone de color azul).  
+ 
+
+--- PAGE 39 ---
+Al encender esta  opción, el proxy pasa a un modo activo. Esto significa que cualquier clic o 
+petición que hagamos en el navegador quedará "congelada" y retenida en Burp Suite antes 
+de ser enviada al servidor web.  
+ 
+5. Volvemos al navegador de la tienda y hacemos clic en la c ategoría "Accessories " para 
+generar una petición HTTP hacia el servidor.  
+ 
+ 
+6. En Burp Suite, observamos que la petición GET /filter?category=Accessories ha sido 
+capturada. Damos clic derecho sobre el texto de la petición y seleccionamos Send to 
+Repeater (o usamos Ctrl+R) para aislarla y comenzar a manipularla manualmente.  
+ 
+ 
+
+--- PAGE 40 ---
+7. Ya en la pestaña Repeater, presionamos el botón Send sin modificar nada para establecer 
+nuestra línea base. Observamos en el panel derecho que recibimos un HTTP/2 200 OK, lo 
+que confirma que la petición legítima funciona correctamente.  
+ 
+ 
+8. Sabiendo (por el laboratorio anterior) que la consulta devuelve 3 columnas, inyectamos 
+nuestro payload base: '+UNION+SELECT+NULL,+NULL,+NULL --. Al presionar Send, el 
+servidor devuelve un 200 OK, confirmando la estructura de la tabla.  
+ 
+ 
+9. Para saber qué columna acepta texto, sustituimos el primer NULL por una cadena de 
+prueba, inyectando: '+UNION+SELECT+'abc',+NULL,+NULL --. Presionamos Send y recibimos 
+un 500 Internal Server Error. Esto nos indi ca que la primera columna no es de tipo texto 
+(probablemente sea un ID numérico).  
+ 
+Si la primera columna de la base de datos original está diseñada estructuralmente para 
+almacenar números enteros (por ejemplo, un id_producto o un precio), y nosotros 
+intent amos forzar la entrada de una cadena de texto literal como 'abc', el motor de la base 
+de datos fracasa al intentar hacer la conversión. Este choque de incompatibilidad a nivel 
+interno es lo que hace que la consulta colapse y el servidor nos devuelva el err or HTTP 500 
+
+--- PAGE 41 ---
+Internal Server Error.  
+ 
+ 
+10. Movemos nuestra cadena de prueba a la segunda posición: 
+'+UNION+SELECT+NULL,+'abc',+NULL --. Al enviar la petición, recibimos un 200 OK , por lo 
+que h emos descubierto que la segunda columna es compatible con datos de tipo cadena 
+(string).  
+Payload  
+• Iniciamos "rompiendo" la consulta con la comilla simple (').  
+• Usamos NULL en las posiciones que no estamos evaluando para evitar errores de tipo, ya 
+que NULL se adapta a cualquier campo.  
+• Colocamos 'abc' (una cadena de texto lit eral) iterativamente en cada posición de la consulta. 
+Si la base de datos lo procesa sin lanzar error (200 OK), confirmamos empíricamente que 
+esa columna en específico está configurada en la base de datos para almacenar cadenas de 
+texto (como VARCHAR o TEX T). 
+• Cerramos comentando el resto del código con – . 
+ 
+ 
+
+--- PAGE 42 ---
+11. Ahora que sabemos dónde podemos inyectar texto, reemplazamos 'abc' por la cadena 
+exacta que nos pide el laboratorio: '+UNION+SELECT+NULL,+'QAAUcU',+NULL --. 
+Presionamos Send y verificamos la respuesta 2 00 OK.  
+El servidor ejecuta la sentencia SQL maliciosa, toma nuestro texto y lo renderiza 
+directamente en el código HTML de la página web  
+ 
+Mitigación recomendada:  
+Validación de Entrada Estricta (Listas Blancas / Whitelisting). En lugar de intentar adivinar  y bloquear 
+caracteres maliciosos (como comillas o guiones), el servidor web debe validar que la entrada del 
+usuario coincida exactamente con una lista de valores permitidos y predefinidos.  
+En nuestro laboratorio, el parámetro category solo debería recibir valores específicos como 
+"Accessories", "Food & Drink" o "Gifts". Si configuramos el backend para verificar que la entrada 
+recibida se encuentre dentro de esta "lista blanca" (Whitelisting), cualquier solicitud que contenga 
+una cadena extraña como nuestro '+UNION+SELECT... será descartada y rechazada inmediatamente 
+por la aplicación antes de siquiera acercarse a la base de datos.  
+ 
+Laboratorio  9 
+Nombre del laboratorio:  
+SQL injection UNION attack, retrieving data from other tables  
+Nivel:  
+Practitioner  
+
+--- PAGE 43 ---
+Tipo de SQLi:  
+Inyección SQL In -band (basada en UNION) de Extracción.  
+Objetivo del laboratorio:  
+Nuestro objetivo final es extraer todos los nombres de usuario y contraseñas almacenados en la 
+tabla users. Al obtener esta información, buscaremos las credenciales específicas del usuario 
+administrator para iniciar sesión, lo que en un entorno real significaría la toma de control total de la 
+aplicación web.  
+Explicación técnica de la vulnerabilidad:  
+Falta de aislamiento de bases de datos.  La vulnerabilida d ocurre porque el parámetro category no 
+está sanitizado, pero el impacto es masivo debido a una falla arquitectónica: la cuenta de base de 
+datos que la aplicación web utiliza para buscar "productos" tiene permisos de lectura sobre la tabla 
+de "usuarios". Esta falta de segmentación permite que, mediante un UNION, crucemos los límites 
+de la tabla de productos y accedamos directamente a la información confidencial de las cuentas . 
+Procedimiento paso a paso:  
+1. Una vez que la tienda virtual ha cargado, verificamos  en la barra de direcciones que nos 
+encontramos en la URL temporal asignada para nuestra sesión (https://0af400...). Esto nos 
+confirma que estamos listos para  copiar la dirección y empezar a trabajar con nuestra 
+máquina virtual en Kali Linux . 
+ 
+2. Regresamos a nuestra herramienta Burp Suite, nos dirigimos a la pestaña Proxy  y hacemos 
+clic en el botón Intercept is off  para cambiarlo a Intercept is on  (verificamos que se ponga 
+en color azul). Ahora nuestro proxy está alerta y retendrá cualquier petición que haga mos.  
+ 
+
+--- PAGE 44 ---
+ 
+3. Volvemos al navegador de nuestro laboratorio y hacemos clic en la categoría "Pets" . Al 
+hacer esto, obligamos al navegador a enviar una solicitud al servidor pidiendo los productos 
+de esa categoría, la cual será capturada inmediatamente por nuestro  proxy.  
+ 
+ 
+4. En Burp Suite, observamos la petición GET /filter?category=Pets retenida en el proxy. 
+Damos clic derecho sobre cualquier parte del texto de la petición y seleccionamos Send to 
+Repeater (o presionamos Ctrl+R). Con esto, preparamos nuestro entorno de trabajo manual 
+para comenzar a inyectar el código que extraerá las contraseñas.  
+ 
+ 
+ 
+
+--- PAGE 45 ---
+5. Ya en la pestaña Repeater, presionamos el botón naranja Send con la petición original (GET 
+/filter?category=Pets). Observamos en el panel derecho que recibimos un HTTP/2 200 OK, 
+confirmando que nuestra conexión con el servidor es estable y la petición legítima funciona.  
+ 
+6. En base a la teoría que ya dominamos, comprobamos si las dos columnas disponibles 
+aceptan texto. Modificamos el parámetro inyectando nuestro payload de prueba: 
+'+UNION+SELECT+'abc','def' --. Al dar clic en Send, recibimos un 200 OK. Ambas columnas 
+pueden imprimir cadenas de texto.  
+ 
+ 
+ 
+7. Sustituimos nuestras cadenas de prueba por los nombres reales de las columnas que 
+queremos robar. Inyect amos nuestro payload definitivo:  
+'+UNION+SELECT+username,+password+FROM+users --. Presionamos Send y recibimos un 
+200 OK, lo que significa que la base de datos ha aceptado nuestro comando y nos ha enviado 
+la información.  
+El payload '+UNION+SELECT+username, +password+FROM+users -- es letal porque 
+aprovecha una falla arquitectónica del sistema. La página web originalmente estaba 
+programada para hacer algo inofensivo: consultar una tabla de "productos". Sin embargo, 
+
+--- PAGE 46 ---
+al inyectar la cláusula FROM users, le estamos  ordenando al motor de la base de datos que 
+abandone la tabla de productos, cruce hacia una tabla completamente distinta (la de 
+usuarios) y extraiga información confidencial.  
+ 
+ 
+Payload  
+Sabiendo por laboratorios anteriores que la consulta original devuelve  2 columnas y que 
+ambas soportan texto, nuestro payload lógico para extraer los datos tomará esta forma:  
+• '+UNION+SELECT+username,+password+FROM+users --. 
+• ': Rompe la consulta original de los productos.  
+• UNION SELECT: Fusiona los resultados.  
+• username, passwo rd: Son las dos columnas exactas que queremos extraer 
+(coincidiendo perfectamente con los 2 espacios disponibles de la consulta 
+original).  
+• FROM users: Le indica a la base de datos de qué tabla secreta queremos sacar esa 
+información.  
+• --: Comenta el resto de l código para evitar errores.  
+ 
+8. En el panel de respuesta, podemos buscar entre el código o simplemente hacer clic en la 
+pestaña Render para ver la página como si estuviéramos en el navegador. Al desplazarnos 
+hacia abajo en la lista de productos, encontrarem os volcados los usuarios y contraseñas. 
+Localizamos al usuario administrator y copiamos cuidadosamente su contraseña .  
+El operador UNION fusiona los resultados. El servidor web es "ciego"; no sabe que los datos 
+que le entregó la base de datos son contraseñ as robadas. Simplemente toma el resultado 
+de la consulta y lo incrusta en el código HTML donde normalmente iría el nombre y la 
+descripción de un producto . 
+
+--- PAGE 47 ---
+ 
+9. Para poder iniciar sesión cómodamente, regresamos a la pestaña Proxy de Burp Suite y 
+hacemos clic e n el botón azul para que vuelva a su estado Intercept is off. De esta manera, 
+el navegador volverá a cargar las páginas con normalidad sin que Burp retenga los paquetes.  
+ 
+10. Regresamos a la ventana del navegador de Burp Suite y hacemos clic en la opción My 
+account en la esquina superior derecha. Ingresamos administrator como usuario, pegamos 
+la contraseña que robamos de la base de datos y damos clic en Log in. Aparecerá el panel 
+de nuestra cuenta indicando que hemos resuelto el laboratorio.  
+Password :  
+ 
+ 
+
+--- PAGE 48 ---
+ 
+Mitigación recomendada:  
+Principio de Menor Privilegio (Defensa en Profundidad):   
+La cuenta de base de datos que hace consultas para mostrar productos en la tienda pública jamás 
+debería tener permisos de lectura (SELECT) sobre la tabla de contraseñas de los usuarios. Si se 
+aplicara esta restricción, el motor de la base de datos bloquearía nuestro ataque UNION lanzando 
+un error de permisos, salvando las credenciales.  
+Consultas Parametrizadas (Defensa primaria):   
+Prevenir que la entrada del usuario sea interpretada como comandos SQL.  
+Laboratorio  10 
+Nombre del laboratorio:  
+SQL injection UNION attack, retrieving multiple values in a single column  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Union -Based SQLi  
+Objetivo del laboratorio:  
+El objetivo principal de esta práctica es explotar una vulnerabilidad de SQL injection UNION attack 
+para recuperar múltiples valores de diferentes columnas dentro de una sola columna de resultados. 
+Se bus ca extraer las credenciales de inicio de sesión de la tabla users y utilizarlas para acceder como 
+administrador.  
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad ocurre porque la aplicación web no filtra adecuadamente el parámetro de 
+entrada cat egory antes de incluirlo en una consulta SQL. Esto permite a un atacante alterar la 
+lógica de la consulta original mediante el uso de la instruccion UNION.  
+ 
+ 
+
+--- PAGE 49 ---
+Procedimiento paso a paso:  
+1. Accedemos a la página activando la herramienta de Burpsuite para interceptar el tráfico, 
+damos en fordward para dejar pasar el tráfico y tener cargada la página, ahora 
+seleccionamos cualquiera de las opciones en el filtro de categorias, en este caso seleccione 
+Pets.  
+  
+ 
+2. En el momento que seleccionamos cualquiera vamos a Burpsuite para ver que nos 
+intercepto el tr áfico de esa b úsqueda, los cuales nos mostraran dos, uno de tipo http y otro 
+de tipo ws, nos centraremos en el tipo http y lo mandaremos al repeater.  
+ 
+3. Cuando lo tengamos mandamos la petición y nos mostrara todo el c ódigo de la p ágina web 
+en la sección  de Pets, si nos fijamos bien en lo que interceptamos tenemos que se está 
+haciendo la petición de “category=Pets”, esto nos ayudar á a realizar el ataque.  
+ 
+4. Al mandar la petición “category=Pets’ orde r by 1 - - “, observamos como el servidor toma 
+como valida esta instrucción, lo que estamos haciendo es cerra la cadena abierta Pets’ y 
+luego mandarle la instrucción  que ordene por la primera cadena que se encuentra en el 
+SELECT interno de la instrucción  que es category y cerramos con - – para comentar el resto 
+y evitar errores de sintaxis.  
+
+--- PAGE 50 ---
+ 
+5. Haremos esto incrementando el número  de order by hasta saber cuántas  columnas se 
+encuentran en la base de datos, si nos muestra internal error server es que ya no hay más 
+columnas en este caso, nos arrojó  el error en el 3 por lo que solo hay dos columnas.  
+6. Con lo anterior veremos cuál de las columnas permiten añadir texto, para ello se usó la 
+instrucción ‘union select “i”, null - -  y  ‘union select null, “i” - -, esto p ara ver si se agrega el 
+texto en alguna de las columnas, en este caso se puede ingresar texto en la segunda columna 
+ya que con la primera instrucción nos mandó  un error, con la segunda se ingresó  el texto 
+correctamente.   
+ 
+ 
+ 
+7. Procederemos a introducir  la instrucción “union select null, username ||'*'||password from 
+users --“ para hacer una consulta de los usuarios y contraseñas de la tabla users, separados 
+por un símbolo , y nos arroja estos datos.  
+
+--- PAGE 51 ---
+ 
+8. Con estos datos en el repeater podemos dejar de detener el tráfico  y pasar a la página  e 
+iniciar sesión  con alguna de las cuentas que obtuvimos, damos clic en my account e 
+ingre samos los datos. Con esto se da por finalizado el laboratorio.  
+ 
+ 
+Payload:  
+El payload utilizado fue: category=Pets' union select null, username ||'*'||password from users --. 
+Explicación:  
+• Pets': Cierra la cadena de texto de la consulta original para poder inyectar comandos 
+adicionales.  
+• union select: Combina los resultados de la consu lta original con los resultados de nuestra 
+consulta.  
+• null: Se utiliza en la primera columna porque el ataque determinó que solo hay dos 
+columnas disponibles y la primera no es apta para mostrar texto.  
+• username ||'*'||password: Utiliza el operador de concat enación para unir el nombre de 
+usuario y la contraseña en una sola columna, separándolos con un asterisco para poder 
+distinguirlos.  
+• from users: Indica a la base de datos que debe extraer la información de la tabla llamada 
+users.  
+• --: Comenta el resto de la consulta original de la aplicación para evitar errores de sintaxis 
+al ejecutar el payload.  
+ 
+
+--- PAGE 52 ---
+Mitigación recomendada:  
+Implementación de consultas parametrizadas o sentencias preparadas. En lugar de concatenar 
+directamente la entrada del usuar io en la cadena de la consulta, se utilizan marcadores de posición 
+que el motor de la base de datos trata estrictamente como datos. Esto garantiza que, aunque un 
+atacante introduzca comandos como UNION SELECT, el sistema los interprete únicamente como 
+una cadena de texto literal y no como código ejecutable.  
+Laboratorio  11 
+Nombre del laboratorio:  
+Blind SQL injection with conditional responses  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Blind SQL injection  
+Objetivo del laboratorio:  
+El objetivo es obtener la contraseña del usuario administrator mediante consultas de tipo blind que 
+se validan a través de respuestas condicionales en la página, para finalmente iniciar sesión con 
+dichas credenciales.  
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad se encuentra en la gestión de las cookies de rastreo. La aplicación realiza una 
+consulta SQL que incluye el valor de esta cookie y, si la consulta devuelve resultados, ¡la página 
+muestra el mensaje “Welcome back! ". Al no filtrar adecuadamente este parámetro, un atacante 
+puede inyectar condiciones lógicas para extraer información de la base de datos carácter por 
+carácter basándose en si el mensaje aparece o no en la respuesta.  
+Procedimiento paso a paso:  
+1. Primero a ccedemos al laboratorio  y podemos darnos cuenta que aparece un “ Welcome 
+back!” y una especie de filtro  abajo en el cual podemos ver las categorías  que hay 
+disponibles en la pagina  
+ 
+2. Dentro de este contexto, damos clic en cualquiera de los filtros e interceptamos  este tráfico  
+con ayuda de Burpsuite, y si lo mandamos veremos que nos arroja el código  en html, pero 
+para este laboratorio vemos  la vista de render ya que es más fácil observar si ahí sigue el 
+mensaje.  
+
+--- PAGE 53 ---
+ 
+3. Para este caso en el tráfico  interceptado, trabajaremos con las cookies que nos arroja, ¡pero 
+lo que nos dará  la pauta para saber que nuestras consultas SQLi son correctas es el mensaje 
+de ¡Welcome Back! , lo que nos indica el campo por donde se hará  la SQLi.  
+4. Primero comprobaremos  que la tabla de u sers existe, dentro de la cookie añadiremos un 
+Payload el cual es “ ‘ and (select ‘a’ from users LIMIT)=’a’ - -“ , con esto comprobamos que 
+la tabla existe y si existe al menos una fila se retorna una cadena, esto hará  que si la 
+instrucción es correcta se  mostrara el mensaje de ¡Welcome back!, lo cual nos indica que la 
+tabla si existe en la base de datos y con ello podemos trabajar.  
+ 
+5. Pasaremos a conocer si el usuario administrador existe en la tabla, lo haremos con el  
+payload “ ‘and (select username from users where username=’administrator’) - -, esto con 
+ayuda del inspector de Burpsuite hacemos un url encoding y le agregamos antes de los dos 
+guiones un =’administrator’ para saber si el usuario existe nos devolverá  el mensaje.  
+6. Con esto hecho necesitamos la  contraseña del administrator, primero veamos cual es la 
+longitud de la contraseña lo hacemos con la instrucción ‘and (select username from users 
+where username=’administrator’ and LENGTH (password)>1)=’administrator’ - -, lo que 
+estamos haciendo es decirl e que si la contraseña  tiene más de un caracter y nos devuelve 
+el mensaje, por lo tanto es correcto, hay que probar hasta saber cuántas  son, en este caso 
+se enco ntró  que tiene 20 caracteres.  
+ 
+7. Ahora necesitamos conocer la contraseña, lo haremos con la instrucción  ‘ and (select 
+substring  (password,1,1) from users where username=’administrator’) =’a’ - -, lo que hace es 
+revisar coincidencia de cada caracter en la posición  que le pasemos por ejemplo le pasamos 
+
+--- PAGE 54 ---
+1,1y revisara que el primer caracter sea igual al v alor que le pasamos al final, para hace esto  
+más rápido  usaremos una herramienta de burpsuite, así que vamos al intruder, añadimos el 
+contenido del último  igual como variable y en tipo de payload lo dejamos como brute forcer 
+ya que este incluye las letras de a hasta z y del 0 al 9.  
+ 
+8. Seleccionamos el tipo de ataque como cluster bomb, seleccionamos la primera variable  
+como las posiciones, la segunda como el caracter que queremos que coincida, Iniciamos el 
+ataque y debemos fijarnos y anotar las letras y números  que tienen un tamaño distin to al 
+resto, ya que esa será  el caracter valido de la contraseña en esa posición.  
+ 
+9. Después  de esperar a que probara en todas las posiciones  nos da la siguiente contraseña 
+nb7y5tthvmmspwhxnt36, la cual al colocarla en my account junto con el usuario de 
+admi nistrator nos dará  acceso.  
+ 
+10. Con esto mostrándonos  el mensaje que hemos concluido  el laboratorio.  
+
+--- PAGE 55 ---
+Payload : 
+Se comprueba que la tabla existe en la base de dato.  
+Explicación:  
+• ' and (select 'a' from users LIMIT 1)='a' -- verifica si la tabla users existe . 
+Se comprueba cual es la longitud de la cadena de la contraseña del usuario administrator.  
+• ' and (select username from users where username='administrator' and LENGTH  
+(password)>19)  ='administrator' -- 
+Se comprueba el cara cter que hay en las posiciones de la cadena, en este caso es la 
+contraseña del usuario administrator.  
+• ' and (select substring(password,1,1) from users where username='administrator')='a' -- 
+Mitigación recom endada:  
+La mitigación principal es el uso de consultas parametrizadas para que los v alores de las cookies no 
+sean interpretados como parte del código SQL. Además, se recomienda no devolver respuestas 
+diferentes basadas en el éxito de una consulta interna para evitar la inferencia de datos.  
+Laboratorio  12 
+Nombre del laboratorio:  
+Blind SQL injection with conditional errors  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Blind SQL injection.  
+Objetivo del laboratorio:  
+Obtener la contraseña del usuario administrator explotando una vulnerabilidad de SQLi ciega que 
+genera errores condicionales para acceder a  la cuenta.  
+Explicación técnica de la vulnerabilidad:  
+La aplicación es vulnerable porque utiliza una cookie de rastreo TrackingId en una consulta SQL de 
+forma insegura. Al manipular esta cookie con comandos maliciosos, se puede provocar que la base 
+de dato s Oracle genere un error 500 Internal Server Error o una respuesta 200 OK dependiendo de 
+si una condición lógica es verdadera o falsa.  
+Procedimiento paso a paso:  
+1. En primer lugar,  lo que haremos es comprobar la vulnerabilidad basada en errores y al 
+nosotros poner una comilla simple en tracking nos da este error lo cual podemos ver si existe 
+la vulnerabilidad : 
+--- PAGE 56 ---
+ 
+2. Podemos ver en el código  que nos da un Internal Server Error de valor de estado 500, lo que 
+tenemos que conseguir una consulta que nos muestre un valor  de estado 200, para saber si 
+la consulta se está  interpretando de manera correcta.  
+ 
+3. En este caso se nos menciona que es una base de datos Oracle, pero en caso de no tener 
+ese dato tendríamos  que ir probando diferentes sintaxis, hasta saber qué tipo de base de 
+datos  es a la que nos estamos enfrentando, por lo tanto después  de hacer esa co nsulta nos 
+da el valor de estado que  buscamos.  
+ 
+4. Con esto hecho empezaremos a buscar si existe la tabla users en la base de datos, lo 
+verificamos haciendo la consulta ‘|| (select ' ' from users where rownum =1) ||' , lo que le 
+estamos diciendo es que de  la tabla users seleccione cualquier campo donde el número  de 
+columnas sea 1, si nos devuelve el código  de 200 es que si existe como ya habíamos  
+mencionado.  
+
+--- PAGE 57 ---
+ 
+5. Verificado lo anterior necesitamos confirmar la existencia del usuario administrador en la 
+tabla de users, '|| (select case when (1=1) then to_char(1/0) else ‘’ end from users where 
+username=’administrator’)  ||' , se utiliza esto por que como estamos en una SQLi a ciegas 
+por lo que no vemos el resultado en pantalla, pero podemos intuir observando si se genera 
+un error, por lo que en este caso si se genera un error  es que si existe el usuario 
+administrador . 
+ 
+6. Ahora que tenemos estos datos verificamos cual es la longitud de la contraseña del usuario 
+administrador, para ello utilizamos el siguiente comando: '|| (select case when (1=1) then 
+to_char(1/0) else ‘’ end from users where username=’administrator’ and 
+length(password)>1)  ||'  ,  lo que hace es saber s i la cadena de la contrseña es mayor al 
+número  que le coloquemos, esto lo sabes si nos ta un error 500 por lo que con el numero 
+19 es el valor correcto por lo que la cadena tiene 20 caracteres.  
+ 
+Ahora mandamos esta instrucción  al intruder, para hacer toda s las peticiones y verificar los 
+caracteres de la contraseña en la posiciones distintas, esto nos daremos cuenta ya que al 
+hacer un ataque tipo cluster bomb podemos poner las dos variables para que vayan  
+haciendo  la misma consulta pero en distinta posición , sabremos que el caracter es correcto 
+cuando el tamaño de la es diferente a los demás . 
+
+--- PAGE 58 ---
+ 
+7. Después  de esperar a que el ataque termine de ejecutarse el proceso, nos dio que la 
+contraseña es a7qonpzm95ubeh8uf8a7 podremos ingresar la contraseña con el usuario  
+administrador, con esto podemos dar por concluido el laboratorio , ya que con eso nos 
+mostrara el mensaje de que el laboratorio está  resuelto.  
+ 
+ 
+Payload : 
+El payload que se uso es el siguiente: '|| (select case when (1=1) then to_char(1/0)  else ‘’ end from 
+users where username=’administrator’ and length(password)>1) ||'.  
+Explicación:  
+• ‘|| ||’ : Se utiliza para concatenar la inyección con la cadena original de la cookie en Oracle.  
+• CASE WHEN (condición) THEN to_char(1/0) ELSE ‘’ END : Es una estructura condi cional. Si la 
+condición es verdadera, ejecuta to_char(1/0), lo cual provoca un error de división por cero 
+y un estado HTTP 500. Si es falsa, devuelve una cadena vacía y un estado HTTP 200.  
+• length(password)>1 : Se usa para iterar y encontrar la longitud exac ta de la contraseña.  
+• substr(password, posicion, 1) : Se emplea para extraer y probar cada carácter 
+individualmente . 
+Mitigación recomendada:  
+Consultas Parametrizadas:  Utilizar sentencias preparadas para que la entrada del usuario (como la 
+cookie de rastreo)  sea tratada solo como datos y no como parte del código SQL ejecutable.  
+Validación de Entradas:  Implementar una validación estricta para asegurar que las cookies 
+contengan únicamente los formatos de datos esperados.  
+ 
+
+--- PAGE 59 ---
+Laboratorio  13 
+Nombre del laboratorio:  
+Visible error -based SQL injection.  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Inyección SQL basada en errores (Error -based).  
+Objetivo del laboratorio:  
+Extraer la contraseña del usuario administrator  mediante la provocación de errores 
+controlados en el motor de base de datos.  
+Explicación técnica de la vulnerabilidad:  
+La aplicación es vulnerable porque el valor de la cookie TrackingId  se utiliza directamente en una 
+consulta SQL sin validación previa. Además, la configuración del servidor web permite que  los 
+mensajes de error internos de la base de datos se muestren directamente en la respuesta HTTP 
+enviada al navegador. El ataque consiste en inyectar una subconsulta dentro de una función de 
+conversión de tipos (como CAST  o TO_NUMBER ). Al intentar convert ir un dato de tipo cadena (la 
+contraseña) a un tipo incompatible como un entero, el motor de base de datos genera una 
+excepción que incluye el valor original del dato en el mensaje de error, exponiéndolo al atacante.  
+Procedimiento paso a paso:  
+Descripción: Configuración del Proxy  
+1. Descripción: Configuración del Proxy  
+a. Imagen:  Interfaz de Burp Suite Community Edition  en la pestaña Proxy . 
+b. Acción:  Preparación del entorno para interceptar el tráfico HTTP entre el navegador 
+y el servidor vulnerable.  
+c. Texto para el reporte:  > "Se configura Burp Suite  como proxy para capturar la 
+petición GET original. Este paso es indispensable para manipular manualmente la 
+cookie TrackingId  e inyectar los payloads de SQL correspondientes a cada 
+laboratorio."  
+ 
+
+--- PAGE 60 ---
+2. Navegador In tegrado de Burp  
+a. Descripción:  Navegador Chromium embebido en Burp Suite.  
+b. Texto para el reporte:  "Inicio de la sesión de auditoría utilizando el navegador 
+integrado de Burp Suite, el cual permite una sincronización directa con el 
+proxy para el análisis en tiempo real de las cabeceras y cookies."  
+ 
+3. Entorno del Laboratorio (Web Sho p) 
+a. Descripción : Interfaz de la aplicación vulnerable "We Like To Shop".  
+b. Texto para el reporte : "Acceso inicial al laboratorio de Visible error -based 
+SQL injection , donde se identifica el sistema de filtrado por categorías como 
+potencial vector de ataque."  
+ 
+4. Interceptación de Petición HTTP  
+a. Descripción : Captura de una petición GET en tiempo real.  
+b. Texto para el reporte : "Petición HTTP intercept ada donde se aprecia la 
+cookie TrackingId . Este parámetro será el vector utilizado para inyectar los 
+payloads de SQL diseñados para extraer  información del servidor."  
+ 
+
+--- PAGE 61 ---
+5. Captura de Petición en el Proxy  
+a. Descripción:  Detalle  de una petición HTTP GET interceptada en el módulo Proxy . 
+b. Texto para el reporte:  "Visualización de la estructura de la petición HTTP 
+interceptada, identificando las cabeceras de host y los valores de las cookies 
+TrackingId  y session que serán manipulados  en las pruebas de inyección."  
+ 
+6. Preparación en el Repeater  
+a. Descripción:  Petición cargada en el módulo Repeater  de Burp Suite.  
+b. Texto para el reporte:  "Transferencia de la petición al módulo Repeater  para realizar 
+pruebas iterativas y controladas, permitiendo la modificación del payload en la 
+cookie y el análisis inmediato de la respuesta del servidor."  
+7. Petición en el Repeater (Pura)  
+a. Descripción : Petición HTTP lista para su manipulación en el panel de pruebas.  
+b. Texto para el  reporte : "Carga del encabezado HTTP en el módulo Repeater , 
+permitiendo el aislamiento de la cookie TrackingId para realizar pruebas de 
+inyección controladas sin afectar la navegación activa."  
+8. Análisis de Respuesta (Request vs Response)  
+a. Descripción : Compar ativa entre la petición enviada y la respuesta del servidor (200 
+OK).  
+b. Texto para el reporte : "Análisis de la respuesta del servidor tras una petición 
+legítima. Este paso establece la línea base de comparación para identificar cambios 
+sutiles o errores deta llados tras la inserción de los payloads SQL."  
+ 
+ 
+
+--- PAGE 62 ---
+9. Inyección de Carácter de Control  
+a. Descripción : Inserción de una comilla simple (') en el parámetro vulnerable.  
+b. Texto para el reporte : "Se inyecta un carácter de control (') en la cookie TrackingId. 
+El objetivo es romper la sintaxis de la consulta SQL original y forzar una respuesta 
+del servidor que confirme la vulnerabilidad".  
+10. Respuesta de Error del Servidor (500 Internal Server Error)  
+a. Descripción : Respuesta HTTP tras la inyección del carácter de control.  
+b. Texto para el reporte : "El servidor responde con un código 500 Internal Server Error . 
+Esta respuesta confirma que la entrada no fue saneada y provocó una excepción en 
+la base de datos, paso necesari o para proceder con la inyección basada en errores".  
+ 
+11. Inyección de Payload para Extracción de Datos  
+a. Descripción : Inserción del payload basado en error en la cookie TrackingId.  
+b. Texto para el reporte : "Se aplica la función  CAST sobre una subconsulta para forzar 
+un error de conversión de tipos. El payload ' AND 1=CAST((SELECT password FROM 
+users LIMIT 1) AS int) -- busca que el motor de base de datos revele el contenido del 
+campo password dentro del mensaje de error."  
+12. Exfiltr ación de Información (Respuesta con Error)  
+a. Descripción : Mensaje de error detallado que contiene la contraseña filtrada.  
+b. Texto para el reporte : "Análisis de la respuesta del servidor donde se confirma la 
+fuga de información. El mensaje de error de PostgreSQ L muestra explícitamente la 
+contraseña del administrador al no poder convertir la cadena de texto a un valor 
+entero."  
+ 
+13. Acceso al Laboratorio : Pantalla de inicio de la tienda "We Like To Shop" dentro del entorno 
+del labo ratorio de inyección SQL.  
+ 
+
+--- PAGE 63 ---
+14. Confirmación Final : ¡Banner de “Congratulations, you solved the lab! " tras acceder 
+exitosamente a la cuenta del administrador . 
+ 
+Explicación  de Payload : 
+• ': Cierra la cadena de texto de la consulta original del desarrollador.  
+• AND 1= : Introduce una comparación booleana que obliga a la base de datos a evaluar la 
+siguiente expresión.  
+• CAST(... AS int) : Intenta transformar el resultado de la subconsulta a un número entero; 
+esto genera el error necesario para la fuga de datos.  
+• (SELECT password FROM users LIMIT 1) : Consulta interna que selecciona la contraseña; el 
+LIMIT 1  es crítico para asegurar que solo se procese una fila y no cause un error de 
+cardinalidad diferente.  
+• --: Caracteres de comentario que anulan el resto de la consulta original para evitar er rores 
+de sintaxis adicionales.  
+Mitigación recomendada:  
+Deshabilitar la visualización de errores detallados en el entorno de producción (error reporting off).  
+Utilizar consultas parametrizadas o sentencias preparadas para que la entrada del usuario sea 
+tratada como un literal y no como parte del comando ejecutable.  
+Laboratorio  14 
+Nombre del laboratorio:  
+Blind SQL injection with time delays  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Inyección SQL Ciega basada en tiempo (Time -based Blind).  
+Objetivo del laboratorio:  
+Confirmar la vulnerabilidad logrando que la aplicación pause su respuesta durante un periodo 
+exacto de 10 segundos . 
+
+--- PAGE 64 ---
+Explicación técnica de la vulnerabilidad:  
+En este escenario, la aplicación no muestra mensajes de error ni cambia el contenido de la página 
+dependiendo de si la consulta es verdadera o falsa (es "ciega"). Sin embargo, si el atacante logra 
+inyectar una función que detenga la ejecución del motor de base de datos (como pg_sleep  en 
+PostgreSQL o SLEEP()  en MySQL), el tiempo que tarda la respuesta HTTP en llega r servirá como un 
+canal de salida de información. Si la respuesta tarda los segundos especificados, se confirma que el 
+código inyectado fue ejecutado con éxito por el servidor.  
+Procedimiento paso a paso:  
+1. Acceso al Laboratorio : Pantalla de descripción  del laboratorio 14, donde el objetivo es 
+causar un retraso de 10 segundos para confirmar la vulnerabilidad.  
+ 
+2. Interceptación del Request : Captura en el Proxy  de la petición GET inicial hacia la academia 
+para identificar la cookie TrackingId . 
+ 
+3. Confi guración en Repeater : Petición cargada en el módulo Repeater  para realizar las 
+pruebas de tiempo de forma aislada.  
+  
+
+--- PAGE 65 ---
+4. Línea Base de Tiempo : Respuesta inmediata ( 200 OK ) del servidor ante una petición normal, 
+sirviendo como punto de comparación.  
+ 
+5. Inyección de Tiempo (Payload) : Uso del comando de retardo para PostgreSQL: '; SELECT 
+pg_sleep(10) -- dentro de la cookie de rastreo.  
+ 
+6. Confirmación de Vulnerabilidad : Verificación del retardo en la respuesta del servidor 
+(tiempo de resp uesta >= 10,000 ms) tras enviar el payload.  
+7. Laboratorio Resuelto : Captura final del dashboard que acredita el estado "Solved"  tras 
+lograr el retraso de 10 segundos.  
+ 
+Explicación del payload:  
+• x'||: Intenta concatenar el valor original de la cookie con el resultado de la siguiente 
+función (común en PostgreSQL).  
+• pg_sleep(10) : Función nativa de PostgreSQL que instruye al proceso de la base de datos a 
+quedar inactivo por el número de segundos indicados.  
+• --: Comenta cualquier código SQL posterior para prevenir fallos de ejecución que invaliden 
+el retardo.  
+ 
+
+--- PAGE 66 ---
+Mitigación recomendada:  
+Implementar validación estricta de entrada para asegurar que los identificadores de rastreo solo 
+contengan caracteres alfanuméricos esperados.  
+Usar un Firewall de Aplicaciones Web ( WAF) configurado para detectar y bloquear palabras clave 
+relacionadas con funciones de tiempo ( sleep , benchmark , pg_sleep ). 
+Laboratorio  15 
+Nombre del laboratorio:  
+Blind SQL injection with time delays and information retrieval.  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Inyección SQL Ciega basada en tiempo con extracción de datos.  
+Objetivo del laboratorio:  
+Extraer la contraseña del usuario administrator mediante la inferencia de caracteres basada en el 
+tiempo de respuesta.  
+Explicación técnica de la vulnerabilidad:  
+Este ataque combina el retardo de tiempo con lógica condicional (CASE WHEN o IF). Dado que no 
+hay salida visual, se le hace una pregunta binaria a la base de datos: "Si el pri mer carácter de la 
+contraseña es 'a', entonces espera 10 segundos; de lo contrario, responde inmediatamente". Al 
+observar el tiempo de respuesta para cada carácter posible, el atacante puede reconstruir la 
+contraseña completa carácter por carácter, aunque no pueda verla directamente.  
+Procedimiento paso a paso:  
+1. Verificar primero que el comando pg_sleep()  funciona en el parámetro TrackingId . 
+ 
+2. Determinar la longitud de la contraseña probando: AND (SELECT CASE WHEN 
+(username='administrator' AND LENGTH( password)>X) THEN pg_sleep(5) ELSE pg_sleep(0) 
+END FROM users)='a' . 
+3. Configurar Burp Intruder  para automatizar el proceso: un payload para la posición (1, 2, 3...) 
+y otro para el carácter (a -z, 0-9). 
+
+--- PAGE 67 ---
+         
+4. Analizar los resultados del Intruder filtrando  por la columna "Response received". Las 
+peticiones con mayor tiempo indican que el carácter probado es el correcto.  
+5. Repetir hasta obtener los 20 caracteres de la contraseña y realizar el login.  
+ 
+ 
+Explic ación  de Payload : 
+• SELECT CASE WHEN (condición) THEN pg_sleep(10) ELSE pg_sleep(0) END: Estructura lógica que 
+controla el flujo del programa basándose en una premisa verdadera o falsa.  
+• SUBSTRING(password, 1, 1) = 'a': Extrae un solo carácter de la columna password y lo compa ra 
+con un valor de prueba.  
+• FROM users WHERE username = 'administrator': Asegura que la extracción de datos se realice 
+sobre el registro del administrador específicamente.  
+Mitigación recomendada:  
+Utilizar exclusivamente consultas parametrizadas para neutralizar cualquier intento de inyección de 
+lógica condicional.  
+Implementar mecanismos de detección de anomalías y limitación de tasa (Rate Limi ting) para 
+bloquear direcciones IP que realicen cientos de peticiones en un corto periodo, técnica necesaria 
+para este ataque.  
+ 
+
+--- PAGE 68 ---
+Laboratorio  16 
+Nombre del laboratorio:  
+Blind sql injection with out -of-band interaction  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Inyección SQL Blind Out -of-Band (OAST)  
+Objetivo del laboratorio:  
+El objetivo consiste en explotar una vulnerabilidad de SQL Injection ubicada dentro de una cookie 
+de la aplicación web. La finalidad del ataque es provocar que el servidor de base de datos realice 
+una consulta DNS hacia el dominio generado por Burp Collaborator.  
+Cuando el servidor vulnerable intenta resolver ese dominio, se genera una interacción registrada 
+por Burp Collaborat or. Esta interacción confirma que la inyección SQL fue ejecutada correctamente, 
+incluso cuando la aplicación web no muestra ningún resultado visible.  
+Explicación técnica de la vulnerabilidad:  
+En este laboratorio la aplicación no muestra errores SQL, result ados de consultas ni cambios visibles 
+en la respuesta HTTP. Esto significa que los métodos tradicionales de explotación —como SQL 
+Injection basada en errores, UNION o booleanos — no producen resultados observables.  
+Sin embargo, la vulnerabilidad existe porq ue la aplicación  inserta datos provenientes de una cookie 
+directamente dentro de una consulta SQL  sin validación adecuada. Esto permite que el atacante 
+manipule la consulta original y agregue instrucciones adicionales.  
+La técnica Out -of-Band consiste en ap rovechar funcionalidades del motor de base de datos que 
+permiten realizar conexiones externas, como consultas DNS o solicitudes HTTP. Si el atacante logra 
+que la base de datos intente resolver un dominio bajo su control, podrá observar esa interacción en 
+su propio servidor, confirmando que la consulta maliciosa fue ejecutada.  
+Procedimiento paso a paso:  
+1. Abrimos nuestro entorno de Kali Linux y eje cutamos Burp Suite Professional desde el menú 
+de aplicaciones escribiendo “burp” en el buscador. Esto nos permitirá interceptar el tráfico 
+HTTP de la aplicación vulnerable.  
+2. Al iniciar Burp Suite seleccionamos la opción Temporary project in memory y  damos clic en 
+Next. Esto crea un proyecto temporal adecuado para realizar pruebas rápidas sin guardar 
+configuraciones permanentes.  
+3. Seleccionamos la opción Use Burp defaults y presionamos Start Burp. Con esto cargamos la 
+configuración predeterminada del proxy y de los módulos de análisis.  
+4. Esperamos unos segundos mientras Burp Suite inicializa sus componentes principales como 
+Proxy, Repeater y Collaborator Client.  
+5. Dentro de Burp Suite nos dirigimos a la pestaña Proxy y se leccionamos Open Browser para 
+abrir el navegador Chromium preconfigurado con el certificado de Burp . 
+--- PAGE 69 ---
+6. Accedemos al laboratorio “Blind SQL injection with out -of-band interaction” en la 
+plataforma PortSwigger y hacemos clic en Access the lab para inic iar nuestra instancia 
+vulnerable.  
+7. Activamos el proxy interceptando tráfico mediante la opción Intercept is on. Luego 
+recargamos la página del laboratorio para capturar una solicitud HTTP generada por el 
+navegador . 
+8. Una vez capturada la solic itud en la pestaña Proxy, observamos que la posible vulnerabilidad 
+se encuentra en una cookie enviada en la petición HTT P. Para manipular la solicitud 
+cómodamente, hacemos clic derecho sobre la petición y seleccionamos Send to Repeater.  
+9. En la pesta ña Repeater enviamos la petición original para establecer una línea base y 
+confirmar que el servidor responde con un HTTP 200 OK.  
+10. Probamos técnicas comunes de SQL Injection agregando caracteres como:  
+' 
+-- 
+' UNION SELECT NULL — 
+Sin embargo, no obser vamos cambios en la respuesta. Esto indica que la vulnerabilidad es 
+blind, ya que la aplicación no muestra errores ni resultados visibles.  
+11. Dado que las técnicas tradicionales no producen resultados visibles, procedemos a 
+intentar un SQL Injection Out-of-Band. Para ello abrimos Burp Collaborator Client desde el 
+menú de Burp Suite y copiamos el dominio único generado por la herramienta.  
+12. Utilizamos un payload que obliga a la base de datos a realizar una consulta DNS hacia el 
+dominio de Burp C ollaborator. Este payload incluye concatenación de cadenas y una 
+subconsulta que provoca la interacción externa.  
+Ejemplo conceptual del payload:  
+'||(SELECT ... FROM ... ) — 
+ 
+Dentro de esta consulta se incluye el dominio generado por Burp Collaborator.  
+13. Al enviar la solicitud inicial se produce un Internal Server Error, lo que indica que la URL 
+del dominio debe ser codificada.  
+Realizamos URL encoding del dominio generado por Burp Collaborator y enviamos 
+nuevamente la petición.  
+14. Después de enviar la petición modificada, regresamos a la ventana de Burp Collaborator 
+Client y presionamos el botón Pull Now para consultar si se ha recibido alguna interacción.  
+15. Observamos que aparece una solicitud DNS proveniente del servidor vu lnerable hacia el 
+dominio controlado por Burp Collaborator. Esta interacción confirma que la base de datos 
+ejecutó la consulta maliciosa.  
+--- PAGE 70 ---
+Al regresar al laboratorio y actualizar la página, la plataforma indica que el laboratorio ha 
+sido resuelto.  
+ 
+Payload  
+El payload utilizado sigue la lógica del ataque Out -of-Band:  
+• Se utiliza una comilla simple (') para romper la consulta original.  
+• Se concatena una nueva consulta utilizando ||.  
+• Dentro de la subconsulta se incluye el dominio generado por Burp Collaborator.  
+• El dominio provoca que la base de datos realice un DNS lookup hacia el servidor controlado 
+por el atacante.  
+Finalmente se agregan comentarios -- para evitar errores en la sintax is SQL.  
+Mitigación recomendada:  
+Consultas parametrizadas (Prepared Statements) . La principal defensa contra SQL Injection consiste 
+en utilizar consultas parametrizadas, donde la estructura de la consulta SQL se separa 
+completamente de los datos proporcionad os por el usuario.  
+Validación estricta de entradas . Todos los datos provenientes de cookies, parámetros URL o 
+formularios deben ser validados antes de ser utilizados en consultas SQL.  
+Restricción de conexiones externas desde la base de datos . Los servidores de bases de datos 
+deberían tener restricciones de red que impidan realizar consultas DNS o solicitudes HTTP hacia 
+internet, evitando así ataques Out -of-Band.  
+Principio de menor privilegio . La cuenta utilizada por la aplicación web para conectarse a la base de 
+datos debe tener permisos mínimos, limitando el impacto de posibles vulnerabilidades.  
+Laboratorio  17 
+Nombre del laboratorio:  
+Blind sql injection with out -of-band data exfiltration  
+Nivel:  
+Practitioner  
+Tipo de SQLi:  
+Inyección SQL Blind Out -of-Band con exfiltración de datos . 
+Objetivo del laboratorio:  
+El objetivo del laboratorio es explotar una vulnerabilidad de SQL Injection ubicada en la cookie 
+TrackingId para obtener la contraseña del usuario administrator almacenada en la base de datos.  
+Debido a que la aplicación no muestra ningún resultado en pantalla ni errores visibles, la única forma 
+de obtener la información es enviándola a un servidor externo controlado por el atacante. Para 
+--- PAGE 71 ---
+lograr esto, se construye una consulta SQL que obtiene la contraseña del usuario administrador y la 
+envía como parte de una solicitud DNS hacia el dominio generado por Burp Collaborator.  
+Una vez obtenida la contraseña, se utiliza para  iniciar sesión como administrador dentro de la 
+aplicación y completar el laboratorio.  
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad se encuentra en la cookie TrackingId, la cual es utilizada por la aplicación web 
+dentro de una consulta SQL s in validación ni sanitización adecuada.  
+Esto permite que un atacante modifique el valor de la cookie para introducir instrucciones SQL 
+adicionales. En este laboratorio, la consulta maliciosa se utiliza para recuperar la contraseña del 
+usuario administrador  desde la tabla users.  
+Debido a que la aplicación no muestra resultados ni errores SQL, se utiliza una técnica Out -of-Band, 
+donde la información robada se envía a un servidor externo. En este caso, la contraseña se 
+concatena dentro de un subdominio que ser á resuelto por el servidor DNS de Burp Collaborator.  
+Cuando la base de datos intenta resolver ese dominio, la información incluida en el subdominio 
+queda registrada en Burp Collaborator, permitiendo al atacante visualizar los datos extraídos.  
+Procedimiento paso a paso:  
+1. En nuestro entorno de Kali Linux abrimos Burp Suite Professional desde el menú d e 
+aplicaciones para comenzar a interceptar el tráfico HTTP de la aplicación.  
+2. Al iniciar Burp Suite seleccionamos Temporary project in memory y damos clic en Next, 
+creando un entorno temporal de pruebas.  
+3. Seleccionamos la opción Use Burp defaults y presion amos Start Burp para iniciar el proxy 
+con la configuración predeterminada.  
+4. Nos dirigimos a la pestaña Proxy y abrimos el navegador integrado mediante el botón Open 
+Browser, el cual ya está configurado para enviar el tráfico a través del proxy.  
+5. Accedemos al laboratorio “Blind SQL injection with out -of-band data exfiltration” dentro de 
+la plataforma PortSwigger y hacemos clic en Access the lab para iniciar nuestra instancia 
+vulnerable.  
+6. Activamos el proxy mediante la opción Intercept is on y recargamos la p ágina del laboratorio 
+para capturar una solicitud HTTP.  
+7. Observamos que la solicitud contiene la cookie TrackingId, la cual es el punto vulnerable a 
+SQL Injection. Hacemos clic derecho sobre la solicitud y seleccionamos Send to Repeater 
+para manipularla ma nualmente.  
+8. En la pestaña Repeater enviamos la solicitud original para confirmar que la aplicación 
+responde correctamente con HTTP 200 OK.  
+9. Probamos algunas técnicas básicas de SQL Injection agregando una comilla simple: ‘  
+10. Sin embargo, no observamos  cambios en la respuesta. Esto indica que la aplicación es 
+vulnerable a Blind SQL Injection, ya que no devuelve errores ni información visible.  
+11. Dado que no hay retroalimentación directa, abrimos Burp Collaborator Client dentro de 
+Burp Suite y copi amos el dominio generado por la herramienta.  
+--- PAGE 72 ---
+12. Construimos una consulta SQL que recupere la contraseña del usuario administrador desde 
+la tabla users:  
+13. SELECT password FROM users WHERE username='administrator'  
+14. Debido a que el laboratorio utiliza una base de datos Oracle, la consulta debe realizarse 
+desde la tabla especial dual, utilizada para ejecutar expresiones.  
+15. Insertamos nuestra consulta dentro del valor de la cookie utilizando concatenación || y 
+agregamos el dominio generado por Burp Collaborator para enviar la información a través 
+de una solicitud DNS.  
+16. Ejemplo conceptual del payload:  
+17. '||(SELECT password FROM users WHERE username='administrator')||'.dominio -
+colaborador' — 
+18. Antes de envia r la solicitud, codificamos el payload utilizando URL encoding para evitar 
+errores en la petición HTTP. Enviamos la solicitud desde Repeater y posteriormente abrimos 
+Burp Collaborator Client para consultar si se han recibido interacciones mediante  el botón 
+Pull Now.  
+19. Observamos varias solicitudes DNS provenientes del servidor vulnerable. En el subdominio 
+aparece la información enviada por la base de datos.  Inicialmente la contraseña aparece 
+unida al dominio, lo que dificulta identificarla c laramente. Para resolver esto, modificamos 
+el payload agregando un punto (.) entre la contraseña y el dominio.  
+20. Enviamos nuevamente la solicitud y realizamos Pull Now en Burp Collaborator. Ahora la 
+contraseña aparece claramente separada dentro del subdominio. Copiamos la contraseña 
+obtenida.  
+21. Regresamos al navegador del laboratorio y accedemos a la sección My Account. Iniciamos 
+sesión con las siguientes credenciales:  Usuario: administrator  Contraseña: la contraseña 
+obtenida mediante la exfil tración  
+22. Después de iniciar sesión correctamente, el laboratorio se marca como resuelto.  
+Payload:  
+El payload utilizado combina varios elementos:  
+• ' rompe la consulta SQL original.  
+• || concatena una nueva expresión SQL.  
+• SELECT password FROM users WHERE username='administrator' obtiene la contraseña del 
+usuario administrador.  
+• La contraseña se concatena con el dominio de Burp Collaborator para enviarla mediante 
+una consulta DNS.  
+• -- comenta el resto de la consulta original para evitar errores de sintaxis.  
+El objetivo de este payload es extraer información de la bas e de datos y transmitirla a un servidor 
+externo controlado por el atacante.  
+Mitigación recomendada:  
+Consultas parametrizadas . La forma más efectiva de prevenir SQL Injection es utilizar consultas 
+parametrizadas que separen la lógica de la consulta de los da tos introducidos por el usuario.  
+--- PAGE 73 ---
+Validación y sanitización de entradas . Todos los valores provenientes de cookies, parámetros o 
+formularios deben validarse antes de ser utilizados en consultas SQL.  
+Restricción de conexiones externas . El servidor de base de d atos debería tener reglas de firewall que 
+bloqueen conexiones externas innecesarias, evitando ataques de tipo Out -of-Band.  
+Principio de menor privilegio . Las cuentas de base de datos utilizadas por aplicaciones web deben 
+tener permisos mínimos, limitando el  acceso a información sensible.  
+Laboratorio  18 
+Nombre del laboratorio:  
+SQL injection with filter bypass via xml encoding  
+Nivel:  
+Practitione  
+Tipo de SQLi:  
+SQL Injection con bypass de filtros mediante codificación XML  
+Objetivo del laboratorio:  
+El objetivo del laboratorio es explotar una vulnerabilidad de SQL Injection presente en la 
+funcionalidad que consulta el stock de los productos.  
+La aplicación utiliza un firewall de aplicaciones web que detecta y bloquea intentos de inyección 
+SQL. Por lo tanto, el atacant e debe encontrar una forma de evadir este filtro para ejecutar la 
+consulta maliciosa.  
+Una vez superado el WAF, se debe utilizar una consulta UNION SELECT para extraer los nombres de 
+usuario y contraseñas almacenados en la tabla users. Finalmente, se utiliz a la contraseña del usuario 
+administrator para iniciar sesión y completar el laboratorio.  
+Explicación técnica de la vulnerabilidad:  
+La vulnerabilidad se encuentra  en la funcionalidad Check Stock, que consulta la cantidad de 
+unidades disponibles de un produ cto en una tienda específica.  
+Cuando el usuario presiona esta opción, la aplicación envía una solicitud HTTP que contiene 
+parámetros como productId y storeId. Estos valores son utilizados directamente dentro de una 
+consulta SQL  sin una validación adecuada.  
+Para mitigar ataques, la aplicación cuenta con un WAF, el cual analiza las solicitudes en busca de 
+patrones asociados con ataques como SQL Injection. Si detecta caracteres sospechosos como 
+comillas, comentarios SQL o palabras clave como UNION SELECT, la solicitud es bloqueada y el 
+servidor devuelve un mensaje indicando que se detectó un ataque.  
+Sin embargo, el WAF solo analiza el contenido en texto plano. Al codificar los caracteres del payload 
+utilizando entidades XML en formato hexadecimal, e l firewall no reconoce el patrón de ataque y 
+permite que la solicitud continúe.  
+--- PAGE 74 ---
+Cuando la solicitud llega al servidor, los caracteres codificados son decodificados y la consulta SQL 
+se ejecuta normalmente en la base de datos. Esto permite introducir una co nsulta UNION SELECT 
+que combina el resultado original con información de la tabla users, donde se almacenan los 
+nombres de usuario y contraseñas.  
+Procedimiento paso a paso:  
+1. En nuestro  entorno de Kali Linux abrimos Burp Suite desde el menú de aplicaciones para 
+interceptar el tráfico HTTP de la aplicación.  
+2. Al iniciar Burp Suite seleccionamos Temporary project in memory y damos clic en Next, 
+creando un entorno temporal para realiz ar las pruebas.  
+3. Seleccionamos la opción Use Burp defaults y presionamos Start Burp para iniciar el proxy 
+con la configuración predeterminada.  
+4. Nos dirigimos a la pestaña Proxy y abrimos el navegador integrado mediante el botón 
+Open Browser, el cual ya está configurado para enviar el tráfico a través del proxy.  
+5. Accedemos al laboratorio “SQL injection with filter bypass via XML encoding” dentro de la 
+plataforma PortSwigger y hacemos clic en Access the lab para iniciar la instancia 
+vulne rable.  
+6. Exploramos la tienda del laboratorio y seleccionamos cualquier producto. Dentro del 
+producto observamos la opción Check Stock, que permite consultar cuántas unidades hay 
+disponibles en una ubicación específica.  
+7. Activamos el proxy med iante la opción Intercept is on y presionamos Check Stock para 
+capturar la solicitud HTTP que consulta el inventario.  
+8. Observamos que la solicitud contiene parámetros como productId y storeId. Hacemos clic 
+derecho sobre la solicitud interceptada y s eleccionamos Send to Repeater para 
+manipularla manualmente.  
+9. En la pestaña Repeater enviamos la solicitud original y verificamos que el servidor 
+responde con el número de unidades disponibles del producto, lo que confirma que la 
+consulta funciona correctamente.  
+10. Intentamos probar la vulnerabilidad agregando una comilla simple ('). La respuesta del 
+servidor indica “Attack detected”, lo que confirma que existe un WAF bloqueando las 
+solicitudes sospechosas.  
+11. Para evadir este sistema de p rotección instalamos la extensión Hackvertor desde la 
+sección Extender → BApp Store dentro de Burp Suite.  
+12. Una vez instalada la extensión, regresamos a la solicitud en Repeater. Seleccionamos el 
+contenido del payload y utilizamos la opción:  
+Click d erecho → Extensions → Hackvertor → Encode → Hex entities  
+13. Esto convierte los caracteres del payload en entidades hexadecimales dentro de etiquetas 
+XML.  
+14. Después de aplicar la codificación, enviamos nuevamente la solicitud. Esta vez el WAF no 
+detecta  el ataque y la solicitud es procesada por el servidor.  
+15. Probamos una consulta UNION SELECT NULL para determinar el número de columnas que 
+tiene la consulta original. Observamos que la respuesta indica que la consulta contiene 
+una sola columna.  
+--- PAGE 75 ---
+16. Con esta información construimos un payload que concatena el nombre de usuario y la 
+contraseña desde la tabla users utilizando el operador de concatenación ||.  
+17. Enviamos la solicitud con el payload codificado y el servidor responde mostrando una lista 
+con las credenciales almacenadas en la base de datos, incluy endo la del usuario 
+administrator.   
+18. Copiamos la contraseña correspondiente al usuario administrator y regresamos al 
+navegador del laboratorio.  
+19. Accedemos a la sección My Account e iniciamos sesión con las credenciales obtenidas. 
+Después de iniciar sesión correctamente, el laboratorio se marca como resuelto.  
+ 
+Payload : 
+UNION SELECT username || ':' || password FROM users  
+Explicación:  
+• UNION SELECT permite combina r el resultado de la consulta original con otra 
+consulta.  
+• username || ':' || password concatena el nombre de usuario con su contraseña.  
+• users es la tabla donde se almacenan las credenciales de los usuarios.  
+Mitigación recomendada:  
+Consultas parametrizadas . La mejor forma de prevenir SQL Injection es utilizar consultas 
+parametrizadas o prepa red statements, que separan los datos introducidos por el usuario de la 
+lógica de la consulta SQL.  
+Validación y sanitización de entradas . Todos los parámetros enviados por el usuario deben ser 
+validados antes de ser utilizados en consultas a la base de dato s. 
+Configuración adecuada del WAF . Los firewalls de aplicaciones web deben actualizarse 
+constantemente para detectar nuevas técnicas de evasión utilizadas por los atacantes.  
+Principio de menor privilegio . Las cuentas de base de datos utilizadas por aplicacio nes web deben 
+tener permisos limitados para reducir el impacto de una posible explotación.   
+Conclusión  
+Este laboratorio nos permitió demostrar cómo una vulnerabilidad de SQL Injection basada en UNION  
+puede ser aprovechada en un entorno Oracle para enumerar la estru ctura de la base de datos y 
+extraer credenciales almacenadas en la tabla de usuarios. A través de la identificación de tablas, 
+columnas y registros sensibles, fue posible recuperar la contraseña del usuario administrator  e 
+iniciar sesión de manera exitosa.  La práctica evidenció que, aunque Oracle maneja estructuras 
+distintas a otros motores de base de datos, una implementación insegura sigue permitiendo la 
+exposición de información crítica. Por ello, concluimos que este tipo de vulnerabilidad representa 
+un riesgo grave para la confidencialidad del sistema y confirma la necesidad de aplicar consultas 
+parametrizadas, validación de entradas y controles estrictos de acceso a la base de datos.  
+ 
+--- PAGE 76 ---
+Capturas de laboratorio s resueltos  
+ 
+ 
+ 
+Referencias  
+PortSwigger. Web Security Academy: SQL Injection . PortSwigger Web Security Academy.  
+PortSwigger. Burp Suite Documentation . PortSwigger.  
+OWASP Foundation. OWASP Top 10: The Ten Most Critical Web Application Security Risks . 
+Oracle. Oracle Database Documentation . Oracle Corporation.  
+MySQL. MySQL Reference Manual . Oracle Corporation.  
+Microsoft. SQL Server Documentation . Microsoft.  
+ 
+
+--- PAGE 77 ---
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

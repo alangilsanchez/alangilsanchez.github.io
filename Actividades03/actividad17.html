@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alan | Actividad 17</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <!-- Styles -->
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <span class="prompt-user">root</span><span class="prompt-host">@alan</span>:<span
+                    class="prompt-path">~/actividades/act17</span>$ <span class="cursor"></span>
+            </div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="../index.html" class="nav-link">/inicio</a></li>
+                    <li><a href="../actividades.html" class="nav-link active">/actividades</a></li>
+                    <li><a href="../proyectos.html" class="nav-link">/proyectos</a></li>
+                    <li><a href="../certificaciones.html" class="nav-link">/certificaciones</a></li>
+                    <li><a href="../pf01.html" class="nav-link">/PF01</a></li>
+                    <li><a href="../pf02.html" class="nav-link">/PF02</a></li>
+                    <li><a href="../pf03.html" class="nav-link">/PF03</a></li>
+                    <li class="nav-item-dropdown">
+                        <a href="../RoadToHallOfFame/sql_injection.html" class="nav-link nav-hof">/road_to_hall_of_fame</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="../RoadToHallOfFame/sql_injection.html">SQL Injection</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="../actividades.html" class="btn-back">&lt; Volver</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <article class="blog-container section-scroll">
+
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+
+            <header class="article-header">
+                <h1 style="margin-top: 8rem; margin-bottom: 3rem; line-height: 1.4; display: block; padding-top: 2rem;">
+                    ACTIVIDAD 17: Evaluación de Vulnerabilidades con CVSS v3.1</h1>
+                <div class="meta-info">
+                    <span><i class="far fa-calendar"></i> Mayo 2026</span>
+                    <span><i class="far fa-user"></i> Equipo 4</span>
+                </div>
+                <div class="team-members"
+                     style="margin-top: 2rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem;">
+                    <p>Integrantes:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>Alonso Castillo Omar Karim (179033)</li>
+                        <li>Cruz Juárez Francisco Javier (177622)</li>
+                        <li>Espinoza Aguilar Brian Salvador (175031)</li>
+                        <li>Martínez Lara Santiago de la Cruz (177685)</li>
+                        <li>Sánchez Ramírez Mayeli (173030)</li>
+                        <li>Sánchez Zavala Alan Gilberto (177263)</li>
+                    </ul>
+                </div>
+            </header>
+
+            <hr class="neon-divider">
+
+            <div class="article-body">
+
+                <section>
+                    <h2>1. Introducción</h2>
+                    <p>
+                        El objetivo de esta actividad es aplicar el estándar internacional CVSS v3.1 (Common Vulnerability Scoring System) para cuantificar la severidad de una vulnerabilidad detectada en un entorno web interno. Este proceso permite a las organizaciones priorizar la mitigación de riesgos basándose en datos técnicos objetivos y medibles.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>2. Escenario de Evaluación</h2>
+                    <p>
+                        Una organización detecta una vulnerabilidad en un sistema web interno con las siguientes características:
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Puede explotarse a través de la red.</li>
+                        <li>La explotación requiere baja complejidad.</li>
+                        <li>Se necesitan privilegios elevados.</li>
+                        <li>No requiere interacción del usuario.</li>
+                        <li>No cambia el alcance.</li>
+                        <li>El impacto en Confidencialidad, Integridad y Disponibilidad es Bajo.</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>3. Desarrollo Técnico</h2>
+                    <p>
+                        Basado en los parámetros del escenario, se generó el siguiente <strong>Vector String</strong> que resume de forma técnica todas las métricas base: <code>CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:L</code>
+                    </p>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Métrica</th>
+                                    <th>Valor</th>
+                                    <th>Sigla</th>
+                                    <th>Razón Técnica</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Vector de ataque</td>
+                                    <td>Red</td>
+                                    <td>AV:N</td>
+                                    <td>Se explota remotamente sobre protocolo de red.</td>
+                                </tr>
+                                <tr>
+                                    <td>Complejidad</td>
+                                    <td>Bajo</td>
+                                    <td>AC:L</td>
+                                    <td>No existen barreras de seguridad adicionales.</td>
+                                </tr>
+                                <tr>
+                                    <td>Privilegios req.</td>
+                                    <td>Alto</td>
+                                    <td>PR:H</td>
+                                    <td>Requiere permisos de administrador.</td>
+                                </tr>
+                                <tr>
+                                    <td>Interacción</td>
+                                    <td>Ninguno</td>
+                                    <td>UI:N</td>
+                                    <td>Puede ejecutarse sin ayuda de terceros.</td>
+                                </tr>
+                                <tr>
+                                    <td>Alcance</td>
+                                    <td>Sin cambios</td>
+                                    <td>S:U</td>
+                                    <td>Impacto confinado al sistema web afectado.</td>
+                                </tr>
+                                <tr>
+                                    <td>Impacto CIA</td>
+                                    <td>Bajo</td>
+                                    <td>C:L/I:L/A:L</td>
+                                    <td>Pérdida parcial en Confidencialidad, Integridad y Disponibilidad.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <section>
+                    <h2>4. Interpretación Técnica</h2>
+                    <p>
+                        A pesar de que el requisito de privilegios elevados (PR:H) actúa como un control de seguridad inicial, la vulnerabilidad no pierde relevancia. Un atacante que logre comprometer una cuenta administrativa a través de otros vectores usaría este fallo para realizar movimientos laterales o alterar información sin interacción del usuario. El perfil típico es un insider o un actor externo persistente. Dado que el impacto es Bajo, la explotación no implica un desastre total, pero sí una degradación de la confianza en los datos de la aplicación.
+                    </p>
+                </section>
+
+                <section>
+                    <h2>5. Cálculo de Puntuación</h2>
+                    <p>Utilizando la calculadora oficial del FIRST (Forum of Incident Response and Security Teams):</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Puntuación Base:</strong> 4.3</li>
+                        <li><strong>Clasificación de Severidad:</strong> Media (Rango 4.0 - 6.9)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h2>6. Conclusión</h2>
+                    <div class="quotation-box">
+                        <p>
+                            La evaluación arroja un resultado de 4.3 (Severidad Media). Debe ser registrada en el inventario de seguridad y se recomienda su remediación después de que vulnerabilidades "Críticas" y "Altas" hayan sido mitigadas. La principal medida preventiva es el fortalecimiento del control de acceso y el monitoreo estricto de cuentas administrativas para evitar que esta brecha sea utilizada en ataques de mayor escala.
+                        </p>
+                    </div>
+                </section>
+
+            </div>
+
+            <div class="export-section">
+                <a href="../PDFs/act17-Equipo4.pdf" target="_blank" class="btn download-btn">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </a>
+                <p class="crypto-text">SHA256: 3a2c5b9e8d...4f1d7c2a1b</p>
+            </div>
+
+        </article>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Alan Gilberto Sánchez Zavala</p>
+    </footer>
+
+</body>
+
+</html>

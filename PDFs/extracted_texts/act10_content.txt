@@ -1,0 +1,110 @@
+--- PAGE 1 ---
+FUNDAMENTOS Y RELEVANCIAS 
+¿Que es la Ciberseguridad?
+Es la protección de sistemas
+conectados a internet,
+incluyendo hardware, software y
+datos, contra ataques digitales
+que buscan acceder, cambiar o
+destruir información sensible.
+Relevancia Organizacional 
+Estrategica
+En un mundo hiperconectado,
+la seguridad digital es vital
+para garantizar la continuidad
+del negocio, proteger la
+privacidad de los clientes y
+mantener la integridad de la
+infraestructura crítica.
+El Factor Humano: 2026 
+y más allá
+El 80% de los creadores y
+profesionales busca
+recuperar el control creativo
+y de seguridad en la era de
+la IA, posicionando al
+usuario como la primera
+línea de defensa.
+EL PANORAMA DE RIESGOS ESTRATEGIAS DE MITIGACION
+Amenazas, Ataques y
+Técnicas
+Identificación de
+vectores de ataque
+comunes como
+malware, phishing e
+ingeniería social que
+comprometen la
+integridad del
+sistema.
+Vulnerabilidades en la Red
+Análisis de fallos en
+protocolos de
+comunicación y
+debilidades en
+dispositivos finales
+que permiten el
+acceso no autorizado
+a datos corporativos.
+El Desafío de la IA
+Generativa
+El uso de herramientas
+sintéticas para crear
+ataques más
+sofisticados,
+difuminando la línea
+entre lo real y lo surreal Protección de Datos y
+Privacidad
+Implementación de
+cifrado robusto, gestión
+de identidades y
+políticas de privacidad
+para salvaguardar la
+información personal y
+corporativa.
+Defensa de la Organización
+Uso de cortafuegos
+(firewalls), sistemas de
+detección de intrusos y
+actualizaciones
+constantes para crear
+una arquitectura de
+seguridad resiliente.
+Educación y Concientización
+Entrenamiento continuo
+del personal en la
+detección de anomalías
+y buenas prácticas de
+higiene digital para
+mitigar el error
+humano.
+EL FUTURO Y ACCIÓN
+Tu Futuro en Ciberseguridad
+La demanda de profesionales capaces de gestionar la complejidad digital sigue creciendo,
+ofreciendo una carrera con impacto global y constante evolución.
+Integrantes:
+179033 – Alonso Castillo
+Omar Karim
+ 177622 – Cruz Juárez
+Francisco Javier
+ 175031 – Espinoza Aguilar
+Brian Salvador
+ 177685 – Martínez Lara
+Santiago de la Cruz
+ 173030 – Sánchez Ramírez
+Mayeli
+ 177263 – Sánchez Zavala
+Alan Gilberto
+Referencias:
+NIST. Cybersecurity Framework,
+2018.
+ENISA. Threat Landscape, 2023.
+OWASP. Top 10 Security Risks,
+2021.
+IBM. Cost of a Data Breach, 2023.
+Cisco. Introducción a la
+Ciberseguridad, 2023."PRIORIZAR LA
+CLARIDAD SOBRE LA
+DECORACIÓN"El éxito de una estrategia de seguridad
+radica en qué tan bien los usuarios
+comprenden y ejecutan los protocolos de
+protección.
