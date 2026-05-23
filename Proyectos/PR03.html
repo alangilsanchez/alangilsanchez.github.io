@@ -49,11 +49,32 @@
 
     <main>
         <article class="blog-container section-scroll">
+            <div style="height: 250px; display: block;" aria-hidden="true" class="layout-spacer"></div>
+
             <header class="article-header" style="margin-bottom: 2rem;">
                 <h1
                     style="color: #fff; text-shadow: 0 0 10px rgba(5, 217, 232, 0.3); margin-top: 5rem; margin-bottom: 0.5rem; line-height: 1.4; display: block; padding-top: 0;">
-                    PR03 - Implementación de SGSI basado en ISO 27001: Caso de Estudio ABB
+                    PR03 - Implementación de SGSI basado en ISO 27001: Caso de Estudio ABB (División Electrificación)
                 </h1>
+                <div class="meta-info" style="justify-content: flex-start; margin-top: 2rem; margin-bottom: 1.5rem;">
+                    <span><i class="far fa-calendar"></i> Abril - Mayo 2026</span>
+                    <span><i class="far fa-user"></i> Equipo 4</span>
+                </div>
+                <div class="team-members"
+                     style="margin-bottom: 2rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.9rem;">
+                    <p>Integrantes:</p>
+                    <ul style="list-style: none; padding: 0;">
+                        <li>Alonso Castillo Omar Karim (179033)</li>
+                        <li>Cruz Juárez Francisco Javier (177622)</li>
+                        <li>Espinoza Aguilar Brian Salvador (175031)</li>
+                        <li>Martínez Lara Santiago de la Cruz (177685)</li>
+                        <li>Sánchez Ramírez Mayeli (173030)</li>
+                        <li>Sánchez Zavala Alan Gilberto (177263)</li>
+                    </ul>
+                </div>
+                <button class="btn" onclick="exportToPDF()" style="margin-bottom: 2rem; background-color: #e81123;">
+                    <i class="fas fa-file-pdf"></i> Exportar a PDF
+                </button>
             </header>
 
             <hr class="neon-divider">
@@ -61,135 +82,481 @@
             <div class="article-body">
                 <!-- ===== INTRODUCCIÓN ===== -->
                 <section>
-                    <h2>1. Introducción</h2>
-                    <div class="meta-info" style="justify-content: flex-start; margin-bottom: 2rem;">
-                        <span><i class="far fa-calendar"></i> Abril - Mayo 2026</span>
-                        <span><i class="far fa-user"></i> Equipo 4</span>
-                    </div>
-                    <button class="btn" onclick="exportToPDF()" style="margin-bottom: 2rem; background-color: #e81123;">
-                        <i class="fas fa-file-pdf"></i> Exportar a PDF
-                    </button>
+                    <h2>1. Contexto de la Organización</h2>
                     <p>
-                        Proyecto de consultoría académica que diseña un SGSI (Sistema de Gestión de Seguridad de la Información) basado en ISO 27001 para ABB, específicamente para la división IS Application Service Delivery Organization. ABB es una empresa dedicada a la electrificación y automatización industrial.
+                        El presente proyecto de consultoría académica detalla el diseño y planeación de un <strong>Sistema de Gestión de Seguridad de la Información (SGSI)</strong> bajo la norma internacional <strong>ISO/IEC 27001:2022</strong> para la empresa multinacional <strong>ABB</strong>, específicamente enfocado en la división <strong>IS Application Service Delivery Organization</strong> (encargada del soporte de la cartera de activos heredados de GE Industrial Solutions en Norteamérica).
                     </p>
-                </section>
+                    
+                    <h3>1.1. Objetivos, Misión y Visión</h3>
+                    <p><strong>Misión:</strong> Impulsar la transformación de la sociedad y la industria para lograr un futuro más productivo y sostenible mediante la electrificación y la automatización inteligente. El lema principal de ABB es <em>"Engineered to Outrun"</em>.</p>
+                    <p><strong>Visión:</strong> Consolidarse como el socio de servicio de confianza número uno que garantiza que los activos eléctricos de automatización sean fiables, estén disponibles y completamente preparados frente a la obsolescencia técnica.</p>
+                    <p><strong>Objetivos:</strong> Implementar un marco operativo robusto basado en ISO 27001:2022 para proteger la información en el soporte técnico y el mantenimiento de infraestructuras críticas, adaptándose a las regulaciones específicas de la industria de energía.</p>
 
-                <!-- ===== CONTEXTO DE LA ORGANIZACIÓN ===== -->
-                <section>
-                    <h2>2. Contexto de la Organización</h2>
-                    <p>
-                        ABB tiene como misión impulsar la transformación de la sociedad e industria. La división IS Application Service Delivery se enfoca en la gestión de activos heredados de GE. La estructura jerárquica incluye roles clave como CEO/CISO, Gerente de Producto de Ciclo de Vida, Ingeniero de Soporte Técnico Senior, Manager Continental de Ciberseguridad, entre otros.
-                    </p>
+                    <h3>1.2. Fundación y Cuerpo Académico</h3>
+                    <p>ABB se formó en 1988 tras la fusión de la sueca ASEA y la suiza BBC. Un hito crítico para este caso fue la adquisición de GE Industrial Solutions en 2018, integrando marcas de automatización históricas como AEG, Agut y Vynckier. La investigación académica en el SGSI de la división de Soporte Técnico se realiza en colaboración con el cuerpo de investigación de ciberseguridad industrial y redes de la Universidad Politécnica de San Luis Potosí.</p>
+
+                    <h3>1.3. Organigrama</h3>
+                    <p>La estructura jerárquica por puestos de la división IS Application Service Delivery involucrada en el SGSI se detalla a continuación:</p>
+                    
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Departamento</th>
+                                    <th>Puesto</th>
+                                    <th>Función en el SGSI</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Alta Dirección</strong></td>
+                                    <td>Director Ejecutivo (CEO) / CISO</td>
+                                    <td>Establecer la dirección estratégica y firmar la Política de Seguridad de la Información (PSI).</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Servicios de Electrificación</strong></td>
+                                    <td>Gerente de Producto de Ciclo de Vida</td>
+                                    <td>Gestionar la obsolescencia y liderar el soporte técnico de activos heredados de GE.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Ingeniería de Campo</strong></td>
+                                    <td>Ingeniero de Soporte Técnico Senior</td>
+                                    <td>Ejecutar técnicas de mantenimiento y operación segura de desincorporación en sitio.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Manejo de Activos e IS</strong></td>
+                                    <td>Manager Continental de Ciberseguridad</td>
+                                    <td>Definir la estrategia de ciberseguridad regional, coordinar la gestión de riesgos y auditar logs.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Aplicaciones no-ERP</strong></td>
+                                    <td>Manager Continental para Aplicaciones no-ERP</td>
+                                    <td>Garantizar la seguridad de las aplicaciones no-ERP y supervisar el cumplimiento de controles.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Bases de Datos</strong></td>
+                                    <td>Administrador de Base de Datos SQL Server</td>
+                                    <td>Implementar controles de acceso, cifrado, backups y monitorear actividad en bases de datos.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Auditoría</strong></td>
+                                    <td>Auditor Interno de SGSI</td>
+                                    <td>Realizar evaluaciones periódicas de cumplimiento y proponer acciones de mejora.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p style="margin-top: 1.5rem;">Visualización de la estructura jerárquica y flujos de reporte en la división:</p>
+                    <div class="lab-img-grid" style="grid-template-columns: 1fr; max-width: 650px; margin: 1.5rem auto;">
+                        <img src="../assets/Organigrama.png" alt="Organigrama IS Application Service Delivery ABB" loading="lazy">
+                    </div>
                 </section>
 
                 <!-- ===== ALCANCE DEL SGSI ===== -->
                 <section>
-                    <h2>3. Alcance del SGSI</h2>
+                    <h2>2. Alcance del SGSI</h2>
+                    <p>
+                        El límite del SGSI de ABB se define formalmente como:
+                    </p>
                     <ul class="tech-list" style="margin-left: 1.5rem;">
                         <li><strong>Departamento:</strong> Servicios de Electrificación (División de activos heredados GE).</li>
-                        <li><strong>Proceso:</strong> Gestión de Vulnerabilidades y Eliminación de Información en servidores de control industrial retirados.</li>
-                        <li><strong>Activo Clave:</strong> Servidor de Almacenamiento de Datos de Configuración (Main Controller Server).</li>
-                        <li><strong>Referencias Normativas:</strong> ISO/IEC 27001:2022, ISO/IEC 27002, ISO/IEC 27017, e ISO/IEC 27019.</li>
+                        <li><strong>Proceso Elegido:</strong> Gestión de Vulnerabilidades y Eliminación Total de Información en servidores de control industrial retirados del servicio.</li>
+                        <li><strong>Activo Elegido:</strong> Servidor de Almacenamiento de Datos de Configuración (Main Controller Server).</li>
+                        <li><strong>Límite Físico y Lógico:</strong> Abarca desde la identificación del activo obsoleto en la planta de San Luis Potosí hasta la validación de la eliminación definitiva de datos y configuraciones de red, excluyendo el desecho físico del hardware.</li>
+                    </ul>
+                    
+                    <h3>2.1. Referencias Normativas</h3>
+                    <p>Se adoptan y justifican las siguientes normas:</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>ISO/IEC 27001:2022 (Cláusula 8.10 - Eliminación de Información):</strong> Garantiza que la eliminación de datos sea definitiva y evite la recuperación de planos industriales.</li>
+                        <li><strong>ISO/IEC 27002 (Control 8.11 - Enmascaramiento de datos):</strong> Aplicada para el enmascaramiento de información confidencial en los reportes técnicos generados.</li>
+                        <li><strong>ISO/IEC 27017 (Seguridad Cloud):</strong> Regula la seguridad de las copias de seguridad de configuración en la nube previas a la sanitización local.</li>
+                        <li><strong>ISO/IEC 27019 (Seguridad en Sector Energía):</strong> Específica para sistemas de control distribuido (DCS) y control industrial operados por ABB.</li>
                     </ul>
                 </section>
 
                 <!-- ===== INVENTARIO DE ACTIVOS ===== -->
                 <section>
-                    <h2>4. Inventario de Activos</h2>
-                    <p>Se identificaron un total de 40 activos críticos clasificados en:</p>
-                    <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li><strong>20 Activos Internos:</strong> Código fuente, configuraciones de red, servidores DCS, bases PII, planos de ingeniería, credenciales, logs de auditoría, etc.</li>
-                        <li><strong>20 Activos Externos:</strong> Servicios Cloud (Azure/AWS), repuestos OEM, leyes de privacidad, inteligencia de amenazas, proveedores de internet, etc.</li>
-                    </ul>
+                    <h2>3. Inventario de Activos (Mapeo Completo)</h2>
+                    <p>De acuerdo con el estándar, se mapearon 40 activos críticos que interactúan en el alcance (20 Internos y 20 Externos):</p>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1.5rem;">
+                        <div>
+                            <h3>20 Activos Internos</h3>
+                            <ul class="tech-list" style="font-size: 0.85rem;">
+                                <li><strong>I1.</strong> Credenciales de Acceso (Usuarios y contraseñas).</li>
+                                <li><strong>I2.</strong> Código fuente (Algoritmos de automatización).</li>
+                                <li><strong>I3.</strong> Servidores de Almacenamiento (Base de datos).</li>
+                                <li><strong>I4.</strong> Backups locales (Cintas y discos de respaldo).</li>
+                                <li><strong>I5.</strong> Logs de auditoría (Registro de accesos).</li>
+                                <li><strong>I6.</strong> Bases de datos PII (Datos de personal y clientes).</li>
+                                <li><strong>I7.</strong> Manuales y Planos (Propiedad Intelectual).</li>
+                                <li><strong>I8.</strong> Configuraciones de Red (Configuraciones de Switches/Firewalls).</li>
+                                <li><strong>I9.</strong> Personal y Ética (Equipo humano operativo).</li>
+                                <li><strong>I10.</strong> Estaciones de Ingeniería (Laptops de diagnóstico).</li>
+                                <li><strong>I11.</strong> CCTV (Monitoreo de seguridad física).</li>
+                                <li><strong>I12.</strong> Evidencia Digital (Firmas y hashes de auditoría).</li>
+                                <li><strong>I13.</strong> Inventario de Activos (Documento oficial).</li>
+                                <li><strong>I14.</strong> Política de Seguridad (PSI rectora).</li>
+                                <li><strong>I15.</strong> Servidores DCS (Sistemas de control en planta).</li>
+                                <li><strong>I16.</strong> Certificados Digitales (Llaves SSL/TLS de red).</li>
+                                <li><strong>I17.</strong> Cultura Organizacional (Nivel de conciencia).</li>
+                                <li><strong>I18.</strong> Software ERP (Sistema administrativo de bajas).</li>
+                                <li><strong>I19.</strong> Infraestructura de Red (Switches y cableado físico).</li>
+                                <li><strong>I20.</strong> Patentes de Automatización (Propiedad Industrial).</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3>20 Activos Externos</h3>
+                            <ul class="tech-list" style="font-size: 0.85rem;">
+                                <li><strong>E1.</strong> Servicios Cloud Azure/AWS/GCP.</li>
+                                <li><strong>E2.</strong> Soporte TIC Externo (Proveedores de servicios).</li>
+                                <li><strong>E3.</strong> Leyes de Privacidad (GDPR, LFPDPPP).</li>
+                                <li><strong>E4.</strong> Repuestos OEM (Hardware GE/proveedores).</li>
+                                <li><strong>E5.</strong> Inteligencia de Amenazas (Threat Intel externa).</li>
+                                <li><strong>E6.</strong> Licencias de Terceros (Red Hat Enterprise Linux).</li>
+                                <li><strong>E7.</strong> Suministro de Energía Externa (Red eléctrica pública).</li>
+                                <li><strong>E8.</strong> Datos de Configuración de Clientes (Esquemas de plantas).</li>
+                                <li><strong>E9.</strong> Bibliotecas de Código Abierto (GitHub/Open Source).</li>
+                                <li><strong>E10.</strong> Certificaciones ISO 27001 (Auditores certificadores).</li>
+                                <li><strong>E11.</strong> Proveedores de Internet (ISP y redundancia).</li>
+                                <li><strong>E12.</strong> Repositorios de Código Externos.</li>
+                                <li><strong>E13.</strong> Filtrado Web Externo.</li>
+                                <li><strong>E14.</strong> Regulaciones Geopolíticas de Suministro.</li>
+                                <li><strong>E15.</strong> Cambio Climático (Riesgo ambiental).</li>
+                                <li><strong>E16.</strong> Servicios Logísticos y de Transporte.</li>
+                                <li><strong>E17.</strong> Plataformas de Banca Electrónica (Transacciones).</li>
+                                <li><strong>E18.</strong> Redes Sociales Corporativas.</li>
+                                <li><strong>E19.</strong> Sensores IoT Externos (Monitoreo ambiental).</li>
+                                <li><strong>E20.</strong> Accionistas e Inversores (Cumplimiento).</li>
+                            </ul>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- ===== POLÍTICAS DE SEGURIDAD ===== -->
                 <section>
-                    <h2>5. Políticas de Seguridad</h2>
-                    <p>Se establecieron 20 políticas funcionales estructuradas en estándares, directrices y procedimientos:</p>
-                    <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li><strong>Políticas Internas (10):</strong> Control de Acceso (MFA obligatorio), Desarrollo Seguro, Gestión de Almacenamiento, Respaldo de Datos, Monitoreo de Seguridad, Protección de la Privacidad, Documentación Técnica, Configuración de Red, Formación de Personal, Salud de Activos.</li>
-                        <li><strong>Políticas Externas (10):</strong> Seguridad en la Nube, Gestión de Riesgos de Proveedores, Cumplimiento Regulatorio, Integridad de Suministros, Inteligencia de Amenazas, Software de Terceros, Continuidad de Servicios Críticos, Intercambio Seguro, Uso de Código Abierto, Gestión de Auditorías Externas.</li>
+                    <h2>4. Políticas de Seguridad (Gobernanza)</h2>
+                    <p>El SGSI define 20 políticas funcionales estructuradas técnicamente:</p>
+
+                    <h3>4.1. 10 Políticas para Activos Internos</h3>
+                    <ul class="tech-list" style="font-size: 0.9rem; margin-left: 1.5rem;">
+                        <li><strong>Control de Acceso (Credenciales):</strong> Estándar de MFA obligatorio para cuentas de administración en servidores DCS. Procedimiento de revocación en menos de 2 horas tras offboarding.</li>
+                        <li><strong>Desarrollo Seguro (Código Fuente):</strong> Estándar de análisis estático (SAST) antes de subir a repositorios. Lineamiento de seguimiento de pautas OWASP.</li>
+                        <li><strong>Gestión de Almacenamiento (Servidores):</strong> Procedimiento de borrado lógico verificado antes de desincorporar. Estándar de retención de logs de 1 año.</li>
+                        <li><strong>Respaldo de Datos (Backups):</strong> Estándar de copia diaria incremental y semanal completa. Procedimiento trimestral de restauración de prueba.</li>
+                        <li><strong>Monitoreo de Seguridad (Logs):</strong> Línea base de registro de inicios de sesión y escaladas de privilegios en SIEM centralizado.</li>
+                        <li><strong>Protección de Privacidad (Bases PII):</strong> Estándar de enmascaramiento en desarrollo y pruebas. Auditoría semestral de bases de datos.</li>
+                        <li><strong>Documentación Técnica (Planos):</strong> Estándar de clasificación confidencial y almacenamiento cifrado con llave administrada por ABB.</li>
+                        <li><strong>Configuración de Red (Firewalls):</strong> Hardening obligatorio de switches y firewalls según CIS Benchmarks. Control formal de cambios.</li>
+                        <li><strong>Formación de Personal (Cultura):</strong> Certificación anual obligatoria en OWASP Top 10 e ingeniería social para privilegios de administrador.</li>
+                        <li><strong>Salud de Activos (Laptops):</strong> Línea base de EDR activo y actualizaciones críticas de parches de seguridad en máximo 7 días.</li>
+                    </ul>
+
+                    <h3>4.2. 10 Políticas para Activos Externos</h3>
+                    <ul class="tech-list" style="font-size: 0.9rem; margin-left: 1.5rem;">
+                        <li><strong>Seguridad en la Nube (Cloud):</strong> Cumplimiento ISO/IEC 27017 verificado semestralmente. Cifrado nativo administrado por el cliente.</li>
+                        <li><strong>Riesgos de Proveedores (Soporte):</strong> Cláusulas obligatorias de confidencialidad (NDA) y auditoría de accesos remotos por VPN.</li>
+                        <li><strong>Cumplimiento Regulatorio (Leyes):</strong> Validación legal de cumplimiento con GDPR y LFPDPPP en la exportación de datos.</li>
+                        <li><strong>Integridad de Suministros (OEM):</strong> Inspección en sandbox de firmware y software externo antes de instalar en producción.</li>
+                        <li><strong>Inteligencia de Amenazas (Intel):</strong> Integración diaria de alertas de CERTs y US-CERT al centro de monitoreo (SOC).</li>
+                        <li><strong>Software de Terceros (Licencias):</strong> Prohibición estricta de bibliotecas de software no validadas o descontinuadas comercialmente.</li>
+                        <li><strong>Continuidad de Servicios (Energía):</strong> Pruebas mensuales de generadores UPS y RTO establecido en 4 horas para procesos críticos.</li>
+                        <li><strong>Intercambio Seguro (Clientes):</strong> Cifrado obligatorio en tránsito para intercambio de datos industriales (SFTP/HTTPS).</li>
+                        <li><strong>Uso de Código Abierto:</strong> Análisis de dependencias (SCA) para evitar vulnerabilidades de software libre.</li>
+                        <li><strong>Auditorías Externas (Certificación):</strong> Procedimiento de preparación y entrega de evidencias firmadas y auditables de forma controlada.</li>
                     </ul>
                 </section>
 
                 <!-- ===== MATRIZ DE RIESGO ===== -->
                 <section>
-                    <h2>6. Matriz de Riesgo</h2>
-                    <p>Se evaluaron los 20 activos utilizando una matriz de Impacto x Probabilidad. Los riesgos más críticos identificados son:</p>
+                    <h2>5. Matriz de Riesgo de Seguridad</h2>
+                    <p>Mapeo de riesgos basado en la escala cualitativa y cuantitativa de Impacto (1 a 5) y Probabilidad (1 a 5). A continuación se resumen los niveles resultantes de la evaluación de activos:</p>
+
                     <div class="table-container">
                         <table class="cyber-table">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Activo Crítico</th>
-                                    <th>Nivel de Riesgo</th>
+                                    <th>Activo Evaluado</th>
+                                    <th>Amenaza Identificada</th>
+                                    <th>Prob.</th>
+                                    <th>Imp.</th>
+                                    <th>Riesgo Score</th>
+                                    <th>Severidad</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="background: rgba(255, 62, 62, 0.15);">
+                                    <td><strong>I9</strong></td>
+                                    <td>Personal y Ética</td>
+                                    <td>Ingeniería Social (Phishing) / Error Humano</td>
+                                    <td>4</td>
+                                    <td>5</td>
+                                    <td><strong>20</strong></td>
+                                    <td style="color: #ff3e3e; font-weight: bold;">EXTREMO</td>
+                                </tr>
+                                <tr style="background: rgba(255, 62, 62, 0.15);">
+                                    <td><strong>E9</strong></td>
+                                    <td>Bibliotecas Código Abierto</td>
+                                    <td>Inyección de Malware / Vulnerabilidad de Día Cero</td>
+                                    <td>5</td>
+                                    <td>4</td>
+                                    <td><strong>20</strong></td>
+                                    <td style="color: #ff3e3e; font-weight: bold;">EXTREMO</td>
+                                </tr>
+                                <tr style="background: rgba(255, 165, 0, 0.15);">
+                                    <td><strong>I1</strong></td>
+                                    <td>Credenciales de Acceso</td>
+                                    <td>Ataques de Fuerza Bruta / Robo de Token</td>
+                                    <td>3</td>
+                                    <td>5</td>
+                                    <td><strong>15</strong></td>
+                                    <td style="color: #ffa500; font-weight: bold;">MUY ALTO</td>
+                                </tr>
+                                <tr style="background: rgba(255, 165, 0, 0.15);">
+                                    <td><strong>I3</strong></td>
+                                    <td>Servidores Almacenamiento</td>
+                                    <td>Fuga de Datos Industriales y Configuraciones</td>
+                                    <td>3</td>
+                                    <td>5</td>
+                                    <td><strong>15</strong></td>
+                                    <td style="color: #ffa500; font-weight: bold;">MUY ALTO</td>
+                                </tr>
+                                <tr style="background: rgba(255, 165, 0, 0.15);">
+                                    <td><strong>E7</strong></td>
+                                    <td>Suministro de Energía</td>
+                                    <td>Corte masivo de red eléctrica comercial</td>
+                                    <td>3</td>
+                                    <td>5</td>
+                                    <td><strong>15</strong></td>
+                                    <td style="color: #ffa500; font-weight: bold;">MUY ALTO</td>
+                                </tr>
+                                <tr style="background: rgba(255, 231, 28, 0.05);">
+                                    <td><strong>I5</strong></td>
+                                    <td>Logs de Auditoría</td>
+                                    <td>Omisión de registro / Modificación por intrusos</td>
+                                    <td>4</td>
+                                    <td>3</td>
+                                    <td><strong>12</strong></td>
+                                    <td style="color: var(--accent-yellow); font-weight: bold;">ALTO</td>
+                                </tr>
+                                <tr style="background: rgba(255, 231, 28, 0.05);">
+                                    <td><strong>I8</strong></td>
+                                    <td>Configuración de Red</td>
+                                    <td>Modificaciones erróneas / Denegación local</td>
+                                    <td>3</td>
+                                    <td>4</td>
+                                    <td><strong>12</strong></td>
+                                    <td style="color: var(--accent-yellow); font-weight: bold;">ALTO</td>
+                                </tr>
+                                <tr style="background: rgba(255, 231, 28, 0.05);">
+                                    <td><strong>E2</strong></td>
+                                    <td>Soporte TIC Externo</td>
+                                    <td>Fallas en SLA / Fuga de credenciales compartidas</td>
+                                    <td>3</td>
+                                    <td>4</td>
+                                    <td><strong>12</strong></td>
+                                    <td style="color: var(--accent-yellow); font-weight: bold;">ALTO</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <p style="margin-top: 1.5rem;"><strong>Resumen Estadístico de Riesgos del Proyecto:</strong></p>
+                    <ul class="tech-list" style="margin-left: 1.5rem; font-size: 0.9rem;">
+                        <li><strong>Riesgo Extremo (20-25):</strong> 02 activos (Mitigación inmediata requerida).</li>
+                        <li><strong>Riesgo Muy Alto (15-16):</strong> 03 activos (Monitoreo constante).</li>
+                        <li><strong>Riesgo Alto (10-12):</strong> 06 activos (Acciones de endurecimiento).</li>
+                        <li><strong>Riesgo Medio (5-9):</strong> 05 activos (Gestión operativa).</li>
+                        <li><strong>Riesgo Bajo (3-4):</strong> 04 activos (Aceptación del riesgo bajo supervisión).</li>
+                    </ul>
+                </section>
+
+                <!-- ===== SOPORTE Y MINUTA DE AVANCES ===== -->
+                <section>
+                    <h2>6. Soporte y Minuta de Avances</h2>
+                    <p>
+                        <strong>Institución:</strong> Universidad Politécnica de San Luis Potosí (UPSLP)<br>
+                        <strong>Asignatura:</strong> CNO V: Seguridad Informática (10° Semestre)<br>
+                        <strong>Caso de Estudio:</strong> Implementación de SGSI basado en ISO 27001 para ABB (División Electrificación)
+                    </p>
+
+                    <h3>6.1. Resumen de Acuerdos de Sesión</h3>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Enfoque de Activos:</strong> Se justificó la inclusión de dependencias externas (servicios Cloud, leyes y energía) en el SGSI de ABB al ser vectores que influyen de manera crítica en la operación del soporte de activos GE.</li>
+                        <li><strong>Mitigación de Puntos Críticos:</strong> Los riesgos de nivel Extremo (Ingeniería Social y bibliotecas de código abierto) recibirán tratamiento preventivo a través de capacitaciones simuladas y escaneos de código (SCA).</li>
+                        <li><strong>Mecanismo de Firma:</strong> Se valida la Minuta firmada digitalmente por los investigadores el 11 de mayo de 2026 para garantizar la conformidad técnica.</li>
+                    </ul>
+                </section>
+
+                <!-- ===== OPERACIÓN ===== -->
+                <section>
+                    <h2>7. Operación: Protocolo de Desincorporación Segura (PDS)</h2>
+                    <p>
+                        Para mitigar los riesgos del borrado incompleto del activo crítico (Servidor de Almacenamiento de Datos de Configuración), el equipo de IS Application Service Delivery ejecuta el siguiente <strong>Protocolo de Desincorporación Segura (PDS)</strong>:
+                    </p>
+
+                    <h3>7.1 Fases del Protocolo</h3>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>1. Preparación y Validación:</strong> Apertura de ticket de baja en ERP. Realización de un snapshot cifrado (AES-256) enviado al repositorio Azure. Bloqueo físico de puertos USB y accesos remotos.</li>
+                        <li><strong>2. Ejecución Técnica (Borrado):</strong> Sobreescritura lógica irreversible utilizando software certificado (Blancco Drive Eraser) aplicando el estándar <strong>NIST SP 800-88 Rev. 1 (Purge)</strong> en un entorno limpio sin sistema operativo local residente.</li>
+                        <li><strong>3. Validación y Certificación:</strong> Comprobación de que no existen patrones de datos legibles en los sectores del disco y emisión del Certificado de Destrucción firmado.</li>
+                    </ul>
+
+                    <h3>7.2 Matriz de Tratamiento Operativo de Riesgos</h3>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Riesgo Inicial</th>
+                                    <th>Score Inicial</th>
+                                    <th>Acción de Tratamiento (Control Operativo)</th>
+                                    <th>Residual</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>I9</td>
-                                    <td>Personal y Ética (Ingeniería Social)</td>
-                                    <td>20 - EXTREMO</td>
+                                    <td>Fuga de datos por borrado de disco incompleto</td>
+                                    <td>15 (Muy Alto)</td>
+                                    <td>Ejecución de sanitización NIST SP 800-88 Purge y verificación de hashes bit a bit.</td>
+                                    <td style="color: var(--accent-cyan);">Bajo (04)</td>
                                 </tr>
                                 <tr>
-                                    <td>E9</td>
-                                    <td>Bibliotecas Código Abierto (Malware)</td>
-                                    <td>20 - EXTREMO</td>
+                                    <td>Robo de credenciales administrativas en el desecho</td>
+                                    <td>15 (Muy Alto)</td>
+                                    <td>Uso de tokens físicos MFA de Microsoft Entra para autorizar el comando final de borrado.</td>
+                                    <td style="color: var(--accent-cyan);">Medio (05)</td>
                                 </tr>
                                 <tr>
-                                    <td>I1</td>
-                                    <td>Credenciales de Acceso (Robo)</td>
-                                    <td>15 - MUY ALTO</td>
+                                    <td>Infiltración de malware por herramientas de terceros</td>
+                                    <td>20 (Extremo)</td>
+                                    <td>Uso exclusivo de cargador ejecutable externo (bootable) verificado en red aislada.</td>
+                                    <td style="color: var(--accent-cyan);">Medio (08)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <h3 style="margin-top: 1.5rem;">7.3 Mapa de Implementación y Responsables</h3>
+                    <div class="table-container">
+                        <table class="cyber-table">
+                            <thead>
+                                <tr>
+                                    <th>Paso</th>
+                                    <th>Actividad Operativa</th>
+                                    <th>Responsable</th>
+                                    <th>Evidencia Tangible</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>Inventario y Clasificación</td>
+                                    <td>Ing. Alan Gilberto Sánchez Zavala</td>
+                                    <td>Etiqueta física y lógica de "Activo en Proceso de Baja".</td>
                                 </tr>
                                 <tr>
-                                    <td>I3</td>
-                                    <td>Servidores Almacén (Fuga de datos)</td>
-                                    <td>15 - MUY ALTO</td>
+                                    <td>2</td>
+                                    <td>Aislamiento de Red</td>
+                                    <td>Ing. Santiago de la Cruz Martínez Lara</td>
+                                    <td>Logs de desconexión lógica y física en switch central.</td>
+                                </tr>
+                                <tr>
+                                    <td>3</td>
+                                    <td>Sanitización NIST Purge</td>
+                                    <td>Ing. Brian Salvador Espinoza Aguilar</td>
+                                    <td>Reporte firmado de software Blancco (Pass/Fail).</td>
+                                </tr>
+                                <tr>
+                                    <td>4</td>
+                                    <td>Auditoría y Hash</td>
+                                    <td>Ing. Mayeli Sánchez Ramírez</td>
+                                    <td>Hash SHA-256 de verificación del disco en cero datos.</td>
+                                </tr>
+                                <tr>
+                                    <td>5</td>
+                                    <td>Validación y Cierre</td>
+                                    <td>Ing. Omar Karim Alonso Castillo</td>
+                                    <td>Certificado de Eliminación Seguro indexado al ERP.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </section>
 
-                <!-- ===== OPERACIÓN ===== -->
-                <section>
-                    <h2>7. Operación</h2>
-                    <p>Se implementó el <strong>Protocolo de Desincorporación Segura (PDS)</strong> para el Main Controller Server:</p>
-                    <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li><strong>Preparación:</strong> Ticket de baja, snapshot cifrado a Azure, bloqueo de puertos.</li>
-                        <li><strong>Ejecución Técnica:</strong> Borrado lógico mediante sobreescritura de datos usando el estándar NIST 800-88 (Purge) con Blancco Drive Eraser en un entorno limpio.</li>
-                    </ul>
-                </section>
-
                 <!-- ===== EVALUACIÓN DEL DESEMPEÑO ===== -->
                 <section>
-                    <h2>8. Evaluación del Desempeño</h2>
-                    <p>Los indicadores clave (KPIs) incluyen la eficacia de sanitización y el control de identidades (Microsoft Entra IAM). Se ejecutó una auditoría interna verificando 9 controles:</p>
+                    <h2>8. Evaluación del Desempeño (Auditoría Interna)</h2>
+                    <p>
+                        Para asegurar el cumplimiento de la norma y evaluar si el protocolo de desincorporación de ABB es efectivo, se definió un <strong>Checklist de Auditoría Interna</strong> con 9 controles clave:
+                    </p>
+
                     <div class="table-container">
                         <table class="cyber-table">
                             <thead>
                                 <tr>
-                                    <th>Control / Requisito</th>
-                                    <th>Evidencia</th>
+                                    <th>ID</th>
+                                    <th>Control / Requisito de Auditoría</th>
+                                    <th>Cumple</th>
+                                    <th>Evidencia y Hallazgo Registrado</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Registro formal del activo previo al retiro</td>
-                                    <td>Inventario de activos</td>
+                                    <td><strong>01</strong></td>
+                                    <td>¿Existe un registro formal del activo previo a su desincorporación?</td>
+                                    <td style="color: var(--accent-cyan); font-weight: bold;">SÍ</td>
+                                    <td>Inventariado bajo el tag ABB-DCS-GE-04.</td>
                                 </tr>
                                 <tr>
-                                    <td>Método NIST Purge (3 pasadas)</td>
-                                    <td>Reporte técnico (Blancco/DBAN)</td>
+                                    <td><strong>02</strong></td>
+                                    <td>¿Se verificó la integridad de la copia Azure antes del borrado físico?</td>
+                                    <td style="color: var(--accent-cyan); font-weight: bold;">SÍ</td>
+                                    <td>Log de transferencia exitoso y verificación de firma MD5 en Azure.</td>
                                 </tr>
                                 <tr>
-                                    <td>Uso de MFA activo para baja</td>
-                                    <td>Logs de Microsoft Entra IAM</td>
+                                    <td><strong>03</strong></td>
+                                    <td>¿Se usó un procedimiento estándar documentado para la desincorporación?</td>
+                                    <td style="color: var(--accent-cyan); font-weight: bold;">SÍ</td>
+                                    <td>Procedimiento PDS de ABB IS-Application.</td>
                                 </tr>
                                 <tr>
-                                    <td>Certificado de Destrucción de Datos</td>
-                                    <td>Formato de salida firmado</td>
+                                    <td><strong>04</strong></td>
+                                    <td>¿La administración de accesos es gestionada mediante Microsoft Entra IAM?</td>
+                                    <td style="color: var(--accent-cyan); font-weight: bold;">SÍ</td>
+                                    <td>Directivas activas y logs en Microsoft Entra.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>05</strong></td>
+                                    <td>¿Se aplicó el estándar NIST SP 800-88 Purge al disco del activo?</td>
+                                    <td style="color: var(--accent-cyan); font-weight: bold;">SÍ</td>
+                                    <td>Reporte en PDF con firma del software de sanitización.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>06</strong></td>
+                                    <td>¿El personal que ejecutó el borrado poseía token físico de MFA activo?</td>
+                                    <td style="color: var(--accent-cyan); font-weight: bold;">SÍ</td>
+                                    <td>Acceso firmado con llaves YubiKey registradas en Entra.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>07</strong></td>
+                                    <td>¿Existe un Certificado de Destrucción de Datos formal firmado?</td>
+                                    <td style="color: var(--accent-cyan); font-weight: bold;">SÍ</td>
+                                    <td>Certificado indexado al ticket de baja del activo.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>08</strong></td>
+                                    <td>¿Se notificó al área de TI global y CISO sobre el estatus de baja?</td>
+                                    <td style="color: var(--accent-cyan); font-weight: bold;">SÍ</td>
+                                    <td>Ticket ERP cerrado con estado "Sanitizado y Desconectado".</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>09</strong></td>
+                                    <td>¿Se realizó una prueba aleatoria de software de recuperación post-borrado?</td>
+                                    <td style="color: var(--accent-cyan); font-weight: bold;">SÍ</td>
+                                    <td>Prueba con FTK Imager confirmando 100% de sectores vacíos.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -199,22 +566,35 @@
                 <!-- ===== MEJORA CONTINUA ===== -->
                 <section>
                     <h2>9. Mejora Continua</h2>
-                    <p>Para la gestión de no conformidades se utiliza el Análisis de Causa Raíz (5 Porqués). Las propuestas de mejora proactiva a mediano plazo incluyen:</p>
+                    
+                    <h3>9.1 Gestión de No Conformidades (5 Porqués)</h3>
+                    <p>Durante la auditoría se identificó la baja de un servidor sin que la firma digital se indexara a la consola central. Se aplicó la metodología RCA:</p>
+                    <div class="quotation-box" style="border-left-color: var(--accent-yellow);">
+                        <p><strong>1. ¿Por qué el certificado de borrado no apareció en el panel?</strong><br>Porque el script de automatización del software falló al subir la evidencia.</p>
+                        <p><strong>2. ¿Por qué falló al subir la evidencia?</strong><br>Porque el servicio de API local del panel rechazó la comunicación.</p>
+                        <p><strong>3. ¿Por qué rechazó la comunicación?</strong><br>Porque las credenciales de la API local habían caducado sin renovación.</p>
+                        <p><strong>4. ¿Por qué las credenciales habían caducado sin renovación?</strong><br>Porque no existía una alerta de expiración en las llaves del script local.</p>
+                        <p><strong>5. ¿Por qué no existía una alerta de expiración en las llaves?</strong><br>Porque el script se catalogó como herramienta secundaria de desarrollo y no se auditaba bajo las directivas de Entra IAM.</p>
+                    </div>
+                    <p style="margin-top: 1rem;"><strong>Acción Correctiva:</strong> Catalogar todas las herramientas de automatización de sanitización como activos críticos e integrar sus credenciales en el monitoreo y rotación automatizada de Microsoft Entra IAM.</p>
+
+                    <h3>9.2 Pilares de Optimización del SGSI</h3>
                     <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li><strong>Automatización del Offboarding:</strong> Integrar herramientas de sanitización física con Microsoft Entra IAM.</li>
-                        <li><strong>Actualización del Modelo de Amenazas:</strong> Revisión semestral de la matriz de riesgos.</li>
-                        <li><strong>Evolución del Plan de Conciencia:</strong> Simulaciones dinámicas de ingeniería social.</li>
+                        <li><strong>Automatización Completa:</strong> Integrar las herramientas físicas de sanitización de discos de forma directa a la API de Microsoft Entra para bloqueo instantáneo del activo al emitirse el certificado.</li>
+                        <li><strong>Actualización Dinámica de Riesgos:</strong> Revisión y actualización semestral automática de la matriz de riesgos ante amenazas de Día Cero.</li>
+                        <li><strong>Cultura Humana Avanzada:</strong> Desplegar simulaciones dinámicas y aleatorias de ingeniería social basadas en IA a toda la plantilla técnica de soporte.</li>
                     </ul>
                 </section>
 
                 <!-- ===== CONCLUSIÓN ===== -->
                 <section>
-                    <h2>10. Conclusión</h2>
+                    <h2>10. Conclusión General</h2>
                     <div class="quotation-box">
-                        <p>La correcta alineación entre las políticas funcionales, la asignación precisa de riesgos cuantitativos, los flujos de soporte técnico, la ejecución tangible bajo estándares internacionales y las directrices de auditoría e identidad corporativa demuestran la viabilidad de implementar un marco de gobernanza de ciberseguridad robusto, eficiente y completamente apegado a las exigencias normativas de la industria tecnológica actual.</p>
+                        <p>
+                            La implementación estructurada del SGSI bajo ISO 27001 para la división de electrificación de ABB demuestra que la seguridad de la información debe ser gobernada con un enfoque sistémico. La alineación de políticas claras, la cuantificación matemática de riesgos, las simulaciones de ataque, la operación estricta bajo estándares (como NIST 800-88) y los flujos de auditoría interna cierran las brechas de seguridad físicas y lógicas. De este modo, se garantiza que ABB mantenga su reputación operativa y cumpla con las altas exigencias de confidencialidad e integridad de la industria eléctrica internacional.
+                        </p>
                     </div>
                 </section>
-
             </div>
         </article>
     </main>

